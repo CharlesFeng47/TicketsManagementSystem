@@ -1,15 +1,18 @@
 package cn.edu.nju.charlesfeng.model;
 
-import cn.edu.nju.charlesfeng.util.enums.UserType;
+import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
 
 /**
  * 系统中的所有合法用户实体的抽象父类
  */
+@MappedSuperclass
 public abstract class User {
 
     /**
      * 用户ID
      */
+    @Id
     private String id;
 
     /**
@@ -17,15 +20,12 @@ public abstract class User {
      */
     private String pwd;
 
-    /**
-     * 用户类型
-     */
-    private UserType userType;
-
-    public User(String id, String pwd, UserType userType) {
+    public User(String id, String pwd) {
         this.id = id;
         this.pwd = pwd;
-        this.userType = userType;
+    }
+
+    protected User() {
     }
 
     public String getId() {
@@ -34,9 +34,5 @@ public abstract class User {
 
     public String getPwd() {
         return pwd;
-    }
-
-    public UserType getUserType() {
-        return userType;
     }
 }

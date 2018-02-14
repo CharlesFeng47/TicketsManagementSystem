@@ -2,12 +2,13 @@ package cn.edu.nju.charlesfeng.entity;
 
 import cn.edu.nju.charlesfeng.model.SpotInfo;
 import cn.edu.nju.charlesfeng.model.User;
-import cn.edu.nju.charlesfeng.util.enums.UserType;
+
+import java.io.Serializable;
 
 /**
  * 系统中场馆实体
  */
-public class Spot extends User {
+public class Spot extends User implements Serializable {
 
     /**
      * 此场馆的场馆信息
@@ -21,7 +22,7 @@ public class Spot extends User {
     private boolean examinedd;
 
     public Spot(String id, String pwd) {
-        super(id, pwd, UserType.SPOT);
+        super(id, pwd);
     }
 
     public SpotInfo getSpotInfo() {

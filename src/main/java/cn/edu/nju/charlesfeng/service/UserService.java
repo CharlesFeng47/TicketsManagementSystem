@@ -1,6 +1,8 @@
 package cn.edu.nju.charlesfeng.service;
 
 import cn.edu.nju.charlesfeng.model.User;
+import cn.edu.nju.charlesfeng.util.enums.UserType;
+import cn.edu.nju.charlesfeng.util.exceptions.UserNotExistException;
 
 /**
  * 系统中会员、场馆的服务
@@ -18,10 +20,10 @@ public interface UserService {
     /**
      * 【会员】会员注销、取消资格
      *
-     * @param uid 欲注销，使会员资格被取消的会员ID
+     * @param mid 欲注销，使会员资格被取消的会员ID
      * @return 注销结果，成果则true
      */
-    boolean invalidate(String uid);
+    boolean invalidate(String mid);
 
     /**
      * @param user 欲修改用户信息的用户
@@ -30,8 +32,9 @@ public interface UserService {
     boolean modifyUser(User user);
 
     /**
-     * @param id 要查看的用户ID
+     * @param id   要查看的用户ID
+     * @param type 要查看的用户类型
      * @return 用户详情
      */
-    User getUser(String id);
+    User getUser(String id, UserType type) throws UserNotExistException;
 }

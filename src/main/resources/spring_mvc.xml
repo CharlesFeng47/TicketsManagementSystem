@@ -17,6 +17,7 @@
     <!-- if you use annotation you must configure following setting -->
     <mvc:annotation-driven/>
     <context:component-scan base-package="cn.edu.nju.charlesfeng.controller"/>
+    <context:component-scan base-package="cn.edu.nju.charlesfeng.task"/>
 
     <!--<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">-->
         <!--<property name="prefix" value="/view/"/>-->

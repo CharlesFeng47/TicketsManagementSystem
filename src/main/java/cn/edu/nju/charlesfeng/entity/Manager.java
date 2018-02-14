@@ -1,14 +1,22 @@
 package cn.edu.nju.charlesfeng.entity;
 
 import cn.edu.nju.charlesfeng.model.User;
-import cn.edu.nju.charlesfeng.util.enums.UserType;
+
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import java.io.Serializable;
 
 /**
  * 系统中经理实体
  */
-public class Manager extends User {
+@Entity
+@Table(name = "manager")
+public class Manager extends User implements Serializable {
+
+    public Manager() {
+    }
 
     public Manager(String id, String pwd) {
-        super(id, pwd, UserType.MANAGER);
+        super(id, pwd);
     }
 }

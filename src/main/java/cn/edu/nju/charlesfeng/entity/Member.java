@@ -1,12 +1,13 @@
 package cn.edu.nju.charlesfeng.entity;
 
 import cn.edu.nju.charlesfeng.model.User;
-import cn.edu.nju.charlesfeng.util.enums.UserType;
+
+import java.io.Serializable;
 
 /**
  * 系统中会员实体
  */
-public class Member extends User {
+public class Member extends User implements Serializable {
 
     /**
      * 会员等级
@@ -24,7 +25,7 @@ public class Member extends User {
     private boolean invalidated;
 
     public Member(String id, String pwd, int level, boolean activated, boolean invalidated) {
-        super(id, pwd, UserType.MEMBER);
+        super(id, pwd);
         this.level = level;
         this.activated = activated;
         this.invalidated = invalidated;
