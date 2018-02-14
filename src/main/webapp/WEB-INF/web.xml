@@ -10,7 +10,7 @@
         <param-value>classpath:applicationContext.xml</param-value>
     </context-param>
 
-    <!--解决post请求中文乱码 -->
+    <!-- 解决post请求中文乱码 -->
     <filter>
         <filter-name>encodingFilter</filter-name>
         <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
