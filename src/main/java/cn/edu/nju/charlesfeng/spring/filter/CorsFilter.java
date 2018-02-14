@@ -61,6 +61,7 @@ public class CorsFilter implements Filter {
         String curOrigin = request.getHeader("Origin");
         logger.debug("currentOrigin : " + curOrigin);
 
+        // 跨域访问则增加相关的报文头信息
         if (allowOrigin != null && allowOrigin.contains(curOrigin)) {
             response.setHeader("Access-Control-Allow-Origin", curOrigin);
             response.setHeader("Access-Control-Allow-Credentials", String.valueOf(allowCredentials));
@@ -72,6 +73,7 @@ public class CorsFilter implements Filter {
             if (exposeHeaders != null && !exposeHeaders.isEmpty())
                 response.setHeader("Access-Control-Expose-Headers", exposeHeaders);
         }
+
         logger.debug(((HttpServletResponse) res).getHeaderNames());
         filterChain.doFilter(req, res);
     }
