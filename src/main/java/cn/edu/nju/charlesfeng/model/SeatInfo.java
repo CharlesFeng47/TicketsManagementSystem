@@ -1,8 +1,11 @@
 package cn.edu.nju.charlesfeng.model;
 
+import javax.persistence.Entity;
+
 /**
  * 场馆中的座位信息
  */
+@Entity
 public class SeatInfo {
 
     /**
@@ -18,6 +21,11 @@ public class SeatInfo {
     public SeatInfo(String seatName, int num) {
         this.seatName = seatName;
         this.num = num;
+    }
+
+    @Override
+    public String toString() {
+        return seatName + ": " + num;
     }
 
     public String getSeatName() {

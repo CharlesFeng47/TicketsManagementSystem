@@ -15,4 +15,18 @@ public interface UserDao {
      * @return 用户详情
      */
     User getUser(String id, UserType type) throws UserNotExistException;
+
+    /**
+     * @param user 要保存的用户实体
+     * @param type 要保存的用户类型
+     * @return 保存结果，成功则true
+     */
+    boolean saveUser(User user, UserType type);
+
+    /**
+     * @param user 要修改的用户实体
+     * @param type 要修改的用户类型
+     * @return 修改结果，成功则true
+     */
+    boolean updateUser(User user, UserType type);
 }

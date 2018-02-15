@@ -2,11 +2,15 @@ package cn.edu.nju.charlesfeng.entity;
 
 import cn.edu.nju.charlesfeng.model.User;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.io.Serializable;
 
 /**
  * 系统中会员实体
  */
+@Entity
+@Table(name = "member")
 public class Member extends User implements Serializable {
 
     /**
@@ -29,6 +33,21 @@ public class Member extends User implements Serializable {
         this.level = level;
         this.activated = activated;
         this.invalidated = invalidated;
+    }
+
+    public Member(String id, String pwd) {
+        super(id, pwd);
+        this.level = 1;
+        this.activated = false;
+        this.invalidated = false;
+    }
+
+    public Member() {
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() + " " + level + " " + activated + " " + invalidated;
     }
 
     public int getLevel() {
