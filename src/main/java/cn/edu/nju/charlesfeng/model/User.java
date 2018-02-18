@@ -1,5 +1,6 @@
 package cn.edu.nju.charlesfeng.model;
 
+import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
@@ -18,6 +19,7 @@ public abstract class User {
     /**
      * 用户密码
      */
+    @Column(name = "pwd", nullable = false)
     private String pwd;
 
     public User(String id, String pwd) {

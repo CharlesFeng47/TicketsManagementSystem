@@ -948,11 +948,10 @@
       <Engine>InnoDB</Engine>
       <Collation>utf8_general_ci</Collation>
     </table>
-    <table id="241" parent="15" name="spot">
-      <Engine>InnoDB</Engine>
-      <Collation>utf8_general_ci</Collation>
+    <table id="241" parent="15" name="seat">
+      <Engine>MyISAM</Engine>
     </table>
-    <table id="242" parent="15" name="spot_seat">
+    <table id="242" parent="15" name="spot">
       <Engine>InnoDB</Engine>
       <Collation>utf8_general_ci</Collation>
     </table>
@@ -980,7 +979,7 @@
       <ColNames>ali_id</ColNames>
       <Primary>1</Primary>
     </key>
-    <column id="247" parent="239" name="mid">
+    <column id="247" parent="239" name="id">
       <Position>1</Position>
       <DataType>varchar(255)|0</DataType>
       <NotNull>1</NotNull>
@@ -994,10 +993,10 @@
     </column>
     <key id="249" parent="239" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
-      <ColNames>mid</ColNames>
+      <ColNames>id</ColNames>
       <Primary>1</Primary>
     </key>
-    <column id="250" parent="240" name="mid">
+    <column id="250" parent="240" name="id">
       <Position>1</Position>
       <DataType>varchar(255)|0</DataType>
       <NotNull>1</NotNull>
@@ -1032,56 +1031,61 @@
     </column>
     <key id="255" parent="240" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
-      <ColNames>mid</ColNames>
+      <ColNames>id</ColNames>
       <Primary>1</Primary>
     </key>
-    <column id="256" parent="241" name="sid">
+    <column id="256" parent="241" name="id">
+      <Position>1</Position>
+      <DataType>int(11)|0</DataType>
+      <NotNull>1</NotNull>
+      <SequenceIdentity>1</SequenceIdentity>
+      <ColumnKind>normal</ColumnKind>
+    </column>
+    <column id="257" parent="241" name="seat_name">
+      <Position>2</Position>
+      <DataType>varchar(255)|0</DataType>
+      <ColumnKind>normal</ColumnKind>
+    </column>
+    <column id="258" parent="241" name="seat_num">
+      <Position>3</Position>
+      <DataType>int(11)|0</DataType>
+      <NotNull>1</NotNull>
+      <ColumnKind>normal</ColumnKind>
+    </column>
+    <key id="259" parent="241" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>id</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <column id="260" parent="242" name="id">
       <Position>1</Position>
       <DataType>int(7)|0</DataType>
       <NotNull>1</NotNull>
       <SequenceIdentity>1</SequenceIdentity>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="257" parent="241" name="site">
+    <column id="261" parent="242" name="pwd">
       <Position>2</Position>
       <DataType>varchar(255)|0</DataType>
       <NotNull>1</NotNull>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="258" parent="241" name="examined">
+    <column id="262" parent="242" name="site">
       <Position>3</Position>
+      <DataType>varchar(255)|0</DataType>
+      <NotNull>1</NotNull>
+      <ColumnKind>normal</ColumnKind>
+    </column>
+    <column id="263" parent="242" name="examined">
+      <Position>4</Position>
       <DataType>tinyint(1)|0</DataType>
       <NotNull>1</NotNull>
       <DefaultExpression>&apos;0&apos;</DefaultExpression>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <key id="259" parent="241" name="PRIMARY">
+    <key id="264" parent="242" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
-      <ColNames>sid</ColNames>
-      <Primary>1</Primary>
-    </key>
-    <column id="260" parent="242" name="spot_seat_name">
-      <Position>1</Position>
-      <DataType>varchar(255)|0</DataType>
-      <NotNull>1</NotNull>
-      <ColumnKind>normal</ColumnKind>
-    </column>
-    <column id="261" parent="242" name="spot_seat_num">
-      <Position>2</Position>
-      <DataType>int(11)|0</DataType>
-      <NotNull>1</NotNull>
-      <ColumnKind>normal</ColumnKind>
-    </column>
-    <column id="262" parent="242" name="spot_sid">
-      <Position>3</Position>
-      <DataType>varchar(255)|0</DataType>
-      <NotNull>1</NotNull>
-      <ColumnKind>normal</ColumnKind>
-    </column>
-    <key id="263" parent="242" name="PRIMARY">
-      <NameSurrogate>1</NameSurrogate>
-      <ColNames>spot_seat_name
-spot_sid</ColNames>
+      <ColNames>id</ColNames>
       <Primary>1</Primary>
     </key>
   </database-model>

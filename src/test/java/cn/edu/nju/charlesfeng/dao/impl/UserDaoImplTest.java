@@ -3,12 +3,17 @@ package cn.edu.nju.charlesfeng.dao.impl;
 import cn.edu.nju.charlesfeng.dao.UserDao;
 import cn.edu.nju.charlesfeng.entity.Manager;
 import cn.edu.nju.charlesfeng.entity.Member;
+import cn.edu.nju.charlesfeng.entity.SeatInfo;
+import cn.edu.nju.charlesfeng.entity.Spot;
 import cn.edu.nju.charlesfeng.util.enums.UserType;
 import cn.edu.nju.charlesfeng.util.testUtil.DaoTestHelper;
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * UserDaoImpl Tester.
@@ -33,9 +38,15 @@ public class UserDaoImplTest {
     }
 
     @Test
-    public void testGetUser() throws Exception {
+    public void testGetManager() throws Exception {
         Manager adminManager = (Manager) dao.getUser("admin", UserType.MANAGER);
         logger.debug(adminManager);
+    }
+
+    @Test
+    public void testGetSpot() throws Exception {
+        Spot spot = (Spot) dao.getUser("重庆江北大剧院", UserType.SPOT);
+        logger.debug(spot);
     }
 
     @Test
@@ -64,6 +75,31 @@ public class UserDaoImplTest {
 
         Member resultMember = (Member) dao.getUser("suzy", UserType.MEMBER);
         logger.debug(resultMember);
+    }
+
+    @Test
+    public void testSpot() throws Exception {
+        SeatInfo seat1 = new SeatInfo(1, "一等座", 100);
+        SeatInfo seat2 = new SeatInfo(2, "二等座", 100);
+        SeatInfo seat3 = new SeatInfo(3, "三等座", 100);
+        Set<SeatInfo> seatInfos = new HashSet<>();
+        seatInfos.add(seat1);
+        seatInfos.add(seat2);
+        seatInfos.add(seat3);
+
+        Spot spot1 = new Spot("重庆江北大剧院", "qwertyuiop", false, "重庆江北嘴", seatInfos);
+        boolean saveResult = dao.saveUser(spot1, UserType.SPOT);
+        logger.debug(saveResult);
+
+        SeatInfo seat2new = new SeatInfo(2, "二等座", 150);
+        seatInfos.remove(seat2);
+        seatInfos.add(seat2new);
+        Spot spot2 = new Spot("重庆江北大剧院", "qwertyuiop", false, "重庆江北嘴", seatInfos);
+        boolean updateResult = dao.updateUser(spot2, UserType.SPOT);
+        logger.debug(updateResult);
+
+        Spot resultSpot = (Spot) dao.getUser("重庆江北大剧院", UserType.SPOT);
+        logger.debug(resultSpot);
     }
 
 }

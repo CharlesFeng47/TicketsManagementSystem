@@ -1,8 +1,8 @@
 package cn.edu.nju.charlesfeng.service;
 
 import cn.edu.nju.charlesfeng.entity.Member;
+import cn.edu.nju.charlesfeng.entity.SeatInfo;
 import cn.edu.nju.charlesfeng.entity.Spot;
-import cn.edu.nju.charlesfeng.model.SeatInfo;
 import cn.edu.nju.charlesfeng.model.User;
 
 import java.util.Set;

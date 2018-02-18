@@ -1,5 +1,6 @@
 package cn.edu.nju.charlesfeng.model;
 
+import cn.edu.nju.charlesfeng.entity.SeatInfo;
 import cn.edu.nju.charlesfeng.util.enums.ScheduleItemType;
 
 import java.time.LocalDateTime;
