@@ -1,10 +1,15 @@
 package cn.edu.nju.charlesfeng.service.impl;
 
+import cn.edu.nju.charlesfeng.dao.UserDao;
 import cn.edu.nju.charlesfeng.entity.Member;
 import cn.edu.nju.charlesfeng.entity.SeatInfo;
 import cn.edu.nju.charlesfeng.entity.Spot;
 import cn.edu.nju.charlesfeng.model.User;
 import cn.edu.nju.charlesfeng.service.LogInService;
+import cn.edu.nju.charlesfeng.util.enums.UserType;
+import cn.edu.nju.charlesfeng.util.exceptions.UserNotExistException;
+import cn.edu.nju.charlesfeng.util.exceptions.WrongPwdException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
@@ -12,18 +17,31 @@ import java.util.Set;
 @Service
 public class LogInServiceImpl implements LogInService {
 
-    @Override
-    public Member registerMember(String id, String pwd) {
-        return null;
+    private final UserDao dao;
+
+    @Autowired
+    public LogInServiceImpl(UserDao dao) {
+        this.dao = dao;
     }
 
     @Override
-    public Spot registerSpot(String pwd, String site, Set<SeatInfo> seatInfos) {
-        return null;
+    public Member registerMember(String id, String pwd) throws UserNotExistException {
+        Member newMember = new Member(id, pwd);
+        dao.saveUser(newMember, UserType.MEMBER);
+        return (Member) dao.getUser(id, UserType.MEMBER);
     }
 
     @Override
-    public User logIn(String id, String pwd) {
-        return null;
+    public Spot registerSpot(String id, String pwd, String site, Set<SeatInfo> seatInfos) throws UserNotExistException {
+        Spot newSpot = new Spot(id, pwd, false, site, seatInfos);
+        dao.saveUser(newSpot, UserType.SPOT);
+        return (Spot) dao.getUser(id, UserType.SPOT);
+    }
+
+    @Override
+    public User logIn(String id, String pwd, UserType userType) throws UserNotExistException, WrongPwdException {
+        User user = dao.getUser(id, userType);
+        if (user.getPwd().equals(pwd)) return user;
+        else throw new WrongPwdException();
     }
 }

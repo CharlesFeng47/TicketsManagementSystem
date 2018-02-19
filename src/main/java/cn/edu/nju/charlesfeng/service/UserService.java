@@ -23,13 +23,14 @@ public interface UserService {
      * @param mid 欲注销，使会员资格被取消的会员ID
      * @return 注销结果，成果则true
      */
-    boolean invalidate(String mid);
+    boolean invalidate(String mid) throws UserNotExistException;
 
     /**
-     * @param user 欲修改用户信息的用户
+     * @param user     欲修改用户信息的用户实体
+     * @param userType 欲修改用户信息的用户类型
      * @return 修改结果，成果则true
      */
-    boolean modifyUser(User user);
+    boolean modifyUser(User user, UserType userType);
 
     /**
      * @param id   要查看的用户ID

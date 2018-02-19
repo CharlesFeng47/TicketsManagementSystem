@@ -58,11 +58,23 @@ public class Member extends User implements Serializable {
         return level;
     }
 
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
     public boolean isActivated() {
         return activated;
     }
 
+    public void setActivated(boolean activated) {
+        this.activated = activated;
+    }
+
     public boolean isInvalidated() {
         return invalidated;
+    }
+
+    public void setInvalidated(boolean invalidated) {
+        this.invalidated = invalidated;
     }
 }

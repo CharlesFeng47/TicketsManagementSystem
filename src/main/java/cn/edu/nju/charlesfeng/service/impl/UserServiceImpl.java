@@ -1,6 +1,7 @@
 package cn.edu.nju.charlesfeng.service.impl;
 
 import cn.edu.nju.charlesfeng.dao.UserDao;
+import cn.edu.nju.charlesfeng.entity.Member;
 import cn.edu.nju.charlesfeng.model.User;
 import cn.edu.nju.charlesfeng.service.UserService;
 import cn.edu.nju.charlesfeng.util.enums.UserType;
@@ -20,17 +21,21 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean activateByMail() {
+        // TODO mail验证
         return false;
     }
 
     @Override
-    public boolean invalidate(String mid) {
-        return false;
+    public boolean invalidate(String mid) throws UserNotExistException {
+        Member member = (Member) userDao.getUser(mid, UserType.MEMBER);
+        member.setInvalidated(true);
+        userDao.updateUser(member, UserType.MEMBER);
+        return true;
     }
 
     @Override
-    public boolean modifyUser(User user) {
-        return false;
+    public boolean modifyUser(User user, UserType userType) {
+        return userDao.updateUser(user, userType);
     }
 
     @Override
