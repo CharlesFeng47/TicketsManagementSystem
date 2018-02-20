@@ -57,11 +57,23 @@ public class Spot extends User implements Serializable {
         return examined;
     }
 
+    public void setExamined(boolean examined) {
+        this.examined = examined;
+    }
+
     public String getSite() {
         return site;
     }
 
+    public void setSite(String site) {
+        this.site = site;
+    }
+
     public Set<SeatInfo> getSeatInfos() {
         return seatInfos;
+    }
+
+    public void setSeatInfos(Set<SeatInfo> seatInfos) {
+        this.seatInfos = seatInfos;
     }
 }

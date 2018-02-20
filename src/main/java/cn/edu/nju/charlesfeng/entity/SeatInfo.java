@@ -48,11 +48,23 @@ public class SeatInfo {
         return id;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public String getSeatName() {
         return seatName;
     }
 
+    public void setSeatName(String seatName) {
+        this.seatName = seatName;
+    }
+
     public int getNum() {
         return num;
+    }
+
+    public void setNum(int num) {
+        this.num = num;
     }
 }

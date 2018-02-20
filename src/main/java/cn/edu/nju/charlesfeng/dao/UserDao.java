@@ -19,9 +19,9 @@ public interface UserDao {
     /**
      * @param user 要保存的用户实体
      * @param type 要保存的用户类型
-     * @return 保存结果，成功则true
+     * @return 成功保存后的此实体对象主键
      */
-    boolean saveUser(User user, UserType type);
+    String saveUser(User user, UserType type);
 
     /**
      * @param user 要修改的用户实体

@@ -52,7 +52,7 @@ public class UserDaoImplTest {
     @Test
     public void testManager() throws Exception {
         Manager manager1 = new Manager("cuihua", "qwertyuiop123456");
-        boolean saveResult = dao.saveUser(manager1, UserType.MANAGER);
+        String saveResult = dao.saveUser(manager1, UserType.MANAGER);
         logger.debug(saveResult);
 
         Manager manager2 = new Manager("cuihua", "qwertyuiop");
@@ -66,7 +66,7 @@ public class UserDaoImplTest {
     @Test
     public void testMember() throws Exception {
         Member member1 = new Member("suzy", "qwertyuiop123456");
-        boolean saveResult = dao.saveUser(member1, UserType.MEMBER);
+        String saveResult = dao.saveUser(member1, UserType.MEMBER);
         logger.debug(saveResult);
 
         Member member2 = new Member("suzy", "qwertyuiop");
@@ -88,7 +88,7 @@ public class UserDaoImplTest {
         seatInfos.add(seat3);
 
         Spot spot1 = new Spot("重庆江北大剧院", "qwertyuiop", false, "重庆江北嘴", seatInfos);
-        boolean saveResult = dao.saveUser(spot1, UserType.SPOT);
+        String saveResult = dao.saveUser(spot1, UserType.SPOT);
         logger.debug(saveResult);
 
         SeatInfo seat2new = new SeatInfo(2, "二等座", 150);

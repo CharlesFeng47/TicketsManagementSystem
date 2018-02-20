@@ -40,24 +40,25 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public boolean saveUser(User user, UserType type) {
+    public String saveUser(User user, UserType type) {
         Session session = sessionFactory.openSession();
         Transaction tx = session.beginTransaction();
+        String userId;
 
         if (type == UserType.MEMBER) {
             Member toSave = (Member) user;
-            session.save(toSave);
+            userId = (String) session.save(toSave);
         } else if (type == UserType.SPOT) {
             Spot toSave = (Spot) user;
-            session.save(toSave);
+            userId = (String) session.save(toSave);
         } else {
             Manager toSave = (Manager) user;
-            session.save(toSave);
+            userId = (String) session.save(toSave);
         }
 
         tx.commit();
         session.close();
-        return true;
+        return userId;
     }
 
     @Override
