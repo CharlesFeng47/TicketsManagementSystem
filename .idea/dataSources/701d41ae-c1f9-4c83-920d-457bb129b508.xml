@@ -941,152 +941,239 @@
       <Collation>utf8_general_ci</Collation>
     </table>
     <table id="239" parent="15" name="manager">
-      <Engine>InnoDB</Engine>
-      <Collation>utf8_general_ci</Collation>
-    </table>
-    <table id="240" parent="15" name="member">
-      <Engine>InnoDB</Engine>
-      <Collation>utf8_general_ci</Collation>
-    </table>
-    <table id="241" parent="15" name="seat">
       <Engine>MyISAM</Engine>
     </table>
-    <table id="242" parent="15" name="spot">
-      <Engine>InnoDB</Engine>
-      <Collation>utf8_general_ci</Collation>
+    <table id="240" parent="15" name="member">
+      <Engine>MyISAM</Engine>
     </table>
-    <column id="243" parent="238" name="ali_id">
+    <table id="241" parent="15" name="schedule">
+      <Engine>MyISAM</Engine>
+    </table>
+    <table id="242" parent="15" name="schedule_seat_price">
+      <Engine>MyISAM</Engine>
+    </table>
+    <table id="243" parent="15" name="seat">
+      <Engine>MyISAM</Engine>
+    </table>
+    <table id="244" parent="15" name="spot">
+      <Engine>MyISAM</Engine>
+    </table>
+    <table id="245" parent="15" name="spot_seat">
+      <Engine>MyISAM</Engine>
+    </table>
+    <column id="246" parent="238" name="ali_id">
       <Position>1</Position>
       <DataType>varchar(255)|0</DataType>
       <NotNull>1</NotNull>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="244" parent="238" name="balance">
+    <column id="247" parent="238" name="balance">
       <Position>2</Position>
       <DataType>double|0</DataType>
       <NotNull>1</NotNull>
       <DefaultExpression>&apos;0&apos;</DefaultExpression>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="245" parent="238" name="mid">
+    <column id="248" parent="238" name="mid">
       <Position>3</Position>
       <DataType>varchar(255)|0</DataType>
       <NotNull>1</NotNull>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <key id="246" parent="238" name="PRIMARY">
+    <key id="249" parent="238" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>ali_id</ColNames>
       <Primary>1</Primary>
     </key>
-    <column id="247" parent="239" name="id">
+    <column id="250" parent="239" name="id">
       <Position>1</Position>
       <DataType>varchar(255)|0</DataType>
       <NotNull>1</NotNull>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="248" parent="239" name="pwd">
+    <column id="251" parent="239" name="pwd">
       <Position>2</Position>
       <DataType>varchar(255)|0</DataType>
       <NotNull>1</NotNull>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <key id="249" parent="239" name="PRIMARY">
+    <key id="252" parent="239" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>id</ColNames>
       <Primary>1</Primary>
     </key>
-    <column id="250" parent="240" name="id">
+    <column id="253" parent="240" name="id">
       <Position>1</Position>
       <DataType>varchar(255)|0</DataType>
       <NotNull>1</NotNull>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="251" parent="240" name="pwd">
+    <column id="254" parent="240" name="pwd">
       <Position>2</Position>
       <DataType>varchar(255)|0</DataType>
       <NotNull>1</NotNull>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="252" parent="240" name="level">
+    <column id="255" parent="240" name="activated">
       <Position>3</Position>
-      <DataType>int(11)|0</DataType>
+      <DataType>tinyint(1)|0</DataType>
       <NotNull>1</NotNull>
-      <DefaultExpression>&apos;1&apos;</DefaultExpression>
+      <DefaultExpression>&apos;0&apos;</DefaultExpression>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="253" parent="240" name="activated">
+    <column id="256" parent="240" name="invalidated">
       <Position>4</Position>
       <DataType>tinyint(1)|0</DataType>
       <NotNull>1</NotNull>
       <DefaultExpression>&apos;0&apos;</DefaultExpression>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="254" parent="240" name="invalidated">
+    <column id="257" parent="240" name="level">
       <Position>5</Position>
-      <DataType>tinyint(1)|0</DataType>
-      <NotNull>1</NotNull>
-      <DefaultExpression>&apos;0&apos;</DefaultExpression>
-      <ColumnKind>normal</ColumnKind>
-    </column>
-    <key id="255" parent="240" name="PRIMARY">
-      <NameSurrogate>1</NameSurrogate>
-      <ColNames>id</ColNames>
-      <Primary>1</Primary>
-    </key>
-    <column id="256" parent="241" name="id">
-      <Position>1</Position>
-      <DataType>int(11)|0</DataType>
-      <NotNull>1</NotNull>
-      <SequenceIdentity>1</SequenceIdentity>
-      <ColumnKind>normal</ColumnKind>
-    </column>
-    <column id="257" parent="241" name="seat_name">
-      <Position>2</Position>
-      <DataType>varchar(255)|0</DataType>
-      <ColumnKind>normal</ColumnKind>
-    </column>
-    <column id="258" parent="241" name="seat_num">
-      <Position>3</Position>
       <DataType>int(11)|0</DataType>
       <NotNull>1</NotNull>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <key id="259" parent="241" name="PRIMARY">
+    <key id="258" parent="240" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>id</ColNames>
       <Primary>1</Primary>
     </key>
-    <column id="260" parent="242" name="id">
+    <column id="259" parent="241" name="id">
       <Position>1</Position>
-      <DataType>int(7)|0</DataType>
+      <DataType>int(11)|0</DataType>
       <NotNull>1</NotNull>
-      <SequenceIdentity>1</SequenceIdentity>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="261" parent="242" name="pwd">
+    <column id="260" parent="241" name="description">
       <Position>2</Position>
       <DataType>varchar(255)|0</DataType>
       <NotNull>1</NotNull>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="262" parent="242" name="site">
+    <column id="261" parent="241" name="start_time">
       <Position>3</Position>
-      <DataType>varchar(255)|0</DataType>
+      <DataType>datetime|0</DataType>
       <NotNull>1</NotNull>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="263" parent="242" name="examined">
+    <column id="262" parent="241" name="type">
       <Position>4</Position>
+      <DataType>int(11)|0</DataType>
+      <NotNull>1</NotNull>
+      <ColumnKind>normal</ColumnKind>
+    </column>
+    <key id="263" parent="241" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>id</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <column id="264" parent="242" name="schedule_id">
+      <Position>1</Position>
+      <DataType>int(11)|0</DataType>
+      <NotNull>1</NotNull>
+      <ColumnKind>normal</ColumnKind>
+    </column>
+    <column id="265" parent="242" name="price">
+      <Position>2</Position>
+      <DataType>double|0</DataType>
+      <NotNull>1</NotNull>
+      <ColumnKind>normal</ColumnKind>
+    </column>
+    <column id="266" parent="242" name="seatPrices_KEY">
+      <Position>3</Position>
+      <DataType>int(11)|0</DataType>
+      <NotNull>1</NotNull>
+      <ColumnKind>normal</ColumnKind>
+    </column>
+    <index id="267" parent="242" name="FKmtot4x3c07k1r8n4hcfuoa963">
+      <ColNames>seatPrices_KEY</ColNames>
+    </index>
+    <key id="268" parent="242" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>schedule_id
+seatPrices_KEY</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <column id="269" parent="243" name="id">
+      <Position>1</Position>
+      <DataType>int(255)|0</DataType>
+      <NotNull>1</NotNull>
+      <SequenceIdentity>1</SequenceIdentity>
+      <ColumnKind>normal</ColumnKind>
+    </column>
+    <column id="270" parent="243" name="seat_num">
+      <Position>2</Position>
+      <DataType>int(11)|0</DataType>
+      <NotNull>1</NotNull>
+      <ColumnKind>normal</ColumnKind>
+    </column>
+    <column id="271" parent="243" name="seat_name">
+      <Position>3</Position>
+      <DataType>varchar(255)|0</DataType>
+      <NotNull>1</NotNull>
+      <ColumnKind>normal</ColumnKind>
+    </column>
+    <key id="272" parent="243" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>id</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <column id="273" parent="244" name="id">
+      <Position>1</Position>
+      <DataType>varchar(255)|0</DataType>
+      <NotNull>1</NotNull>
+      <ColumnKind>normal</ColumnKind>
+    </column>
+    <column id="274" parent="244" name="pwd">
+      <Position>2</Position>
+      <DataType>varchar(255)|0</DataType>
+      <NotNull>1</NotNull>
+      <ColumnKind>normal</ColumnKind>
+    </column>
+    <column id="275" parent="244" name="examined">
+      <Position>3</Position>
       <DataType>tinyint(1)|0</DataType>
       <NotNull>1</NotNull>
       <DefaultExpression>&apos;0&apos;</DefaultExpression>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <key id="264" parent="242" name="PRIMARY">
+    <column id="276" parent="244" name="site">
+      <Position>4</Position>
+      <DataType>varchar(255)|0</DataType>
+      <NotNull>1</NotNull>
+      <ColumnKind>normal</ColumnKind>
+    </column>
+    <key id="277" parent="244" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>id</ColNames>
       <Primary>1</Primary>
+    </key>
+    <column id="278" parent="245" name="Spot_id">
+      <Position>1</Position>
+      <DataType>varchar(255)|0</DataType>
+      <NotNull>1</NotNull>
+      <ColumnKind>normal</ColumnKind>
+    </column>
+    <column id="279" parent="245" name="seatInfos_id">
+      <Position>2</Position>
+      <DataType>int(11)|0</DataType>
+      <NotNull>1</NotNull>
+      <ColumnKind>normal</ColumnKind>
+    </column>
+    <index id="280" parent="245" name="UK_jmo7kry2e399umku7w98ureds">
+      <ColNames>seatInfos_id</ColNames>
+      <Unique>1</Unique>
+    </index>
+    <key id="281" parent="245" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>Spot_id
+seatInfos_id</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <key id="282" parent="245" name="UK_jmo7kry2e399umku7w98ureds">
+      <ColNames>seatInfos_id</ColNames>
+      <UnderlyingIndexName>UK_jmo7kry2e399umku7w98ureds</UnderlyingIndexName>
     </key>
   </database-model>
 </dataSource>

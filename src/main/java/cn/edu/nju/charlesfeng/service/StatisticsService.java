@@ -12,7 +12,7 @@ public interface StatisticsService {
      * @param oid 要查看的会员
      * @return 会员本人的统计信息（预定、退订、消费等）
      */
-    MemberStatistics checkMyMemberStatisitics(String oid);
+    MemberStatistics checkMyMemberStatistics(String oid);
 
     /**
      * @param sid 要查看的场馆ID

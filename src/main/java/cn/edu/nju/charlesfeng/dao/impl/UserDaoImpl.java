@@ -43,19 +43,7 @@ public class UserDaoImpl implements UserDao {
     public String saveUser(User user, UserType type) {
         Session session = sessionFactory.openSession();
         Transaction tx = session.beginTransaction();
-        String userId;
-
-        if (type == UserType.MEMBER) {
-            Member toSave = (Member) user;
-            userId = (String) session.save(toSave);
-        } else if (type == UserType.SPOT) {
-            Spot toSave = (Spot) user;
-            userId = (String) session.save(toSave);
-        } else {
-            Manager toSave = (Manager) user;
-            userId = (String) session.save(toSave);
-        }
-
+        String userId = (String) session.save(user);
         tx.commit();
         session.close();
         return userId;
@@ -65,18 +53,7 @@ public class UserDaoImpl implements UserDao {
     public boolean updateUser(User user, UserType type) {
         Session session = sessionFactory.openSession();
         Transaction tx = session.beginTransaction();
-
-        if (type == UserType.MEMBER) {
-            Member toSave = (Member) user;
-            session.update(toSave);
-        } else if (type == UserType.SPOT) {
-            Spot toSave = (Spot) user;
-            session.update(toSave);
-        } else {
-            Manager toSave = (Manager) user;
-            session.update(toSave);
-        }
-
+        session.update(user);
         tx.commit();
         session.close();
         return true;
