@@ -33,14 +33,21 @@ public class Spot extends User implements Serializable {
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<SeatInfo> seatInfos;
 
+    /**
+     * 此场馆中座位的具体情况 json 串
+     */
+    @Column(name = "all_seats_json")
+    private String allSeatsJson;
+
     public Spot() {
     }
 
-    public Spot(String id, String pwd, boolean examined, String site, Set<SeatInfo> seatInfos) {
+    public Spot(String id, String pwd, boolean examined, String site, Set<SeatInfo> seatInfos, String allSeatsJson) {
         super(id, pwd);
         this.examined = examined;
         this.site = site;
         this.seatInfos = seatInfos;
+        this.allSeatsJson = allSeatsJson;
     }
 
     @Override
@@ -50,6 +57,7 @@ public class Spot extends User implements Serializable {
         for (SeatInfo seatInfo : seatInfos) {
             builder.append(seatInfo.toString()).append(" ");
         }
+        builder.append(allSeatsJson);
         return builder.toString();
     }
 
@@ -75,5 +83,13 @@ public class Spot extends User implements Serializable {
 
     public void setSeatInfos(Set<SeatInfo> seatInfos) {
         this.seatInfos = seatInfos;
+    }
+
+    public String getAllSeatsJson() {
+        return allSeatsJson;
+    }
+
+    public void setAllSeatsJson(String allSeatsJson) {
+        this.allSeatsJson = allSeatsJson;
     }
 }

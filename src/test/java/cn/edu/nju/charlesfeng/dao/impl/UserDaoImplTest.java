@@ -5,9 +5,11 @@ import cn.edu.nju.charlesfeng.entity.Manager;
 import cn.edu.nju.charlesfeng.entity.Member;
 import cn.edu.nju.charlesfeng.entity.SeatInfo;
 import cn.edu.nju.charlesfeng.entity.Spot;
+import cn.edu.nju.charlesfeng.model.Seat;
 import cn.edu.nju.charlesfeng.util.enums.UserType;
 import cn.edu.nju.charlesfeng.util.exceptions.UserNotExistException;
 import cn.edu.nju.charlesfeng.util.testUtil.DaoTestHelper;
+import com.alibaba.fastjson.JSON;
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
@@ -100,14 +102,23 @@ public class UserDaoImplTest {
         seatInfos.add(seat2);
         seatInfos.add(seat3);
 
-        Spot spot1 = new Spot("重庆江北大剧院", "qwertyuiop", false, "重庆江北嘴", seatInfos);
+        Set<Seat> allSeats = new HashSet<>();
+        allSeats.add(new Seat(1, 1));
+        allSeats.add(new Seat(1, 2));
+        allSeats.add(new Seat(1, 3));
+        allSeats.add(new Seat(2, 1));
+        allSeats.add(new Seat(2, 2));
+        allSeats.add(new Seat(2, 3));
+        String allSeatsJson = JSON.toJSONString(allSeats);
+
+        Spot spot1 = new Spot("重庆江北大剧院", "qwertyuiop", false, "重庆江北嘴", seatInfos, allSeatsJson);
         String saveResult = dao.saveUser(spot1, UserType.SPOT);
         logger.debug(saveResult);
 
         SeatInfo seat2new = new SeatInfo(2, "二等座", 150);
         seatInfos.remove(seat2);
         seatInfos.add(seat2new);
-        Spot spot2 = new Spot("重庆江北大剧院", "qwertyuiop", false, "重庆江北嘴", seatInfos);
+        Spot spot2 = new Spot("重庆江北大剧院", "qwertyuiop", false, "重庆江北嘴", seatInfos, allSeatsJson);
         boolean updateResult = dao.updateUser(spot2, UserType.SPOT);
         logger.debug(updateResult);
 

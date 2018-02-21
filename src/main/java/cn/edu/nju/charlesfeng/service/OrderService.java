@@ -11,7 +11,7 @@ public interface OrderService {
      * @param oid 要查看的订单ID
      * @return 订单详情
      */
-    Order checkOrderDetail(String oid);
+    Order checkOrderDetail(int oid);
 
     /**
      * TODO 参数未定

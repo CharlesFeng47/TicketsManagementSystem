@@ -4,11 +4,13 @@ import cn.edu.nju.charlesfeng.dao.UserDao;
 import cn.edu.nju.charlesfeng.entity.Member;
 import cn.edu.nju.charlesfeng.entity.SeatInfo;
 import cn.edu.nju.charlesfeng.entity.Spot;
+import cn.edu.nju.charlesfeng.model.Seat;
 import cn.edu.nju.charlesfeng.model.User;
 import cn.edu.nju.charlesfeng.service.LogInService;
 import cn.edu.nju.charlesfeng.util.enums.UserType;
 import cn.edu.nju.charlesfeng.util.exceptions.UserNotExistException;
 import cn.edu.nju.charlesfeng.util.exceptions.WrongPwdException;
+import com.alibaba.fastjson.JSON;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,8 +34,8 @@ public class LogInServiceImpl implements LogInService {
     }
 
     @Override
-    public Spot registerSpot(String id, String pwd, String site, Set<SeatInfo> seatInfos) throws UserNotExistException {
-        Spot newSpot = new Spot(id, pwd, false, site, seatInfos);
+    public Spot registerSpot(String id, String pwd, String site, Set<SeatInfo> seatInfos, Set<Seat> seats) throws UserNotExistException {
+        Spot newSpot = new Spot(id, pwd, false, site, seatInfos, JSON.toJSONString(seats));
         dao.saveUser(newSpot, UserType.SPOT);
         return (Spot) dao.getUser(id, UserType.SPOT);
     }

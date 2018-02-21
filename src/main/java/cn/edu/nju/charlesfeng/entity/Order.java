@@ -42,8 +42,8 @@ public class Order {
     /**
      * 此订单中包含的座位具体情况 json 串
      */
-    @Column(name = "seats_json")
-    private String seatsJson;
+    @Column(name = "ordered_seats_json")
+    private String orderedSeatsJson;
 
     /**
      * 已经支付
@@ -92,12 +92,12 @@ public class Order {
         this.totalPrice = totalPrice;
     }
 
-    public String getSeatsJson() {
-        return seatsJson;
+    public String getOrderedSeatsJson() {
+        return orderedSeatsJson;
     }
 
-    public void setSeatsJson(String seatsJson) {
-        this.seatsJson = seatsJson;
+    public void setOrderedSeatsJson(String orderedSeatsJson) {
+        this.orderedSeatsJson = orderedSeatsJson;
     }
 
     public boolean isHasPayed() {
