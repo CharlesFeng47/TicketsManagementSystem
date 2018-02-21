@@ -1,50 +1,33 @@
 package cn.edu.nju.charlesfeng.dao.impl;
 
+import cn.edu.nju.charlesfeng.dao.BaseDao;
 import cn.edu.nju.charlesfeng.dao.OrderDao;
 import cn.edu.nju.charlesfeng.entity.Order;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public class OrderDaoImpl implements OrderDao {
 
-    private final SessionFactory sessionFactory;
+    private final BaseDao baseDao;
 
     @Autowired
-    public OrderDaoImpl(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
+    public OrderDaoImpl(BaseDao baseDao) {
+        this.baseDao = baseDao;
     }
 
     @Override
     public Order getOrder(int id) {
-        Session session = sessionFactory.openSession();
-        Transaction tx = session.beginTransaction();
-        Order result = session.find(Order.class, id);
-        tx.commit();
-        session.close();
-        return result;
+        return (Order) baseDao.get(Order.class, id);
     }
 
     @Override
     public int saveOrder(Order order) {
-        Session session = sessionFactory.openSession();
-        Transaction tx = session.beginTransaction();
-        int oid = (int) session.save(order);
-        tx.commit();
-        session.close();
-        return oid;
+        return (int) baseDao.save(order);
     }
 
     @Override
     public boolean updateOrder(Order order) {
-        Session session = sessionFactory.openSession();
-        Transaction tx = session.beginTransaction();
-        session.update(order);
-        tx.commit();
-        session.close();
-        return true;
+        return baseDao.update(order);
     }
 }

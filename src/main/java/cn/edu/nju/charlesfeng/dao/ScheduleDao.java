@@ -26,8 +26,8 @@ public interface ScheduleDao {
     boolean updateSchedule(Schedule schedule);
 
     /**
-     * @param schedule 欲删除的日程计划实体
+     * @param scheduleId 欲删除的日程计划实体ID
      * @return 删除结果，成功则true
      */
-    boolean deleteSchedule(Schedule schedule);
+    boolean deleteSchedule(int scheduleId);
 }

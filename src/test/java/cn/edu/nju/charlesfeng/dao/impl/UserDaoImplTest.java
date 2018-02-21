@@ -6,6 +6,7 @@ import cn.edu.nju.charlesfeng.entity.Member;
 import cn.edu.nju.charlesfeng.entity.SeatInfo;
 import cn.edu.nju.charlesfeng.entity.Spot;
 import cn.edu.nju.charlesfeng.util.enums.UserType;
+import cn.edu.nju.charlesfeng.util.exceptions.UserNotExistException;
 import cn.edu.nju.charlesfeng.util.testUtil.DaoTestHelper;
 import org.apache.log4j.Logger;
 import org.junit.After;
@@ -35,6 +36,18 @@ public class UserDaoImplTest {
 
     @After
     public void after() throws Exception {
+    }
+
+    @Test
+    public void testGetMember1() throws Exception {
+        Member member = (Member) dao.getUser("suzy", UserType.MEMBER);
+        logger.debug(member);
+    }
+
+    @Test(expected = UserNotExistException.class)
+    public void testGetMember2() throws Exception {
+        Member member = (Member) dao.getUser("daisy", UserType.MEMBER);
+        logger.debug(member);
     }
 
     @Test

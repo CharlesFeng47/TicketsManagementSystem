@@ -1,60 +1,38 @@
 package cn.edu.nju.charlesfeng.dao.impl;
 
+import cn.edu.nju.charlesfeng.dao.BaseDao;
 import cn.edu.nju.charlesfeng.dao.ScheduleDao;
 import cn.edu.nju.charlesfeng.entity.Schedule;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public class ScheduleDaoImpl implements ScheduleDao {
 
-    private final SessionFactory sessionFactory;
+    private final BaseDao baseDao;
 
     @Autowired
-    public ScheduleDaoImpl(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
+    public ScheduleDaoImpl(BaseDao baseDao) {
+        this.baseDao = baseDao;
     }
 
     @Override
     public Schedule getSchedule(int scheduleId) {
-        Session session = sessionFactory.openSession();
-        Transaction tx = session.beginTransaction();
-        Schedule result = session.find(Schedule.class, scheduleId);
-        tx.commit();
-        session.close();
-        return result;
+        return (Schedule) baseDao.get(Schedule.class, scheduleId);
     }
 
     @Override
     public int saveSchedule(Schedule schedule) {
-        Session session = sessionFactory.openSession();
-        Transaction tx = session.beginTransaction();
-        int scheduleId = (int) session.save(schedule);
-        tx.commit();
-        session.close();
-        return scheduleId;
+        return (int) baseDao.save(schedule);
     }
 
     @Override
     public boolean updateSchedule(Schedule schedule) {
-        Session session = sessionFactory.openSession();
-        Transaction tx = session.beginTransaction();
-        session.update(schedule);
-        tx.commit();
-        session.close();
-        return true;
+        return baseDao.update(schedule);
     }
 
     @Override
-    public boolean deleteSchedule(Schedule schedule) {
-        Session session = sessionFactory.openSession();
-        Transaction tx = session.beginTransaction();
-        session.delete(schedule);
-        tx.commit();
-        session.close();
-        return true;
+    public boolean deleteSchedule(int scheduleId) {
+        return baseDao.delete(Schedule.class, scheduleId);
     }
 }

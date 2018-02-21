@@ -1,5 +1,6 @@
 package cn.edu.nju.charlesfeng.dao.impl;
 
+import cn.edu.nju.charlesfeng.dao.ScheduleDao;
 import cn.edu.nju.charlesfeng.dao.UserDao;
 import cn.edu.nju.charlesfeng.entity.Schedule;
 import cn.edu.nju.charlesfeng.entity.SeatInfo;
@@ -16,8 +17,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import static cn.edu.nju.charlesfeng.util.testUtil.DaoTestHelper.scheduleDao;
-
 /**
  * ScheduleDaoImpl Tester.
  *
@@ -27,10 +26,12 @@ import static cn.edu.nju.charlesfeng.util.testUtil.DaoTestHelper.scheduleDao;
  */
 public class ScheduleDaoImplTest {
 
+    private ScheduleDao scheduleDao;
     private UserDao userDao;
 
     @Before
     public void before() throws Exception {
+        scheduleDao = DaoTestHelper.scheduleDao;
         userDao = DaoTestHelper.userDao;
     }
 
@@ -43,7 +44,7 @@ public class ScheduleDaoImplTest {
      */
     @Test
     public void testGetSchedule() throws Exception {
-//TODO: Test goes here... 
+        Schedule schedule = scheduleDao.getSchedule(0);
     }
 
     /**
@@ -90,9 +91,8 @@ public class ScheduleDaoImplTest {
      */
     @Test
     public void testDeleteSchedule() throws Exception {
-        Schedule schedule = scheduleDao.getSchedule(0);
-        scheduleDao.deleteSchedule(schedule);
+        scheduleDao.deleteSchedule(0);
     }
 
 
-} 
+}
