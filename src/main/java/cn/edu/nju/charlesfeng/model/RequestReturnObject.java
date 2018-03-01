@@ -1,6 +1,7 @@
 package cn.edu.nju.charlesfeng.model;
 
 import cn.edu.nju.charlesfeng.util.enums.RequestReturnObjectState;
+import com.alibaba.fastjson.JSON;
 
 /**
  * 在 RESTful 风格下，后端系统为服务提供返回对象封装
@@ -13,13 +14,14 @@ public class RequestReturnObject {
     private RequestReturnObjectState state;
 
     /**
-     * 状态则为此次请求返回的结果对象
+     * 状态则为此次请求返回的结果对象的JSON字符串
      */
-    private Object object;
+    private String object;
 
     public RequestReturnObject(RequestReturnObjectState state, Object object) {
         this.state = state;
-        this.object = object;
+        this.object = JSON.toJSONString(object);
+        System.out.println("已转化为：" + this.object);
     }
 
     /**
@@ -35,7 +37,15 @@ public class RequestReturnObject {
         return state;
     }
 
-    public Object getObject() {
+    public void setState(RequestReturnObjectState state) {
+        this.state = state;
+    }
+
+    public String getObject() {
         return object;
+    }
+
+    public void setObject(String object) {
+        this.object = object;
     }
 }

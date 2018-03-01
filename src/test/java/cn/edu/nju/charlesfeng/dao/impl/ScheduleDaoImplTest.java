@@ -46,7 +46,10 @@ public class ScheduleDaoImplTest {
     @Test
     public void testGetSchedule() throws Exception {
         Schedule schedule = scheduleDao.getSchedule(0);
-        System.out.println(JSON.toJSONString(schedule));
+        String json = JSON.toJSONString(schedule);
+        System.out.println(json);
+        Schedule another = JSON.parseObject(json, Schedule.class);
+        System.out.println(another.getId());
     }
 
     /**

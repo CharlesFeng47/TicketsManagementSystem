@@ -1,9 +1,9 @@
 package cn.edu.nju.charlesfeng.controller;
 
+import cn.edu.nju.charlesfeng.model.ContentUser;
 import cn.edu.nju.charlesfeng.model.RequestReturnObject;
 import cn.edu.nju.charlesfeng.model.User;
 import cn.edu.nju.charlesfeng.service.LogInService;
-import cn.edu.nju.charlesfeng.service.UserService;
 import cn.edu.nju.charlesfeng.util.enums.RequestReturnObjectState;
 import cn.edu.nju.charlesfeng.util.enums.UserType;
 import cn.edu.nju.charlesfeng.util.exceptions.UserNotExistException;
@@ -29,11 +29,8 @@ public class LogInController {
 
     private final LogInService logInService;
 
-    private final UserService userService;
-
     @Autowired
-    public LogInController(UserService userService, LogInService logInService) {
-        this.userService = userService;
+    public LogInController(LogInService logInService) {
         this.logInService = logInService;
     }
 
@@ -67,11 +64,13 @@ public class LogInController {
      */
     @PostMapping("info")
     public RequestReturnObject getToken(@RequestParam("token") String token, HttpServletRequest request) {
-        logger.debug("INTO /login/info");
-        System.out.println(token);
+        logger.debug("INTO /login/info: " + token);
         HttpSession session = request.getSession();
         User curUser = (User) session.getAttribute(token);
-        return new RequestReturnObject(RequestReturnObjectState.OK, curUser);
+
+        UserType curUserType = UserType.valueOf(token.split(":")[0]);
+        ContentUser contentUser = new ContentUser(curUser, curUserType);
+        return new RequestReturnObject(RequestReturnObjectState.OK, contentUser);
     }
 
     /**
