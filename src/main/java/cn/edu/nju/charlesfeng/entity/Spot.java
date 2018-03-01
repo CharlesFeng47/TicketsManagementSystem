@@ -65,17 +65,6 @@ public class Spot extends User implements Serializable {
         this.allSeatsJson = allSeatsJson;
     }
 
-    @Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append(super.toString()).append("Spot: examined-").append(examined).append(" ").append(site).append("\n");
-        for (SeatInfo seatInfo : seatInfos) {
-            builder.append(seatInfo.toString()).append(" ");
-        }
-        builder.append(allSeatsJson);
-        return builder.toString();
-    }
-
     public String getSpotName() {
         return spotName;
     }

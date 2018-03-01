@@ -30,11 +30,6 @@ public abstract class User {
     protected User() {
     }
 
-    @Override
-    public String toString() {
-        return id + " " + pwd;
-    }
-
     public String getId() {
         return id;
     }

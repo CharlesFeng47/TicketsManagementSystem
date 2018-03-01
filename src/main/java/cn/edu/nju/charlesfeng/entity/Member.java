@@ -56,11 +56,6 @@ public class Member extends User implements Serializable {
     public Member() {
     }
 
-    @Override
-    public String toString() {
-        return super.toString() + " " + email + " " + level + " " + activated + " " + invalidated;
-    }
-
     public int getEmail() {
         return email;
     }

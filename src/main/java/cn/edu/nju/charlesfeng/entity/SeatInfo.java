@@ -39,11 +39,6 @@ public class SeatInfo {
         this.num = num;
     }
 
-    @Override
-    public String toString() {
-        return seatName + ": " + num;
-    }
-
     public int getId() {
         return id;
     }
