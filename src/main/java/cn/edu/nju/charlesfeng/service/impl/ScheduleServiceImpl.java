@@ -17,6 +17,11 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
+    public Schedule getOneSchedule(int sid) {
+        return scheduleDao.getSchedule(sid);
+    }
+
+    @Override
     public Schedule publishSchedule(Schedule schedule) {
         int scheduleId = scheduleDao.saveSchedule(schedule);
         schedule.setId(scheduleId);

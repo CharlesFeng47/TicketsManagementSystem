@@ -14,11 +14,16 @@ import java.util.Set;
 public class Spot extends User implements Serializable {
 
     /**
+     * 此场馆的名字
+     */
+    @Column(name = "spot_name", nullable = false)
+    private String spotName;
+
+    /**
      * 被审批过的
      * 注册申请/修改场馆信息均需被审批
      */
     @Column(name = "examined", nullable = false)
-
     private boolean examined;
 
     /**
@@ -42,8 +47,18 @@ public class Spot extends User implements Serializable {
     public Spot() {
     }
 
-    public Spot(String id, String pwd, boolean examined, String site, Set<SeatInfo> seatInfos, String allSeatsJson) {
+    public Spot(String pwd, String spotName, boolean examined, String site, Set<SeatInfo> seatInfos, String allSeatsJson) {
+        super.setPwd(pwd);
+        this.spotName = spotName;
+        this.examined = examined;
+        this.site = site;
+        this.seatInfos = seatInfos;
+        this.allSeatsJson = allSeatsJson;
+    }
+
+    public Spot(String id, String pwd, String spotName, boolean examined, String site, Set<SeatInfo> seatInfos, String allSeatsJson) {
         super(id, pwd);
+        this.spotName = spotName;
         this.examined = examined;
         this.site = site;
         this.seatInfos = seatInfos;
@@ -59,6 +74,14 @@ public class Spot extends User implements Serializable {
         }
         builder.append(allSeatsJson);
         return builder.toString();
+    }
+
+    public String getSpotName() {
+        return spotName;
+    }
+
+    public void setSpotName(String spotName) {
+        this.spotName = spotName;
     }
 
     public boolean isExamined() {

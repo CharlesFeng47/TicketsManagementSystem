@@ -44,7 +44,7 @@ public class CorsFilter implements Filter {
     public void init(FilterConfig filterConfig) {
         logger.debug("Init Cors filter");
 
-        String allowOriginString = "http://localhost:8080";
+        String allowOriginString = "http://localhost:8080,http://localhost:9528";
         allowOrigin = Arrays.asList(allowOriginString.split(","));
         allowMethods = "GET,POST,PUT,DELETE,OPTIONS";
 

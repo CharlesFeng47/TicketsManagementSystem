@@ -8,6 +8,7 @@ import cn.edu.nju.charlesfeng.entity.Spot;
 import cn.edu.nju.charlesfeng.util.enums.ScheduleItemType;
 import cn.edu.nju.charlesfeng.util.enums.UserType;
 import cn.edu.nju.charlesfeng.util.testUtil.DaoTestHelper;
+import com.alibaba.fastjson.JSON;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,6 +46,7 @@ public class ScheduleDaoImplTest {
     @Test
     public void testGetSchedule() throws Exception {
         Schedule schedule = scheduleDao.getSchedule(0);
+        System.out.println(JSON.toJSONString(schedule));
     }
 
     /**
@@ -54,7 +56,7 @@ public class ScheduleDaoImplTest {
     public void testSaveSchedule() throws Exception {
         Map<SeatInfo, Double> seatPrices = new HashMap<>();
 
-        Spot spot = (Spot) userDao.getUser("重庆江北大剧院", UserType.SPOT);
+        Spot spot = (Spot) userDao.getUser("0000001", UserType.SPOT);
         Set<SeatInfo> seats = spot.getSeatInfos();
         int i = 1;
         for (SeatInfo seat : seats) {
@@ -62,7 +64,7 @@ public class ScheduleDaoImplTest {
             i++;
         }
 
-        Schedule schedule = new Schedule(LocalDateTime.now(), ScheduleItemType.CONCERT, seatPrices, "测试用日程");
+        Schedule schedule = new Schedule("测试用日程名字", "0", LocalDateTime.now(), ScheduleItemType.CONCERT, seatPrices, "测试用日程描述");
         scheduleDao.saveSchedule(schedule);
     }
 
@@ -73,7 +75,7 @@ public class ScheduleDaoImplTest {
     public void testUpdateSchedule() throws Exception {
         Map<SeatInfo, Double> seatPrices = new HashMap<>();
 
-        Spot spot = (Spot) userDao.getUser("重庆江北大剧院", UserType.SPOT);
+        Spot spot = (Spot) userDao.getUser("0000001", UserType.SPOT);
         Set<SeatInfo> seats = spot.getSeatInfos();
         int i = 1;
         for (SeatInfo seat : seats) {
@@ -82,7 +84,7 @@ public class ScheduleDaoImplTest {
             i++;
         }
 
-        Schedule schedule = new Schedule(LocalDateTime.now(), ScheduleItemType.CONCERT, seatPrices, "测试用日程");
+        Schedule schedule = new Schedule("测试用日程名字update", "0", LocalDateTime.now(), ScheduleItemType.CONCERT, seatPrices, "测试用日程");
         scheduleDao.updateSchedule(schedule);
     }
 

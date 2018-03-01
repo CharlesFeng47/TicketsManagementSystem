@@ -15,6 +15,12 @@ import java.io.Serializable;
 public class Member extends User implements Serializable {
 
     /**
+     * 会员邮箱
+     */
+    @Column(name = "email", nullable = false)
+    private int email;
+
+    /**
      * 会员等级
      */
     @Column(name = "level", nullable = false)
@@ -32,8 +38,9 @@ public class Member extends User implements Serializable {
     @Column(name = "invalidated", nullable = false)
     private boolean invalidated;
 
-    public Member(String id, String pwd, int level, boolean activated, boolean invalidated) {
+    public Member(String id, String pwd, int email, int level, boolean activated, boolean invalidated) {
         super(id, pwd);
+        this.email = email;
         this.level = level;
         this.activated = activated;
         this.invalidated = invalidated;
@@ -51,7 +58,15 @@ public class Member extends User implements Serializable {
 
     @Override
     public String toString() {
-        return super.toString() + " " + level + " " + activated + " " + invalidated;
+        return super.toString() + " " + email + " " + level + " " + activated + " " + invalidated;
+    }
+
+    public int getEmail() {
+        return email;
+    }
+
+    public void setEmail(int email) {
+        this.email = email;
     }
 
     public int getLevel() {

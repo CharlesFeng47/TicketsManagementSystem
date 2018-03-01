@@ -21,6 +21,18 @@ public class Schedule implements Serializable {
     private int id;
 
     /**
+     * 此活动的名字
+     */
+    @Column(name = "name", nullable = false)
+    private String name;
+
+    /**
+     * 此活动的举行地点ID
+     */
+    @Column(name = "spot_id", nullable = false)
+    private String spotId;
+
+    /**
      * 此活动开始的时间
      */
     @Column(name = "start_time", nullable = false)
@@ -49,7 +61,6 @@ public class Schedule implements Serializable {
 
     /**
      * 此活动的简单描述
-     * TODO 数据库类型改为text
      */
     @Column(name = "description", nullable = false)
     private String description;
@@ -57,7 +68,9 @@ public class Schedule implements Serializable {
     public Schedule() {
     }
 
-    public Schedule(LocalDateTime startDateTime, ScheduleItemType type, Map<SeatInfo, Double> seatPrices, String description) {
+    public Schedule(String name, String spotId, LocalDateTime startDateTime, ScheduleItemType type, Map<SeatInfo, Double> seatPrices, String description) {
+        this.name = name;
+        this.spotId = spotId;
         this.startDateTime = startDateTime;
         this.type = type;
         this.seatPrices = seatPrices;
@@ -70,6 +83,22 @@ public class Schedule implements Serializable {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getSpotId() {
+        return spotId;
+    }
+
+    public void setSpotId(String spotId) {
+        this.spotId = spotId;
     }
 
     public LocalDateTime getStartDateTime() {

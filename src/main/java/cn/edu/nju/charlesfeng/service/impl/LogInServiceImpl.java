@@ -33,11 +33,12 @@ public class LogInServiceImpl implements LogInService {
         return (Member) dao.getUser(id, UserType.MEMBER);
     }
 
+    // TODO 生成id
     @Override
-    public Spot registerSpot(String id, String pwd, String site, Set<SeatInfo> seatInfos, Set<Seat> seats) throws UserNotExistException {
-        Spot newSpot = new Spot(id, pwd, false, site, seatInfos, JSON.toJSONString(seats));
-        dao.saveUser(newSpot, UserType.SPOT);
-        return (Spot) dao.getUser(id, UserType.SPOT);
+    public Spot registerSpot(String pwd, String spotName, String site, Set<SeatInfo> seatInfos, Set<Seat> seats) throws UserNotExistException {
+        Spot newSpot = new Spot(pwd, spotName, false, site, seatInfos, JSON.toJSONString(seats));
+        String curSpotId = dao.saveUser(newSpot, UserType.SPOT);
+        return (Spot) dao.getUser(curSpotId, UserType.SPOT);
     }
 
     @Override
