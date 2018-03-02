@@ -6,6 +6,7 @@ import cn.edu.nju.charlesfeng.entity.Member;
 import cn.edu.nju.charlesfeng.entity.SeatInfo;
 import cn.edu.nju.charlesfeng.entity.Spot;
 import cn.edu.nju.charlesfeng.model.Seat;
+import cn.edu.nju.charlesfeng.model.User;
 import cn.edu.nju.charlesfeng.util.enums.UserType;
 import cn.edu.nju.charlesfeng.util.exceptions.UserNotExistException;
 import cn.edu.nju.charlesfeng.util.testUtil.DaoTestHelper;
@@ -16,6 +17,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -124,6 +126,24 @@ public class UserDaoImplTest {
 
         Spot resultSpot = (Spot) dao.getUser("0000001", UserType.SPOT);
         logger.debug(resultSpot);
+    }
+
+    @Test
+    public void testGetAllUser() throws UserNotExistException {
+        List<User> members = dao.getAllUser(UserType.MEMBER);
+        showUserId(members);
+
+        List<User> spots = dao.getAllUser(UserType.SPOT);
+        showUserId(spots);
+
+        List<User> managers = dao.getAllUser(UserType.MANAGER);
+        showUserId(managers);
+    }
+
+    private void showUserId(List<User> users) {
+        for (User user : users) {
+            logger.debug(user.getId());
+        }
     }
 
 }

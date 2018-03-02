@@ -2,6 +2,8 @@ package cn.edu.nju.charlesfeng.dao;
 
 import cn.edu.nju.charlesfeng.entity.Schedule;
 
+import java.util.List;
+
 /**
  * 数据层对日程计划的服务
  */
@@ -12,6 +14,11 @@ public interface ScheduleDao {
      * @return 该日程的实体对象
      */
     Schedule getSchedule(int scheduleId);
+
+    /**
+     * @return 所有的日程实体
+     */
+    List<Schedule> getAllSchedules();
 
     /**
      * @param schedule 欲保存的日程计划实体

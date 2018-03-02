@@ -4,6 +4,8 @@ import cn.edu.nju.charlesfeng.model.User;
 import cn.edu.nju.charlesfeng.util.enums.UserType;
 import cn.edu.nju.charlesfeng.util.exceptions.UserNotExistException;
 
+import java.util.List;
+
 /**
  * 数据层对用户的服务
  */
@@ -15,6 +17,12 @@ public interface UserDao {
      * @return 用户详情
      */
     User getUser(String id, UserType type) throws UserNotExistException;
+
+    /**
+     * @param userType 欲获取的用户类型
+     * @return 该类型的所有用户
+     */
+    List<User> getAllUser(UserType userType) throws UserNotExistException;
 
     /**
      * @param user 要保存的用户实体

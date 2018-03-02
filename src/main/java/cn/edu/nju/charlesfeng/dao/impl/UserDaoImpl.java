@@ -11,6 +11,8 @@ import cn.edu.nju.charlesfeng.util.exceptions.UserNotExistException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public class UserDaoImpl implements UserDao {
 
@@ -28,6 +30,18 @@ public class UserDaoImpl implements UserDao {
         if (type == UserType.MEMBER) result = (User) baseDao.get(Member.class, id);
         else if (type == UserType.SPOT) result = (User) baseDao.get(Spot.class, id);
         else result = (User) baseDao.get(Manager.class, id);
+
+        if (result == null) throw new UserNotExistException();
+        return result;
+    }
+
+    @Override
+    public List<User> getAllUser(UserType type) throws UserNotExistException {
+        List<User> result;
+
+        if (type == UserType.MEMBER) result = baseDao.getAllList(Member.class);
+        else if (type == UserType.SPOT) result = baseDao.getAllList(Spot.class);
+        else result = baseDao.getAllList(Manager.class);
 
         if (result == null) throw new UserNotExistException();
         return result;

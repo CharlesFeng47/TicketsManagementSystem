@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Repository
 public class BaseDaoImpl implements BaseDao {
@@ -24,6 +25,17 @@ public class BaseDaoImpl implements BaseDao {
         Session session = sessionFactory.openSession();
         Transaction tx = session.beginTransaction();
         Object result = session.find(c, id);
+        tx.commit();
+        session.close();
+        return result;
+    }
+
+    @Override
+    public List getAllList(Class c) {
+        Session session = sessionFactory.openSession();
+        Transaction tx = session.beginTransaction();
+        String hql = "from " + c.getName();
+        List result = session.createQuery(hql).getResultList();
         tx.commit();
         session.close();
         return result;

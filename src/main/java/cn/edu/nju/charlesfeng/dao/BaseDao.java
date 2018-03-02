@@ -1,6 +1,7 @@
 package cn.edu.nju.charlesfeng.dao;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * 为 Dao 层提供基本操作
@@ -13,6 +14,12 @@ public interface BaseDao {
      * @return 查找到的实体对象
      */
     Object get(Class c, Object id);
+
+    /**
+     * @param c 欲查找的实体对象的类型
+     * @return 查找到的所有实体对象
+     */
+    List getAllList(Class c);
 
     /**
      * @param bean 欲保存的实体对象

@@ -1,8 +1,11 @@
 package cn.edu.nju.charlesfeng.service;
 
+import cn.edu.nju.charlesfeng.entity.Spot;
 import cn.edu.nju.charlesfeng.model.User;
 import cn.edu.nju.charlesfeng.util.enums.UserType;
 import cn.edu.nju.charlesfeng.util.exceptions.UserNotExistException;
+
+import java.util.Map;
 
 /**
  * 系统中会员、场馆的服务
@@ -38,4 +41,9 @@ public interface UserService {
      * @return 用户详情
      */
     User getUser(String id, UserType type) throws UserNotExistException;
+
+    /**
+     * @return 所有场馆ID与其对应实体的映射
+     */
+    Map<String, Spot> getAllSpotIdMap() throws UserNotExistException;
 }

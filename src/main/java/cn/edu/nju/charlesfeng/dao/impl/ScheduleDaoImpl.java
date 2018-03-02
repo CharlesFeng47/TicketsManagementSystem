@@ -6,6 +6,8 @@ import cn.edu.nju.charlesfeng.entity.Schedule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public class ScheduleDaoImpl implements ScheduleDao {
 
@@ -19,6 +21,11 @@ public class ScheduleDaoImpl implements ScheduleDao {
     @Override
     public Schedule getSchedule(int scheduleId) {
         return (Schedule) baseDao.get(Schedule.class, scheduleId);
+    }
+
+    @Override
+    public List<Schedule> getAllSchedules() {
+        return baseDao.getAllList(Schedule.class);
     }
 
     @Override

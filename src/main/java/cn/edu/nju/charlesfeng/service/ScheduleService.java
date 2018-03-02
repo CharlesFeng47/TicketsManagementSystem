@@ -2,10 +2,23 @@ package cn.edu.nju.charlesfeng.service;
 
 import cn.edu.nju.charlesfeng.entity.Schedule;
 
+import java.util.List;
+
 /**
  * 系统中活动日程的服务
  */
 public interface ScheduleService {
+
+    /**
+     * @return 所有日程
+     */
+    List<Schedule> getAllSchedules();
+
+    /**
+     * @param spotId 欲获取的相关场馆的场馆Id
+     * @return 相关场馆的所有日程
+     */
+    List<Schedule> getSchedulesOfOneSpot(String spotId);
 
     /**
      * @param sid 欲获取的日程Id

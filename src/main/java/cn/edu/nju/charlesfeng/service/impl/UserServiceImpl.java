@@ -2,12 +2,16 @@ package cn.edu.nju.charlesfeng.service.impl;
 
 import cn.edu.nju.charlesfeng.dao.UserDao;
 import cn.edu.nju.charlesfeng.entity.Member;
+import cn.edu.nju.charlesfeng.entity.Spot;
 import cn.edu.nju.charlesfeng.model.User;
 import cn.edu.nju.charlesfeng.service.UserService;
 import cn.edu.nju.charlesfeng.util.enums.UserType;
 import cn.edu.nju.charlesfeng.util.exceptions.UserNotExistException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -41,5 +45,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUser(String id, UserType type) throws UserNotExistException {
         return userDao.getUser(id, type);
+    }
+
+    @Override
+    public Map<String, Spot> getAllSpotIdMap() throws UserNotExistException {
+        Map<String, Spot> result = new HashMap<>();
+        for (User user : userDao.getAllUser(UserType.SPOT)) {
+            result.put(user.getId(), (Spot) user);
+        }
+        return result;
     }
 }

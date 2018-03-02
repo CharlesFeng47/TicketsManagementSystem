@@ -15,6 +15,7 @@ import org.junit.Test;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -50,6 +51,14 @@ public class ScheduleDaoImplTest {
         System.out.println(json);
         Schedule another = JSON.parseObject(json, Schedule.class);
         System.out.println(another.getId());
+    }
+
+    @Test
+    public void testGetAllSchedules() throws Exception {
+        List<Schedule> allSchedules = scheduleDao.getAllSchedules();
+        for (Schedule schedule : allSchedules) {
+            System.out.println("scheduleId: " + schedule.getId());
+        }
     }
 
     /**
