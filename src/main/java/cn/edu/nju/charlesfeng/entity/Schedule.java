@@ -18,7 +18,7 @@ public class Schedule implements Serializable {
      * 此活动的标志符ID
      */
     @Id
-    private int id;
+    private String id;
 
     /**
      * 此活动的名字
@@ -55,7 +55,6 @@ public class Schedule implements Serializable {
             joinColumns = {
                     @JoinColumn(name = "schedule_id")
             }
-
     )
     private Map<SeatInfo, Double> seatPrices;
 
@@ -68,7 +67,8 @@ public class Schedule implements Serializable {
     public Schedule() {
     }
 
-    public Schedule(String name, String spotId, LocalDateTime startDateTime, ScheduleItemType type, Map<SeatInfo, Double> seatPrices, String description) {
+    public Schedule(String id, String name, String spotId, LocalDateTime startDateTime, ScheduleItemType type, Map<SeatInfo, Double> seatPrices, String description) {
+        this.id = id;
         this.name = name;
         this.spotId = spotId;
         this.startDateTime = startDateTime;
@@ -77,11 +77,11 @@ public class Schedule implements Serializable {
         this.description = description;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

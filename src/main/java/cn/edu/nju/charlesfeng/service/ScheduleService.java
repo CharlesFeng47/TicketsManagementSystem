@@ -24,7 +24,7 @@ public interface ScheduleService {
      * @param sid 欲获取的日程Id
      * @return 日程详情实体
      */
-    Schedule getOneSchedule(int sid);
+    Schedule getOneSchedule(String sid);
 
     /**
      * @param scheduleItem 欲发布的活动日程

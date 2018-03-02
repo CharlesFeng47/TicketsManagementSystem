@@ -46,7 +46,7 @@ public class ScheduleDaoImplTest {
      */
     @Test
     public void testGetSchedule() throws Exception {
-        Schedule schedule = scheduleDao.getSchedule(0);
+        Schedule schedule = scheduleDao.getSchedule("2018330342");
         String json = JSON.toJSONString(schedule);
         System.out.println(json);
         Schedule another = JSON.parseObject(json, Schedule.class);
@@ -68,35 +68,33 @@ public class ScheduleDaoImplTest {
     public void testSaveSchedule() throws Exception {
         Map<SeatInfo, Double> seatPrices = new HashMap<>();
 
-        Spot spot = (Spot) userDao.getUser("0000001", UserType.SPOT);
+        Spot spot = (Spot) userDao.getUser("0000002", UserType.SPOT);
         Set<SeatInfo> seats = spot.getSeatInfos();
         int i = 1;
         for (SeatInfo seat : seats) {
-            seatPrices.put(seat, (double) (i * 200));
+            seatPrices.put(seat, (double) (i * 400));
             i++;
         }
 
-        Schedule schedule = new Schedule("测试用日程名字", "0", LocalDateTime.now(), ScheduleItemType.CONCERT, seatPrices, "测试用日程描述");
+        LocalDateTime now = LocalDateTime.now();
+        StringBuilder sb = new StringBuilder();
+        sb.append(now.getYear()).append(now.getMonthValue()).append(now.getDayOfMonth());
+        sb.append(now.getHour()).append(now.getMinute()).append(now.getSecond());
+        Schedule schedule = new Schedule(sb.toString(), "测试用日程名字2", "0000002", LocalDateTime.now(), ScheduleItemType.CONCERT, seatPrices, "测试用日程描述");
         scheduleDao.saveSchedule(schedule);
     }
 
     /**
      * Method: updateSchedule(Schedule schedule)
+     * TODO
      */
     @Test
     public void testUpdateSchedule() throws Exception {
-        Map<SeatInfo, Double> seatPrices = new HashMap<>();
-
-        Spot spot = (Spot) userDao.getUser("0000001", UserType.SPOT);
-        Set<SeatInfo> seats = spot.getSeatInfos();
-        int i = 1;
-        for (SeatInfo seat : seats) {
-            if (seat.getId() == 2) seatPrices.put(seat, (double) 300);
-            else seatPrices.put(seat, (double) (i * 200));
-            i++;
+        Schedule schedule = scheduleDao.getSchedule("2018330342");
+        Map<SeatInfo, Double> map = schedule.getSeatPrices();
+        for (Map.Entry<SeatInfo, Double> entry : map.entrySet()) {
+            if (entry.getKey().getId() == "s2") entry.setValue((double) 500);
         }
-
-        Schedule schedule = new Schedule("测试用日程名字update", "0", LocalDateTime.now(), ScheduleItemType.CONCERT, seatPrices, "测试用日程");
         scheduleDao.updateSchedule(schedule);
     }
 

@@ -12,7 +12,10 @@ import cn.edu.nju.charlesfeng.util.enums.UserType;
 import cn.edu.nju.charlesfeng.util.exceptions.UserNotExistException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.LinkedList;
@@ -42,25 +45,17 @@ public class ScheduleController {
      * @return 所有日程的简介
      */
     @GetMapping("all")
-    public RequestReturnObject getSchedules() {
-        logger.debug("INTO /schedule/all");
-        List<Schedule> allSchedules = scheduleService.getAllSchedules();
+    public RequestReturnObject getSchedules(String spotId) {
+        List<Schedule> allSchedules;
+        if (spotId == null || spotId.equals("")) {
+            logger.debug("INTO /schedule/all");
+            allSchedules = scheduleService.getAllSchedules();
+        } else {
+            logger.debug("INTO /schedule/all?spotId=" + spotId);
+            allSchedules = scheduleService.getSchedulesOfOneSpot(spotId);
+        }
         try {
             return new RequestReturnObject(RequestReturnObjectState.OK, getBrief(allSchedules));
-        } catch (UserNotExistException e) {
-            return new RequestReturnObject(RequestReturnObjectState.INTERIOR_WRONG);
-        }
-    }
-
-    /**
-     * @return 所有日程的简介
-     */
-    @GetMapping("all")
-    public RequestReturnObject getSchedules(@RequestParam("spotId") String spotId) {
-        logger.debug("INTO /schedule/all?spotId=" + spotId);
-        List<Schedule> resultSchedules = scheduleService.getSchedulesOfOneSpot(spotId);
-        try {
-            return new RequestReturnObject(RequestReturnObjectState.OK, getBrief(resultSchedules));
         } catch (UserNotExistException e) {
             return new RequestReturnObject(RequestReturnObjectState.INTERIOR_WRONG);
         }
@@ -72,7 +67,7 @@ public class ScheduleController {
     @GetMapping("/{id}")
     public RequestReturnObject getOneSchedule(@PathVariable("id") String id, HttpServletResponse response) {
         logger.debug("INTO /schedule/" + id);
-        Schedule resultSchedule = scheduleService.getOneSchedule(Integer.parseInt(id));
+        Schedule resultSchedule = scheduleService.getOneSchedule(id);
         try {
             Spot relativeSpot = (Spot) userService.getUser(resultSchedule.getSpotId(), UserType.SPOT);
             return new RequestReturnObject(RequestReturnObjectState.OK, new ContentSchedule(resultSchedule, relativeSpot));
@@ -88,7 +83,7 @@ public class ScheduleController {
         List<ContentScheduleBrief> result = new LinkedList<>();
         Map<String, Spot> spotMap = userService.getAllSpotIdMap();
         for (Schedule schedule : schedules) {
-            Spot relativeSpot = spotMap.get(schedule.getId());
+            Spot relativeSpot = spotMap.get(schedule.getSpotId());
             assert relativeSpot != null;
             result.add(new ContentScheduleBrief(schedule, relativeSpot));
         }

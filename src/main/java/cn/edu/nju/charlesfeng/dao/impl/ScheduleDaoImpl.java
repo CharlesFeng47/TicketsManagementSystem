@@ -19,7 +19,7 @@ public class ScheduleDaoImpl implements ScheduleDao {
     }
 
     @Override
-    public Schedule getSchedule(int scheduleId) {
+    public Schedule getSchedule(String scheduleId) {
         return (Schedule) baseDao.get(Schedule.class, scheduleId);
     }
 
@@ -29,8 +29,8 @@ public class ScheduleDaoImpl implements ScheduleDao {
     }
 
     @Override
-    public int saveSchedule(Schedule schedule) {
-        return (int) baseDao.save(schedule);
+    public String saveSchedule(Schedule schedule) {
+        return (String) baseDao.save(schedule);
     }
 
     @Override

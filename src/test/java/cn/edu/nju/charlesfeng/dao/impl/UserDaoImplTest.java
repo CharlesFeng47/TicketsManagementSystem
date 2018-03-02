@@ -16,6 +16,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -96,9 +97,9 @@ public class UserDaoImplTest {
 
     @Test
     public void testSpot() throws Exception {
-        SeatInfo seat1 = new SeatInfo(1, "一等座", 100);
-        SeatInfo seat2 = new SeatInfo(2, "二等座", 100);
-        SeatInfo seat3 = new SeatInfo(3, "三等座", 100);
+        SeatInfo seat1 = new SeatInfo("s1", "一等座", 100);
+        SeatInfo seat2 = new SeatInfo("s2", "二等座", 100);
+        SeatInfo seat3 = new SeatInfo("s3", "三等座", 100);
         Set<SeatInfo> seatInfos = new HashSet<>();
         seatInfos.add(seat1);
         seatInfos.add(seat2);
@@ -117,12 +118,42 @@ public class UserDaoImplTest {
         String saveResult = dao.saveUser(spot1, UserType.SPOT);
         logger.debug(saveResult);
 
-        SeatInfo seat2new = new SeatInfo(2, "二等座", 150);
+        SeatInfo seat2new = new SeatInfo("s2", "二等座", 150);
         seatInfos.remove(seat2);
         seatInfos.add(seat2new);
         Spot spot2 = new Spot("0000001", "qwertyuiop", "重庆江北大剧院", false, "重庆江北嘴", seatInfos, allSeatsJson);
         boolean updateResult = dao.updateUser(spot2, UserType.SPOT);
         logger.debug(updateResult);
+
+        Spot resultSpot = (Spot) dao.getUser("0000001", UserType.SPOT);
+        logger.debug(resultSpot);
+    }
+
+    @Test
+    public void testSpot2() throws Exception {
+        String sid = generateSeatId();
+        SeatInfo seat1 = new SeatInfo(sid + "/1", "金座", 200);
+        SeatInfo seat2 = new SeatInfo(sid + "/2", "银座", 400);
+        SeatInfo seat3 = new SeatInfo(sid + "/3", "铜座", 1000);
+        Set<SeatInfo> seatInfos = new HashSet<>();
+        seatInfos.add(seat1);
+        seatInfos.add(seat2);
+        seatInfos.add(seat3);
+
+        Set<Seat> allSeats = new HashSet<>();
+        allSeats.add(new Seat(1, 1));
+        allSeats.add(new Seat(1, 2));
+        allSeats.add(new Seat(1, 3));
+        allSeats.add(new Seat(1, 4));
+        allSeats.add(new Seat(2, 1));
+        allSeats.add(new Seat(2, 2));
+        allSeats.add(new Seat(2, 3));
+        allSeats.add(new Seat(2, 4));
+        String allSeatsJson = JSON.toJSONString(allSeats);
+
+        Spot spot1 = new Spot("0000002", "qwertyuiop", "南京江苏大剧院", false, "南京河西新区", seatInfos, allSeatsJson);
+        String saveResult = dao.saveUser(spot1, UserType.SPOT);
+        logger.debug(saveResult);
 
         Spot resultSpot = (Spot) dao.getUser("0000001", UserType.SPOT);
         logger.debug(resultSpot);
@@ -144,6 +175,14 @@ public class UserDaoImplTest {
         for (User user : users) {
             logger.debug(user.getId());
         }
+    }
+
+    private String generateSeatId() {
+        LocalDateTime now = LocalDateTime.now();
+        StringBuilder sb = new StringBuilder();
+        sb.append("s").append(now.getMonthValue()).append(now.getDayOfMonth());
+        sb.append(now.getHour()).append(now.getMinute()).append(now.getSecond());
+        return sb.toString();
     }
 
 }

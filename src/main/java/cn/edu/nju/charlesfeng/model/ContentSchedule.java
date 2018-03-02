@@ -16,7 +16,7 @@ public class ContentSchedule {
     /**
      * 此活动的标志符ID
      */
-    private int id;
+    private String id;
 
     /**
      * 此活动的名字
@@ -69,11 +69,11 @@ public class ContentSchedule {
         }
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

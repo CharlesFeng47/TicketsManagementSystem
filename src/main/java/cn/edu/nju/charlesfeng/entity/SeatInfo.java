@@ -16,7 +16,7 @@ public class SeatInfo {
      * 此座位的ID
      */
     @Id
-    private int id;
+    private String id;
 
     /**
      * 此座位的名称
@@ -33,17 +33,17 @@ public class SeatInfo {
     public SeatInfo() {
     }
 
-    public SeatInfo(int id, String seatName, int num) {
+    public SeatInfo(String id, String seatName, int num) {
         this.id = id;
         this.seatName = seatName;
         this.num = num;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

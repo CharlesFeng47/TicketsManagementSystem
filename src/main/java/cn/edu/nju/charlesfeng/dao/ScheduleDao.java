@@ -13,7 +13,7 @@ public interface ScheduleDao {
      * @param scheduleId 要查看的日程ID
      * @return 该日程的实体对象
      */
-    Schedule getSchedule(int scheduleId);
+    Schedule getSchedule(String scheduleId);
 
     /**
      * @return 所有的日程实体
@@ -24,7 +24,7 @@ public interface ScheduleDao {
      * @param schedule 欲保存的日程计划实体
      * @return 成功保存后的此实体对象主键
      */
-    int saveSchedule(Schedule schedule);
+    String saveSchedule(Schedule schedule);
 
     /**
      * @param schedule 欲更新的日程计划实体
