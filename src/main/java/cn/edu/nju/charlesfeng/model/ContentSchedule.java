@@ -3,7 +3,9 @@ package cn.edu.nju.charlesfeng.model;
 import cn.edu.nju.charlesfeng.entity.Schedule;
 import cn.edu.nju.charlesfeng.entity.SeatInfo;
 import cn.edu.nju.charlesfeng.entity.Spot;
+import cn.edu.nju.charlesfeng.util.comparators.SeatPriceMapComparator;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -61,9 +63,13 @@ public class ContentSchedule {
         this.type = schedule.getType().toString();
         this.description = schedule.getDescription();
 
+        // 对计划中的座位按价格降序排序
+        List<Map.Entry<SeatInfo, Double>> relativeList = new ArrayList<>(schedule.getSeatPrices().entrySet());
+        relativeList.sort(new SeatPriceMapComparator());
+
         all_seats = new LinkedList<>();
         all_prices = new LinkedList<>();
-        for (Map.Entry<SeatInfo, Double> entry : schedule.getSeatPrices().entrySet()) {
+        for (Map.Entry<SeatInfo, Double> entry : relativeList) {
             all_seats.add(entry.getKey());
             all_prices.add(entry.getValue());
         }
