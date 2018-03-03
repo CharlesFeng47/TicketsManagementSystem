@@ -27,6 +27,12 @@ public interface ScheduleService {
     Schedule getOneSchedule(String sid);
 
     /**
+     * @param sid 欲删除的日程Id
+     * @return 删除结果，若成功删除则true
+     */
+    boolean deleteOneSchedule(String sid);
+
+    /**
      * @param scheduleItem 欲发布的活动日程
      * @return 是否成功发布，成功则为该实体对象
      */

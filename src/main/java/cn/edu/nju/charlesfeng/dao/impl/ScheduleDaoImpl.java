@@ -39,7 +39,7 @@ public class ScheduleDaoImpl implements ScheduleDao {
     }
 
     @Override
-    public boolean deleteSchedule(int scheduleId) {
+    public boolean deleteSchedule(String scheduleId) {
         return baseDao.delete(Schedule.class, scheduleId);
     }
 }

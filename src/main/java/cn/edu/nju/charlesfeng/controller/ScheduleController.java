@@ -12,10 +12,7 @@ import cn.edu.nju.charlesfeng.util.enums.UserType;
 import cn.edu.nju.charlesfeng.util.exceptions.UserNotExistException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.LinkedList;
@@ -72,6 +69,19 @@ public class ScheduleController {
             Spot relativeSpot = (Spot) userService.getUser(resultSchedule.getSpotId(), UserType.SPOT);
             return new RequestReturnObject(RequestReturnObjectState.OK, new ContentSchedule(resultSchedule, relativeSpot));
         } catch (UserNotExistException e) {
+            return new RequestReturnObject(RequestReturnObjectState.INTERIOR_WRONG);
+        }
+    }
+
+    /**
+     * 删除单条计划
+     */
+    @PostMapping("delete")
+    public RequestReturnObject deleteOneSchedule(@RequestParam("scheduleId") String scheduleId) {
+        logger.debug("INTO /schedule/delete: " + scheduleId);
+        if (scheduleService.deleteOneSchedule(scheduleId)) {
+            return new RequestReturnObject(RequestReturnObjectState.OK);
+        } else {
             return new RequestReturnObject(RequestReturnObjectState.INTERIOR_WRONG);
         }
     }

@@ -68,7 +68,7 @@ public class ScheduleDaoImplTest {
     public void testSaveSchedule() throws Exception {
         Map<SeatInfo, Double> seatPrices = new HashMap<>();
 
-        Spot spot = (Spot) userDao.getUser("0000002", UserType.SPOT);
+        Spot spot = (Spot) userDao.getUser("0000001", UserType.SPOT);
         Set<SeatInfo> seats = spot.getSeatInfos();
         int i = 1;
         for (SeatInfo seat : seats) {
@@ -80,7 +80,7 @@ public class ScheduleDaoImplTest {
         StringBuilder sb = new StringBuilder();
         sb.append(now.getYear()).append(now.getMonthValue()).append(now.getDayOfMonth());
         sb.append(now.getHour()).append(now.getMinute()).append(now.getSecond());
-        Schedule schedule = new Schedule(sb.toString(), "测试用日程名字2", "0000002", LocalDateTime.now(), ScheduleItemType.CONCERT, seatPrices, "测试用日程描述");
+        Schedule schedule = new Schedule(sb.toString(), "测试用日程名字2", "0000001", LocalDateTime.now(), ScheduleItemType.CONCERT, seatPrices, "测试用日程描述");
         scheduleDao.saveSchedule(schedule);
     }
 
@@ -103,7 +103,7 @@ public class ScheduleDaoImplTest {
      */
     @Test
     public void testDeleteSchedule() throws Exception {
-        scheduleDao.deleteSchedule(0);
+        scheduleDao.deleteSchedule("0");
     }
 
 
