@@ -14,7 +14,7 @@ import com.alibaba.fastjson.JSON;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Set;
+import java.util.List;
 
 @Service
 public class LogInServiceImpl implements LogInService {
@@ -35,7 +35,8 @@ public class LogInServiceImpl implements LogInService {
 
     // TODO 生成id
     @Override
-    public Spot registerSpot(String pwd, String spotName, String site, Set<SeatInfo> seatInfos, Set<Seat> seats) throws UserNotExistException {
+    public Spot registerSpot(String pwd, String spotName, String site, List<SeatInfo> seatInfos, List<Seat> seats) throws UserNotExistException {
+        // TODO seat_id生成策略（见 UserDaoImplTest:134~137）
         Spot newSpot = new Spot(pwd, spotName, false, site, seatInfos, JSON.toJSONString(seats));
         String curSpotId = dao.saveUser(newSpot, UserType.SPOT);
         return (Spot) dao.getUser(curSpotId, UserType.SPOT);

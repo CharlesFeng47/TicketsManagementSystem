@@ -60,7 +60,7 @@ public class LogInController {
     }
 
     /**
-     * 用户获取Token
+     * 用户根据Token获取相应名字和角色
      */
     @PostMapping("info")
     public RequestReturnObject getToken(@RequestParam("token") String token, HttpServletRequest request) {

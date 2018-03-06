@@ -4,7 +4,7 @@ import cn.edu.nju.charlesfeng.model.User;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Set;
+import java.util.List;
 
 /**
  * 系统中场馆实体
@@ -36,7 +36,7 @@ public class Spot extends User implements Serializable {
      * 此场馆的座位信息
      */
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private Set<SeatInfo> seatInfos;
+    private List<SeatInfo> seatInfos;
 
     /**
      * 此场馆中座位的具体情况 json 串
@@ -47,7 +47,7 @@ public class Spot extends User implements Serializable {
     public Spot() {
     }
 
-    public Spot(String pwd, String spotName, boolean examined, String site, Set<SeatInfo> seatInfos, String allSeatsJson) {
+    public Spot(String pwd, String spotName, boolean examined, String site, List<SeatInfo> seatInfos, String allSeatsJson) {
         super.setPwd(pwd);
         this.spotName = spotName;
         this.examined = examined;
@@ -56,7 +56,7 @@ public class Spot extends User implements Serializable {
         this.allSeatsJson = allSeatsJson;
     }
 
-    public Spot(String id, String pwd, String spotName, boolean examined, String site, Set<SeatInfo> seatInfos, String allSeatsJson) {
+    public Spot(String id, String pwd, String spotName, boolean examined, String site, List<SeatInfo> seatInfos, String allSeatsJson) {
         super(id, pwd);
         this.spotName = spotName;
         this.examined = examined;
@@ -89,11 +89,11 @@ public class Spot extends User implements Serializable {
         this.site = site;
     }
 
-    public Set<SeatInfo> getSeatInfos() {
+    public List<SeatInfo> getSeatInfos() {
         return seatInfos;
     }
 
-    public void setSeatInfos(Set<SeatInfo> seatInfos) {
+    public void setSeatInfos(List<SeatInfo> seatInfos) {
         this.seatInfos = seatInfos;
     }
 

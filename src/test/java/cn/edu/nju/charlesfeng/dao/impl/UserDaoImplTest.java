@@ -17,9 +17,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * UserDaoImpl Tester.
@@ -100,12 +99,12 @@ public class UserDaoImplTest {
         SeatInfo seat1 = new SeatInfo("s1", "一等座", 100);
         SeatInfo seat2 = new SeatInfo("s2", "二等座", 100);
         SeatInfo seat3 = new SeatInfo("s3", "三等座", 100);
-        Set<SeatInfo> seatInfos = new HashSet<>();
+        List<SeatInfo> seatInfos = new LinkedList<>();
         seatInfos.add(seat1);
         seatInfos.add(seat2);
         seatInfos.add(seat3);
 
-        Set<Seat> allSeats = new HashSet<>();
+        List<Seat> allSeats = new LinkedList<>();
         allSeats.add(new Seat(1, 1));
         allSeats.add(new Seat(1, 2));
         allSeats.add(new Seat(1, 3));
@@ -135,12 +134,12 @@ public class UserDaoImplTest {
         SeatInfo seat1 = new SeatInfo(sid + "/1", "金座", 200);
         SeatInfo seat2 = new SeatInfo(sid + "/2", "银座", 400);
         SeatInfo seat3 = new SeatInfo(sid + "/3", "铜座", 1000);
-        Set<SeatInfo> seatInfos = new HashSet<>();
+        List<SeatInfo> seatInfos = new LinkedList<>();
         seatInfos.add(seat1);
         seatInfos.add(seat2);
         seatInfos.add(seat3);
 
-        Set<Seat> allSeats = new HashSet<>();
+        List<Seat> allSeats = new LinkedList<>();
         allSeats.add(new Seat(1, 1));
         allSeats.add(new Seat(1, 2));
         allSeats.add(new Seat(1, 3));

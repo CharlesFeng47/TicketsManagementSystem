@@ -9,7 +9,7 @@ import cn.edu.nju.charlesfeng.util.enums.UserType;
 import cn.edu.nju.charlesfeng.util.exceptions.UserNotExistException;
 import cn.edu.nju.charlesfeng.util.exceptions.WrongPwdException;
 
-import java.util.Set;
+import java.util.List;
 
 /**
  * 系统中会员、场馆、经理的登录服务
@@ -31,7 +31,7 @@ public interface LogInService {
      * @param seats     此场馆中每一个具体座位
      * @return 【场馆】是否成功注册，成功则返回此场馆实体
      */
-    Spot registerSpot(String id, String pwd, String site, Set<SeatInfo> seatInfos, Set<Seat> seats) throws UserNotExistException;
+    Spot registerSpot(String id, String pwd, String site, List<SeatInfo> seatInfos, List<Seat> seats) throws UserNotExistException;
 
     /**
      * 【所有用户】的登录

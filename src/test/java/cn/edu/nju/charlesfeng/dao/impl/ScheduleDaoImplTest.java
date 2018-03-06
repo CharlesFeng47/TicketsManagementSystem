@@ -17,7 +17,6 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * ScheduleDaoImpl Tester.
@@ -69,7 +68,7 @@ public class ScheduleDaoImplTest {
         Map<SeatInfo, Double> seatPrices = new HashMap<>();
 
         Spot spot = (Spot) userDao.getUser("0000001", UserType.SPOT);
-        Set<SeatInfo> seats = spot.getSeatInfos();
+        List<SeatInfo> seats = spot.getSeatInfos();
         int i = 1;
         for (SeatInfo seat : seats) {
             seatPrices.put(seat, (double) (i * 400));

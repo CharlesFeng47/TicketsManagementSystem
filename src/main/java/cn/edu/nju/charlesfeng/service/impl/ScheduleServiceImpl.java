@@ -49,7 +49,6 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Override
     public Schedule publishSchedule(Schedule schedule) {
-        // TODO seat_id生成策略（见 UserDaoImplTest:134~137）
         schedule.setId(generateId());
         scheduleDao.saveSchedule(schedule);
         return schedule;

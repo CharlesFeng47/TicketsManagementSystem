@@ -23,6 +23,8 @@
             <set>
                 <bean class="cn.edu.nju.charlesfeng.spring.formatter.UserTypeFormatter">
                 </bean>
+                <bean class="cn.edu.nju.charlesfeng.spring.formatter.ScheduleItemTypeFormatter">
+                </bean>
             </set>
         </property>
     </bean>

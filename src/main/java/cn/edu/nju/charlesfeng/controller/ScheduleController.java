@@ -1,6 +1,7 @@
 package cn.edu.nju.charlesfeng.controller;
 
 import cn.edu.nju.charlesfeng.entity.Schedule;
+import cn.edu.nju.charlesfeng.entity.SeatInfo;
 import cn.edu.nju.charlesfeng.entity.Spot;
 import cn.edu.nju.charlesfeng.model.ContentSchedule;
 import cn.edu.nju.charlesfeng.model.ContentScheduleBrief;
@@ -8,13 +9,22 @@ import cn.edu.nju.charlesfeng.model.RequestReturnObject;
 import cn.edu.nju.charlesfeng.service.ScheduleService;
 import cn.edu.nju.charlesfeng.service.UserService;
 import cn.edu.nju.charlesfeng.util.enums.RequestReturnObjectState;
+import cn.edu.nju.charlesfeng.util.enums.ScheduleItemType;
 import cn.edu.nju.charlesfeng.util.enums.UserType;
+import cn.edu.nju.charlesfeng.util.exceptions.SpotSeatDisorderException;
 import cn.edu.nju.charlesfeng.util.exceptions.UserNotExistException;
+import com.alibaba.fastjson.JSON;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -84,6 +94,55 @@ public class ScheduleController {
         } else {
             return new RequestReturnObject(RequestReturnObjectState.INTERIOR_WRONG);
         }
+    }
+
+    /**
+     * 保存单条计划
+     */
+    @PostMapping("save")
+    public RequestReturnObject saveOneSchedule(@RequestParam("token") String token, @RequestParam("name") String name,
+                                               @RequestParam("dateStr") String dateString, @RequestParam("timeStr") String timeString,
+                                               @RequestParam("type") ScheduleItemType scheduleItemType, @RequestParam("description") String description,
+                                               @RequestParam("nameListStr") String nameListJson, @RequestParam("priceListStr") String priceListJson,
+                                               HttpServletRequest request) throws SpotSeatDisorderException {
+        logger.debug("INTO /schedule/save");
+        System.out.println(nameListJson);
+        System.out.println(priceListJson);
+
+        HttpSession session = request.getSession();
+        Spot curSpot = (Spot) session.getAttribute(token);
+
+        Schedule toSave = new Schedule();
+        toSave.setName(name);
+        toSave.setSpotId(curSpot.getId());
+        toSave.setType(scheduleItemType);
+        toSave.setDescription(description);
+
+        // 时间相关的处理
+        String[] dateParts = dateString.split("-");
+        String[] timeParts = timeString.split(":");
+        LocalDate date = LocalDate.of(Integer.parseInt(dateParts[0]), Integer.parseInt(dateParts[1]), Integer.parseInt(dateParts[2]));
+        LocalTime time = LocalTime.of(Integer.parseInt(timeParts[0]), Integer.parseInt(timeParts[1]), Integer.parseInt(timeParts[2]));
+        toSave.setStartDateTime(LocalDateTime.of(date, time));
+
+        // 价格对应表的处理
+        List<String> nameList = JSON.parseArray(nameListJson, String.class);
+        List<Double> priceList = JSON.parseArray(priceListJson, Double.class);
+        Map<SeatInfo, Double> priceMap = new LinkedHashMap<>();
+
+        // 按顺序发过去，按顺序接受，理应是顺序一样的，以防万一出错顺序不对，抛出异常
+        List<SeatInfo> seatInfos = curSpot.getSeatInfos();
+        for (int i = 0; i < seatInfos.size(); i++) {
+            SeatInfo curSeatInfo = seatInfos.get(i);
+            if (!curSeatInfo.getSeatName().equals(nameList.get(i))) throw new SpotSeatDisorderException();
+            else {
+                priceMap.put(curSeatInfo, priceList.get(i));
+            }
+        }
+        toSave.setSeatPrices(priceMap);
+
+        Schedule result = scheduleService.publishSchedule(toSave);
+        return new RequestReturnObject(RequestReturnObjectState.OK, result);
     }
 
     /**
