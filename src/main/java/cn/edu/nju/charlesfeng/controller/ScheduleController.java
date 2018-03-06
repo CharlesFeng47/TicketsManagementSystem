@@ -106,9 +106,6 @@ public class ScheduleController {
                                                @RequestParam("nameListStr") String nameListJson, @RequestParam("priceListStr") String priceListJson,
                                                HttpServletRequest request) throws SpotSeatDisorderException {
         logger.debug("INTO /schedule/save");
-        System.out.println(nameListJson);
-        System.out.println(priceListJson);
-
         HttpSession session = request.getSession();
         Spot curSpot = (Spot) session.getAttribute(token);
 
@@ -119,30 +116,42 @@ public class ScheduleController {
         toSave.setDescription(description);
 
         // 时间相关的处理
-        String[] dateParts = dateString.split("-");
-        String[] timeParts = timeString.split(":");
-        LocalDate date = LocalDate.of(Integer.parseInt(dateParts[0]), Integer.parseInt(dateParts[1]), Integer.parseInt(dateParts[2]));
-        LocalTime time = LocalTime.of(Integer.parseInt(timeParts[0]), Integer.parseInt(timeParts[1]), Integer.parseInt(timeParts[2]));
-        toSave.setStartDateTime(LocalDateTime.of(date, time));
-
+        toSave.setStartDateTime(convertDateTime(dateString, timeString));
         // 价格对应表的处理
-        List<String> nameList = JSON.parseArray(nameListJson, String.class);
-        List<Double> priceList = JSON.parseArray(priceListJson, Double.class);
-        Map<SeatInfo, Double> priceMap = new LinkedHashMap<>();
-
-        // 按顺序发过去，按顺序接受，理应是顺序一样的，以防万一出错顺序不对，抛出异常
-        List<SeatInfo> seatInfos = curSpot.getSeatInfos();
-        for (int i = 0; i < seatInfos.size(); i++) {
-            SeatInfo curSeatInfo = seatInfos.get(i);
-            if (!curSeatInfo.getSeatName().equals(nameList.get(i))) throw new SpotSeatDisorderException();
-            else {
-                priceMap.put(curSeatInfo, priceList.get(i));
-            }
-        }
-        toSave.setSeatPrices(priceMap);
+        toSave.setSeatPrices(convertPriceMap(nameListJson, priceListJson, curSpot));
 
         Schedule result = scheduleService.publishSchedule(toSave);
         return new RequestReturnObject(RequestReturnObjectState.OK, result);
+    }
+
+    /**
+     * 保存单条计划
+     */
+    @PostMapping("modify")
+    public RequestReturnObject modifyOneSchedule(@RequestParam("token") String token, @RequestParam("scheduleId") String scheduleId,
+                                                 @RequestParam("name") String name, @RequestParam("dateStr") String dateString,
+                                                 @RequestParam("timeStr") String timeString, @RequestParam("type") ScheduleItemType scheduleItemType,
+                                                 @RequestParam("description") String description, @RequestParam("nameListStr") String nameListJson,
+                                                 @RequestParam("priceListStr") String priceListJson, HttpServletRequest request) throws SpotSeatDisorderException {
+        logger.debug("INTO /schedule/modify");
+        HttpSession session = request.getSession();
+        Spot curSpot = (Spot) session.getAttribute(token);
+
+        Schedule toModify = new Schedule();
+        toModify.setId(scheduleId);
+        toModify.setName(name);
+        toModify.setSpotId(curSpot.getId());
+        toModify.setType(scheduleItemType);
+        toModify.setDescription(description);
+
+        // 时间相关的处理
+        toModify.setStartDateTime(convertDateTime(dateString, timeString));
+        // 价格对应表的处理
+        toModify.setSeatPrices(convertPriceMap(nameListJson, priceListJson, curSpot));
+
+        boolean result = scheduleService.modifySchedule(toModify);
+        if (result) return new RequestReturnObject(RequestReturnObjectState.OK);
+        else return new RequestReturnObject(RequestReturnObjectState.INTERIOR_WRONG);
     }
 
     /**
@@ -157,5 +166,36 @@ public class ScheduleController {
             result.add(new ContentScheduleBrief(schedule, relativeSpot));
         }
         return result;
+    }
+
+    /**
+     * 将前端发回的日期时间String转换为LocalDateTime
+     */
+    private LocalDateTime convertDateTime(String dateString, String timeString) {
+        String[] dateParts = dateString.split("-");
+        String[] timeParts = timeString.split(":");
+        LocalDate date = LocalDate.of(Integer.parseInt(dateParts[0]), Integer.parseInt(dateParts[1]), Integer.parseInt(dateParts[2]));
+        LocalTime time = LocalTime.of(Integer.parseInt(timeParts[0]), Integer.parseInt(timeParts[1]), Integer.parseInt(timeParts[2]));
+        return LocalDateTime.of(date, time);
+    }
+
+    /**
+     * 将前端发回的日期时间String转换为LocalDateTime
+     */
+    private Map<SeatInfo, Double> convertPriceMap(String nameListJson, String priceListJson, Spot curSpot) throws SpotSeatDisorderException {
+        List<String> nameList = JSON.parseArray(nameListJson, String.class);
+        List<Double> priceList = JSON.parseArray(priceListJson, Double.class);
+        Map<SeatInfo, Double> priceMap = new LinkedHashMap<>();
+
+        // 按顺序发过去，按顺序接受，理应是顺序一样的，以防万一出错顺序不对，抛出异常
+        List<SeatInfo> seatInfos = curSpot.getSeatInfos();
+        for (int i = 0; i < seatInfos.size(); i++) {
+            SeatInfo curSeatInfo = seatInfos.get(i);
+            if (!curSeatInfo.getSeatName().equals(nameList.get(i))) throw new SpotSeatDisorderException();
+            else {
+                priceMap.put(curSeatInfo, priceList.get(i));
+            }
+        }
+        return priceMap;
     }
 }

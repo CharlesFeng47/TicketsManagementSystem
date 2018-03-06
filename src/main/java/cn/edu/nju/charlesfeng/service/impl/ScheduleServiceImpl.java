@@ -55,6 +55,11 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
+    public boolean modifySchedule(Schedule schedule) {
+        return scheduleDao.updateSchedule(schedule);
+    }
+
+    @Override
     public boolean checkTickets() {
         return false;
     }
