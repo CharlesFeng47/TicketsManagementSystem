@@ -6,6 +6,7 @@ import cn.edu.nju.charlesfeng.model.User;
 import cn.edu.nju.charlesfeng.service.LogInService;
 import cn.edu.nju.charlesfeng.util.enums.RequestReturnObjectState;
 import cn.edu.nju.charlesfeng.util.enums.UserType;
+import cn.edu.nju.charlesfeng.util.exceptions.UserHasBeenSignUpException;
 import cn.edu.nju.charlesfeng.util.exceptions.UserNotExistException;
 import cn.edu.nju.charlesfeng.util.exceptions.WrongPwdException;
 import org.apache.log4j.Logger;
@@ -60,6 +61,29 @@ public class LogInController {
     }
 
     /**
+     * 用户注册
+     *
+     * @return 该用户对应的token
+     */
+    @PostMapping("sign_up")
+    public RequestReturnObject memberSignUp(@RequestParam("username") String uid, @RequestParam("password") String pwd,
+                                            @RequestParam("email") String email, HttpServletRequest request) {
+        logger.debug("INTO /login/sign_up");
+        try {
+            User curUser = logInService.registerMember(uid, pwd, email);
+
+            String token = "MEMBER: " + curUser.getId();
+            HttpSession session = request.getSession();
+            session.setAttribute(token, curUser);
+            return new RequestReturnObject(RequestReturnObjectState.OK, token);
+        } catch (UserNotExistException e) {
+            return new RequestReturnObject(RequestReturnObjectState.USER_NOT_EXIST);
+        } catch (UserHasBeenSignUpException e) {
+            return new RequestReturnObject(RequestReturnObjectState.USER_HAS_BEEN_SIGN_UP);
+        }
+    }
+
+    /**
      * 用户根据Token获取相应名字和角色
      */
     @PostMapping("info")
@@ -77,7 +101,7 @@ public class LogInController {
      * 用户登出
      */
     @PostMapping("logout")
-    public RequestReturnObject login(@RequestParam("token") String token, HttpServletRequest request) {
+    public RequestReturnObject logout(@RequestParam("token") String token, HttpServletRequest request) {
         logger.debug("INTO /login/logout");
         HttpSession session = request.getSession();
         session.setAttribute(token, null);

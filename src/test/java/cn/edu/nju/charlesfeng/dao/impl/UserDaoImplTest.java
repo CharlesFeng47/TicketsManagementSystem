@@ -82,11 +82,11 @@ public class UserDaoImplTest {
 
     @Test
     public void testMember() throws Exception {
-        Member member1 = new Member("suzy", "qwertyuiop123456");
+        Member member1 = new Member("suzy", "qwertyuiop123456", "12345@126.com");
         String saveResult = dao.saveUser(member1, UserType.MEMBER);
         logger.debug(saveResult);
 
-        Member member2 = new Member("suzy", "qwertyuiop");
+        Member member2 = new Member("suzy", "qwertyuiop", "1234567890@126.com");
         boolean updateResult = dao.updateUser(member2, UserType.MEMBER);
         logger.debug(updateResult);
 

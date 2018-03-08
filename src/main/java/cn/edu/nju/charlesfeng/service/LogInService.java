@@ -6,6 +6,7 @@ import cn.edu.nju.charlesfeng.entity.Spot;
 import cn.edu.nju.charlesfeng.model.Seat;
 import cn.edu.nju.charlesfeng.model.User;
 import cn.edu.nju.charlesfeng.util.enums.UserType;
+import cn.edu.nju.charlesfeng.util.exceptions.UserHasBeenSignUpException;
 import cn.edu.nju.charlesfeng.util.exceptions.UserNotExistException;
 import cn.edu.nju.charlesfeng.util.exceptions.WrongPwdException;
 
@@ -17,11 +18,12 @@ import java.util.List;
 public interface LogInService {
 
     /**
-     * @param id  欲登录的会员ID
-     * @param pwd 欲登录的会员密码
+     * @param id    欲登录的会员ID
+     * @param pwd   欲登录的会员密码
+     * @param email 欲登录的会员邮箱
      * @return 【会员】是否成功注册，成功则返回此会员实体
      */
-    Member registerMember(String id, String pwd) throws UserNotExistException;
+    Member registerMember(String id, String pwd, String email) throws UserNotExistException, UserHasBeenSignUpException;
 
     /**
      * @param id        此场馆的ID

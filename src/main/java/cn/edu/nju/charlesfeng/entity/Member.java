@@ -18,7 +18,7 @@ public class Member extends User implements Serializable {
      * 会员邮箱
      */
     @Column(name = "email", nullable = false)
-    private int email;
+    private String email;
 
     /**
      * 会员等级
@@ -38,7 +38,7 @@ public class Member extends User implements Serializable {
     @Column(name = "invalidated", nullable = false)
     private boolean invalidated;
 
-    public Member(String id, String pwd, int email, int level, boolean activated, boolean invalidated) {
+    public Member(String id, String pwd, String email, int level, boolean activated, boolean invalidated) {
         super(id, pwd);
         this.email = email;
         this.level = level;
@@ -46,8 +46,9 @@ public class Member extends User implements Serializable {
         this.invalidated = invalidated;
     }
 
-    public Member(String id, String pwd) {
+    public Member(String id, String pwd, String email) {
         super(id, pwd);
+        this.email = email;
         this.level = 1;
         this.activated = false;
         this.invalidated = false;
@@ -56,11 +57,11 @@ public class Member extends User implements Serializable {
     public Member() {
     }
 
-    public int getEmail() {
+    public String getEmail() {
         return email;
     }
 
-    public void setEmail(int email) {
+    public void setEmail(String email) {
         this.email = email;
     }
 

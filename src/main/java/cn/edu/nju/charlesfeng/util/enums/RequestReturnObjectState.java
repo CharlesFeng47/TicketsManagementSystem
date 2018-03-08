@@ -14,7 +14,9 @@ public enum RequestReturnObjectState implements Serializable {
     // 用户密码错误
     USER_PWD_WRONG(2),
     // 内部计算错误
-    INTERIOR_WRONG(3);
+    INTERIOR_WRONG(3),
+    // 会员名已被注册
+    USER_HAS_BEEN_SIGN_UP(4);
 
     private int repre;
 

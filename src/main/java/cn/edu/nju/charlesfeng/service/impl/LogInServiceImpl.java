@@ -8,12 +8,14 @@ import cn.edu.nju.charlesfeng.model.Seat;
 import cn.edu.nju.charlesfeng.model.User;
 import cn.edu.nju.charlesfeng.service.LogInService;
 import cn.edu.nju.charlesfeng.util.enums.UserType;
+import cn.edu.nju.charlesfeng.util.exceptions.UserHasBeenSignUpException;
 import cn.edu.nju.charlesfeng.util.exceptions.UserNotExistException;
 import cn.edu.nju.charlesfeng.util.exceptions.WrongPwdException;
 import com.alibaba.fastjson.JSON;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.LinkedList;
 import java.util.List;
 
 @Service
@@ -27,10 +29,14 @@ public class LogInServiceImpl implements LogInService {
     }
 
     @Override
-    public Member registerMember(String id, String pwd) throws UserNotExistException {
-        Member newMember = new Member(id, pwd);
-        dao.saveUser(newMember, UserType.MEMBER);
-        return (Member) dao.getUser(id, UserType.MEMBER);
+    public Member registerMember(String id, String pwd, String email) throws UserNotExistException, UserHasBeenSignUpException {
+        List<String> allMemberIds = getAllIds(dao.getAllUser(UserType.MEMBER));
+        if (allMemberIds.indexOf(id) >= 0) throw new UserHasBeenSignUpException();
+        else {
+            Member newMember = new Member(id, pwd, email);
+            dao.saveUser(newMember, UserType.MEMBER);
+            return (Member) dao.getUser(id, UserType.MEMBER);
+        }
     }
 
     // TODO 生成id
@@ -47,5 +53,16 @@ public class LogInServiceImpl implements LogInService {
         User user = dao.getUser(id, userType);
         if (user.getPwd().equals(pwd)) return user;
         else throw new WrongPwdException();
+    }
+
+    /**
+     * 获取用户的所有Id
+     */
+    private List<String> getAllIds(List<User> users) {
+        List<String> ids = new LinkedList<>();
+        for (User user : users) {
+            ids.add(user.getId());
+        }
+        return ids;
     }
 }
