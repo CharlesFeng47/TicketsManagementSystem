@@ -104,14 +104,17 @@ public class UserDaoImplTest {
         seatInfos.add(seat2);
         seatInfos.add(seat3);
 
-        List<Seat> allSeats = new LinkedList<>();
-        allSeats.add(new Seat(1, 1));
-        allSeats.add(new Seat(1, 2));
-        allSeats.add(new Seat(1, 3));
-        allSeats.add(new Seat(2, 1));
-        allSeats.add(new Seat(2, 2));
-        allSeats.add(new Seat(2, 3));
-        String allSeatsJson = JSON.toJSONString(allSeats);
+        String allSeatsJson = "[\n" +
+                "          'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',\n" +
+                "          'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb',\n" +
+                "          'cccccccccccccccccccccccccccccccccccccccccccccccccc',\n" +
+                "          'dddddddddddddddddddddddddddddddddddddddddddddddddd',\n" +
+                "          'eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',\n" +
+                "          'ffffffffffffffffffffffffffffffffffffffffffffffffff',\n" +
+                "          'gggggggggggggggggggggggggggggggggggggggggggggggggg',\n" +
+                "          'hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh',\n" +
+                "          'iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii'\n" +
+                "        ]";
 
         Spot spot1 = new Spot("0000001", "qwertyuiop", "重庆江北大剧院", false, "重庆江北嘴", seatInfos, allSeatsJson);
         String saveResult = dao.saveUser(spot1, UserType.SPOT);
@@ -130,7 +133,11 @@ public class UserDaoImplTest {
 
     @Test
     public void testSpot2() throws Exception {
-        String sid = generateSeatId();
+        LocalDateTime now = LocalDateTime.now();
+        StringBuilder sb = new StringBuilder();
+        sb.append("s").append(now.getMonthValue()).append(now.getDayOfMonth());
+        sb.append(now.getHour()).append(now.getMinute()).append(now.getSecond());
+        String sid = sb.toString();
         SeatInfo seat1 = new SeatInfo(sid + "/1", "金座", 200);
         SeatInfo seat2 = new SeatInfo(sid + "/2", "银座", 400);
         SeatInfo seat3 = new SeatInfo(sid + "/3", "铜座", 1000);
@@ -175,13 +182,4 @@ public class UserDaoImplTest {
             logger.debug(user.getId());
         }
     }
-
-    private String generateSeatId() {
-        LocalDateTime now = LocalDateTime.now();
-        StringBuilder sb = new StringBuilder();
-        sb.append("s").append(now.getMonthValue()).append(now.getDayOfMonth());
-        sb.append(now.getHour()).append(now.getMinute()).append(now.getSecond());
-        return sb.toString();
-    }
-
 }

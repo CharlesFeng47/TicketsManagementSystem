@@ -41,19 +41,10 @@ public class Spot extends User implements Serializable {
     /**
      * 此场馆中座位的具体情况 json 串
      */
-    @Column(name = "all_seats_json")
+    @Column(name = "all_seats_json", nullable = false)
     private String allSeatsJson;
 
     public Spot() {
-    }
-
-    public Spot(String pwd, String spotName, boolean examined, String site, List<SeatInfo> seatInfos, String allSeatsJson) {
-        super.setPwd(pwd);
-        this.spotName = spotName;
-        this.examined = examined;
-        this.site = site;
-        this.seatInfos = seatInfos;
-        this.allSeatsJson = allSeatsJson;
     }
 
     public Spot(String id, String pwd, String spotName, boolean examined, String site, List<SeatInfo> seatInfos, String allSeatsJson) {
