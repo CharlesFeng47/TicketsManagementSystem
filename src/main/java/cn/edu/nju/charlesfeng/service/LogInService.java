@@ -25,14 +25,15 @@ public interface LogInService {
     Member registerMember(String id, String pwd, String email) throws UserNotExistException, UserHasBeenSignUpException;
 
     /**
-     * @param pwd          场馆使用的密码
-     * @param spotName     此场馆的名称
-     * @param site         此场馆的地点
-     * @param seatInfos    此场馆的座位信息
-     * @param seatsMapJson 此场馆中的座位表JSON
+     * @param pwd              场馆使用的密码
+     * @param spotName         此场馆的名称
+     * @param site             此场馆的地点
+     * @param seatInfos        此场馆的座位信息
+     * @param seatsMapJson     此场馆中的座位表JSON
+     * @param curSeatTypeCount 此场馆中的座位类型数量
      * @return 【场馆】是否成功注册，成功则返回此场馆实体
      */
-    Spot registerSpot(String pwd, String spotName, String site, List<SeatInfo> seatInfos, String seatsMapJson) throws UserNotExistException;
+    Spot registerSpot(String pwd, String spotName, String site, List<SeatInfo> seatInfos, String seatsMapJson, int curSeatTypeCount) throws UserNotExistException;
 
     /**
      * 【所有用户】的登录

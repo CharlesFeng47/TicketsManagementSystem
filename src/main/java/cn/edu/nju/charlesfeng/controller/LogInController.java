@@ -95,13 +95,14 @@ public class LogInController {
     @PostMapping("spot_sign_up")
     public RequestReturnObject spotSignUp(@RequestParam("password") String pwd, @RequestParam("name") String spotName,
                                           @RequestParam("site") String site, @RequestParam("seatInfos") String seatInfosJson,
-                                          @RequestParam("seatsMap") String seatsMapJson, HttpServletRequest request) {
+                                          @RequestParam("seatsMap") String seatsMapJson, @RequestParam("curSeatTypeCount") int curSeatTypeCount,
+                                          HttpServletRequest request) {
         logger.debug("INTO /login/spot_sign_up");
 
         List<SeatInfo> seatInfos = JSON.parseArray(seatInfosJson, SeatInfo.class);
 
         try {
-            Spot curSpot = logInService.registerSpot(pwd, spotName, site, seatInfos, seatsMapJson);
+            Spot curSpot = logInService.registerSpot(pwd, spotName, site, seatInfos, seatsMapJson, curSeatTypeCount);
             String token = "SPOT: " + curSpot.getId();
             HttpSession session = request.getSession();
             session.setAttribute(token, curSpot);

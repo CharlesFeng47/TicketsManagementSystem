@@ -44,16 +44,23 @@ public class Spot extends User implements Serializable {
     @Column(name = "all_seats_json", nullable = false)
     private String allSeatsJson;
 
+    /**
+     * 此场馆座位图中的座位类型数量
+     */
+    @Column(name = "seat_type_count", nullable = false)
+    private int curSeatTypeCount;
+
     public Spot() {
     }
 
-    public Spot(String id, String pwd, String spotName, boolean examined, String site, List<SeatInfo> seatInfos, String allSeatsJson) {
+    public Spot(String id, String pwd, String spotName, boolean examined, String site, List<SeatInfo> seatInfos, String allSeatsJson, int curSeatTypeCount) {
         super(id, pwd);
         this.spotName = spotName;
         this.examined = examined;
         this.site = site;
         this.seatInfos = seatInfos;
         this.allSeatsJson = allSeatsJson;
+        this.curSeatTypeCount = curSeatTypeCount;
     }
 
     public String getSpotName() {
@@ -94,5 +101,13 @@ public class Spot extends User implements Serializable {
 
     public void setAllSeatsJson(String allSeatsJson) {
         this.allSeatsJson = allSeatsJson;
+    }
+
+    public int getCurSeatTypeCount() {
+        return curSeatTypeCount;
+    }
+
+    public void setCurSeatTypeCount(int curSeatTypeCount) {
+        this.curSeatTypeCount = curSeatTypeCount;
     }
 }

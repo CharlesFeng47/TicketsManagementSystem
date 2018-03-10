@@ -6,6 +6,7 @@ import cn.edu.nju.charlesfeng.entity.SeatInfo;
 import cn.edu.nju.charlesfeng.entity.Spot;
 import cn.edu.nju.charlesfeng.model.User;
 import cn.edu.nju.charlesfeng.service.LogInService;
+import cn.edu.nju.charlesfeng.util.SeatInfoIdGenerator;
 import cn.edu.nju.charlesfeng.util.enums.UserType;
 import cn.edu.nju.charlesfeng.util.exceptions.UserHasBeenSignUpException;
 import cn.edu.nju.charlesfeng.util.exceptions.UserNotExistException;
@@ -13,7 +14,6 @@ import cn.edu.nju.charlesfeng.util.exceptions.WrongPwdException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -39,8 +39,8 @@ public class LogInServiceImpl implements LogInService {
     }
 
     @Override
-    public Spot registerSpot(String pwd, String spotName, String site, List<SeatInfo> seatInfos, String seatsMapJson) throws UserNotExistException {
-        String sidBase = generateSeatId();
+    public Spot registerSpot(String pwd, String spotName, String site, List<SeatInfo> seatInfos, String seatsMapJson, int curSeatTypeCount) throws UserNotExistException {
+        String sidBase = SeatInfoIdGenerator.generateSeatId();
         for (int i = 0; i < seatInfos.size(); i++) {
             SeatInfo curSeatInfo = seatInfos.get(i);
             curSeatInfo.setId(sidBase + "/" + i);
@@ -54,7 +54,7 @@ public class LogInServiceImpl implements LogInService {
             if (allSpotIds.indexOf(spotId) < 0) break;
         }
 
-        Spot newSpot = new Spot(spotId, pwd, spotName, false, site, seatInfos, seatsMapJson);
+        Spot newSpot = new Spot(spotId, pwd, spotName, false, site, seatInfos, seatsMapJson, curSeatTypeCount);
         String curSpotId = dao.saveUser(newSpot, UserType.SPOT);
         return (Spot) dao.getUser(curSpotId, UserType.SPOT);
     }
@@ -75,14 +75,6 @@ public class LogInServiceImpl implements LogInService {
             ids.add(user.getId());
         }
         return ids;
-    }
-
-    private String generateSeatId() {
-        LocalDateTime now = LocalDateTime.now();
-        StringBuilder sb = new StringBuilder();
-        sb.append("s").append(now.getMonthValue()).append(now.getDayOfMonth());
-        sb.append(now.getHour()).append(now.getMinute()).append(now.getSecond());
-        return sb.toString();
     }
 
     private String convertToSevenId(int id) {

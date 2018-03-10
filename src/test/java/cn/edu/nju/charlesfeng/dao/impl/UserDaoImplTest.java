@@ -116,14 +116,14 @@ public class UserDaoImplTest {
                 "          'iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii'\n" +
                 "        ]";
 
-        Spot spot1 = new Spot("0000001", "qwertyuiop", "重庆江北大剧院", false, "重庆江北嘴", seatInfos, allSeatsJson);
+        Spot spot1 = new Spot("0000001", "qwertyuiop", "重庆江北大剧院", false, "重庆江北嘴", seatInfos, allSeatsJson, 2);
         String saveResult = dao.saveUser(spot1, UserType.SPOT);
         logger.debug(saveResult);
 
         SeatInfo seat2new = new SeatInfo("s2", "二等座", 150);
         seatInfos.remove(seat2);
         seatInfos.add(seat2new);
-        Spot spot2 = new Spot("0000001", "qwertyuiop", "重庆江北大剧院", false, "重庆江北嘴", seatInfos, allSeatsJson);
+        Spot spot2 = new Spot("0000001", "qwertyuiop", "重庆江北大剧院", false, "重庆江北嘴", seatInfos, allSeatsJson, 2);
         boolean updateResult = dao.updateUser(spot2, UserType.SPOT);
         logger.debug(updateResult);
 
@@ -157,7 +157,7 @@ public class UserDaoImplTest {
         allSeats.add(new Seat(2, 4));
         String allSeatsJson = JSON.toJSONString(allSeats);
 
-        Spot spot1 = new Spot("0000002", "qwertyuiop", "南京江苏大剧院", false, "南京河西新区", seatInfos, allSeatsJson);
+        Spot spot1 = new Spot("0000002", "qwertyuiop", "南京江苏大剧院", false, "南京河西新区", seatInfos, allSeatsJson, 2);
         String saveResult = dao.saveUser(spot1, UserType.SPOT);
         logger.debug(saveResult);
 
