@@ -6,7 +6,7 @@ import cn.edu.nju.charlesfeng.entity.SeatInfo;
 import cn.edu.nju.charlesfeng.entity.Spot;
 import cn.edu.nju.charlesfeng.model.User;
 import cn.edu.nju.charlesfeng.service.LogInService;
-import cn.edu.nju.charlesfeng.util.SeatInfoIdGenerator;
+import cn.edu.nju.charlesfeng.util.IdGenerator;
 import cn.edu.nju.charlesfeng.util.enums.UserType;
 import cn.edu.nju.charlesfeng.util.exceptions.UserHasBeenSignUpException;
 import cn.edu.nju.charlesfeng.util.exceptions.UserNotExistException;
@@ -40,7 +40,7 @@ public class LogInServiceImpl implements LogInService {
 
     @Override
     public Spot registerSpot(String pwd, String spotName, String site, List<SeatInfo> seatInfos, String seatsMapJson, int curSeatTypeCount) throws UserNotExistException {
-        String sidBase = SeatInfoIdGenerator.generateSeatId();
+        String sidBase = IdGenerator.generateSeatId();
         for (int i = 0; i < seatInfos.size(); i++) {
             SeatInfo curSeatInfo = seatInfos.get(i);
             curSeatInfo.setId(sidBase + "/" + i);

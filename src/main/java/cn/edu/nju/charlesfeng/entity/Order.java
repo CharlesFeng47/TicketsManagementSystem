@@ -1,11 +1,9 @@
 package cn.edu.nju.charlesfeng.entity;
 
+import cn.edu.nju.charlesfeng.util.enums.OrderState;
 import cn.edu.nju.charlesfeng.util.enums.OrderType;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 /**
@@ -20,6 +18,20 @@ public class Order {
      */
     @Id
     private int id;
+
+    /**
+     * 会员ID
+     */
+    @ManyToOne
+    @JoinColumn(name = "uid", nullable = false)
+    private Member member;
+
+    /**
+     * 订单下达的计划ID
+     */
+    @ManyToOne
+    @JoinColumn(name = "sid", nullable = false)
+    private Schedule schedule;
 
     /**
      * 订单的类型
@@ -42,20 +54,14 @@ public class Order {
     /**
      * 此订单中包含的座位具体情况 json 串
      */
-    @Column(name = "ordered_seats_json")
+    @Column(name = "ordered_seats_json", nullable = false)
     private String orderedSeatsJson;
 
     /**
-     * 已经支付
+     * 订单状态
      */
-    @Column(name = "has_payed", nullable = false)
-    private boolean hasPayed;
-
-    /**
-     * 已经退款
-     */
-    @Column(name = "has_refunded", nullable = false)
-    private boolean hasRefunded;
+    @Column(name = "state", nullable = false)
+    private OrderState orderState;
 
     public Order() {
     }
@@ -66,6 +72,22 @@ public class Order {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public Member getMember() {
+        return member;
+    }
+
+    public void setMember(Member member) {
+        this.member = member;
+    }
+
+    public Schedule getSchedule() {
+        return schedule;
+    }
+
+    public void setSchedule(Schedule schedule) {
+        this.schedule = schedule;
     }
 
     public OrderType getOrderType() {
@@ -100,19 +122,11 @@ public class Order {
         this.orderedSeatsJson = orderedSeatsJson;
     }
 
-    public boolean isHasPayed() {
-        return hasPayed;
+    public OrderState getOrderState() {
+        return orderState;
     }
 
-    public void setHasPayed(boolean hasPayed) {
-        this.hasPayed = hasPayed;
-    }
-
-    public boolean isHasRefunded() {
-        return hasRefunded;
-    }
-
-    public void setHasRefunded(boolean hasRefunded) {
-        this.hasRefunded = hasRefunded;
+    public void setOrderState(OrderState orderState) {
+        this.orderState = orderState;
     }
 }

@@ -1,8 +1,14 @@
 package cn.edu.nju.charlesfeng.dao.impl;
 
 import cn.edu.nju.charlesfeng.dao.OrderDao;
+import cn.edu.nju.charlesfeng.dao.ScheduleDao;
+import cn.edu.nju.charlesfeng.dao.UserDao;
+import cn.edu.nju.charlesfeng.entity.Member;
 import cn.edu.nju.charlesfeng.entity.Order;
+import cn.edu.nju.charlesfeng.entity.Schedule;
+import cn.edu.nju.charlesfeng.util.enums.OrderState;
 import cn.edu.nju.charlesfeng.util.enums.OrderType;
+import cn.edu.nju.charlesfeng.util.enums.UserType;
 import cn.edu.nju.charlesfeng.util.testUtil.DaoTestHelper;
 import org.junit.After;
 import org.junit.Before;
@@ -19,11 +25,17 @@ import java.time.LocalDateTime;
  */
 public class OrderDaoImplTest {
 
-    private OrderDao dao;
+    private OrderDao orderDao;
+
+    private UserDao userDao;
+
+    private ScheduleDao scheduleDao;
 
     @Before
     public void before() throws Exception {
-        dao = DaoTestHelper.orderDao;
+        orderDao = DaoTestHelper.orderDao;
+        userDao = DaoTestHelper.userDao;
+        scheduleDao = DaoTestHelper.scheduleDao;
     }
 
     @After
@@ -35,7 +47,7 @@ public class OrderDaoImplTest {
      */
     @Test
     public void testGetOrder() throws Exception {
-        Order order = dao.getOrder(0);
+        Order order = orderDao.getOrder(0);
     }
 
     /**
@@ -44,11 +56,19 @@ public class OrderDaoImplTest {
     @Test
     public void testSaveOrder() throws Exception {
         Order order = new Order();
-        order.setOrderTime(LocalDateTime.now());
         order.setOrderType(OrderType.NOT_CHOOSE_SEATS);
+        order.setOrderTime(LocalDateTime.now());
         order.setTotalPrice(100);
+        order.setOrderedSeatsJson("");
+        order.setOrderState(OrderState.ORDERED);
 
-        dao.saveOrder(order);
+        Member curMember = (Member) userDao.getUser("suzy", UserType.MEMBER);
+        order.setMember(curMember);
+
+        Schedule curSchedule = scheduleDao.getSchedule("2018313224754");
+        order.setSchedule(curSchedule);
+
+        orderDao.saveOrder(order);
     }
 
     /**
@@ -56,9 +76,9 @@ public class OrderDaoImplTest {
      */
     @Test
     public void testUpdateOrder() throws Exception {
-        Order order = dao.getOrder(0);
+        Order order = orderDao.getOrder(1);
         order.setOrderTime(LocalDateTime.now());
-        dao.updateOrder(order);
+        orderDao.updateOrder(order);
     }
 
 
