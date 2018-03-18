@@ -26,6 +26,12 @@ public class Member extends User implements Serializable {
     @Column(name = "level", nullable = false)
     private int level;
 
+//    /**
+//     * 此会员的优惠券
+//     */
+//    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+//    private List<Coupon> coupons;
+
     /**
      * 会员是否已经被激活
      */
@@ -38,18 +44,11 @@ public class Member extends User implements Serializable {
     @Column(name = "invalidated", nullable = false)
     private boolean invalidated;
 
-    public Member(String id, String pwd, String email, int level, boolean activated, boolean invalidated) {
-        super(id, pwd);
-        this.email = email;
-        this.level = level;
-        this.activated = activated;
-        this.invalidated = invalidated;
-    }
-
     public Member(String id, String pwd, String email) {
         super(id, pwd);
         this.email = email;
         this.level = 1;
+//        this.coupons = new LinkedList<>();
         this.activated = false;
         this.invalidated = false;
     }
@@ -72,6 +71,14 @@ public class Member extends User implements Serializable {
     public void setLevel(int level) {
         this.level = level;
     }
+
+//    public List<Coupon> getCoupons() {
+//        return coupons;
+//    }
+//
+//    public void setCoupons(List<Coupon> coupons) {
+//        this.coupons = coupons;
+//    }
 
     public boolean isActivated() {
         return activated;
