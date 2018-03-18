@@ -5,7 +5,6 @@ import cn.edu.nju.charlesfeng.util.enums.OrderType;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Map;
 
 /**
  * 订单实体
@@ -18,6 +17,7 @@ public class Order {
      * 订单标志符ID
      */
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     /**
@@ -33,6 +33,12 @@ public class Order {
     @ManyToOne
     @JoinColumn(name = "sid", nullable = false)
     private Schedule schedule;
+
+    /**
+     * 订单状态
+     */
+    @Column(name = "state", nullable = false)
+    private OrderState orderState;
 
     /**
      * 订单的类型
@@ -53,32 +59,18 @@ public class Order {
     private double totalPrice;
 
     /**
-     * 订单中各类型座位及其数量的map
-     * 若订单类型为NOT_CHOOSE_SEATS，此项则只有一项entry
+     * 订单类型为NOT_CHOOSE_SEATS时，选择的座位情况
      */
-    @ElementCollection(fetch = FetchType.EAGER)
-    @MapKeyColumn(name = "seat_id")
-    @Column(name = "seat_num", nullable = false)
-    @CollectionTable(
-            name = "order_seat_num",
-            joinColumns = {
-                    @JoinColumn(name = "order_id")
-            }
-    )
-    private Map<SeatInfo, Integer> seats;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "ncs_id")
+    private NotChoseSeats notChoseSeats;
 
     /**
-     * 此订单中包含的座位具体情况 json 串
-     * 若订单类型为NOT_CHOOSE_SEATS，此项可为空
+     * 此订单中包含的座位具体情况 json 串【因为其信息本身就比较冗余，所以以 json 串形式存储，不再单独映射为表】
+     * 若订单类型为NOT_CHOOSE_SEATS，此项可暂为空
      */
     @Column(name = "ordered_seats_json")
     private String orderedSeatsJson;
-
-    /**
-     * 订单状态
-     */
-    @Column(name = "state", nullable = false)
-    private OrderState orderState;
 
     public Order() {
     }
@@ -131,12 +123,12 @@ public class Order {
         this.totalPrice = totalPrice;
     }
 
-    public Map<SeatInfo, Integer> getSeats() {
-        return seats;
+    public NotChoseSeats getNotChoseSeats() {
+        return notChoseSeats;
     }
 
-    public void setSeats(Map<SeatInfo, Integer> seats) {
-        this.seats = seats;
+    public void setNotChoseSeats(NotChoseSeats notChoseSeats) {
+        this.notChoseSeats = notChoseSeats;
     }
 
     public String getOrderedSeatsJson() {

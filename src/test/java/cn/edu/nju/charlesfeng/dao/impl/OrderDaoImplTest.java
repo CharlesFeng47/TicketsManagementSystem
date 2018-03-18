@@ -4,6 +4,7 @@ import cn.edu.nju.charlesfeng.dao.OrderDao;
 import cn.edu.nju.charlesfeng.dao.ScheduleDao;
 import cn.edu.nju.charlesfeng.dao.UserDao;
 import cn.edu.nju.charlesfeng.entity.Member;
+import cn.edu.nju.charlesfeng.entity.NotChoseSeats;
 import cn.edu.nju.charlesfeng.entity.Order;
 import cn.edu.nju.charlesfeng.entity.Schedule;
 import cn.edu.nju.charlesfeng.util.enums.OrderState;
@@ -59,8 +60,15 @@ public class OrderDaoImplTest {
         order.setOrderType(OrderType.NOT_CHOOSE_SEATS);
         order.setOrderTime(LocalDateTime.now());
         order.setTotalPrice(100);
-        order.setOrderedSeatsJson("");
         order.setOrderState(OrderState.ORDERED);
+
+        NotChoseSeats ncs = new NotChoseSeats();
+        ncs.setNum(100);
+        ncs.setPrice(200);
+        ncs.setSeatName("一等座");
+
+        ncs.setOrder(order);
+        order.setNotChoseSeats(ncs);
 
         Member curMember = (Member) userDao.getUser("suzy", UserType.MEMBER);
         order.setMember(curMember);

@@ -25,6 +25,10 @@
                 </bean>
                 <bean class="cn.edu.nju.charlesfeng.spring.formatter.ScheduleItemTypeFormatter">
                 </bean>
+                <bean class="cn.edu.nju.charlesfeng.spring.formatter.OrderTypeFormatter">
+                </bean>
+                <bean class="cn.edu.nju.charlesfeng.spring.formatter.ContentNotChoseSeatsFormatter">
+                </bean>
             </set>
         </property>
     </bean>
