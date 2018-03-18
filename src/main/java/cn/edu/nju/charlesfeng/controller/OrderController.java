@@ -3,16 +3,24 @@ package cn.edu.nju.charlesfeng.controller;
 import cn.edu.nju.charlesfeng.entity.Member;
 import cn.edu.nju.charlesfeng.entity.NotChoseSeats;
 import cn.edu.nju.charlesfeng.entity.Order;
+import cn.edu.nju.charlesfeng.entity.Spot;
+import cn.edu.nju.charlesfeng.model.ContentOrder;
+import cn.edu.nju.charlesfeng.model.ContentOrderBrief;
 import cn.edu.nju.charlesfeng.model.RequestReturnObject;
 import cn.edu.nju.charlesfeng.service.OrderService;
+import cn.edu.nju.charlesfeng.service.UserService;
 import cn.edu.nju.charlesfeng.util.enums.OrderType;
 import cn.edu.nju.charlesfeng.util.enums.RequestReturnObjectState;
+import cn.edu.nju.charlesfeng.util.exceptions.UserNotExistException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 对订单信息的控制器
@@ -25,9 +33,12 @@ public class OrderController {
 
     private final OrderService orderService;
 
+    private UserService userService;
+
     @Autowired
-    public OrderController(OrderService orderService) {
+    public OrderController(OrderService orderService, UserService userService) {
         this.orderService = orderService;
+        this.userService = userService;
     }
 
     /**
@@ -54,11 +65,46 @@ public class OrderController {
     }
 
     /**
+     * 获取所有订单的简历
+     */
+    @GetMapping("/all")
+    public RequestReturnObject getAllOrders(String mid) {
+        if (mid == null || mid.equals("")) {
+            return new RequestReturnObject(RequestReturnObjectState.ORDER_MEMBER_ID_MISS);
+        } else {
+            logger.debug("INTO /order/all?mid=" + mid);
+            List<Order> allOrders = orderService.getMyOrders(mid);
+            return new RequestReturnObject(RequestReturnObjectState.OK, getBrief(allOrders));
+        }
+    }
+
+    /**
      * 获取单条订单
      */
     @GetMapping("/{oid}")
-    public RequestReturnObject getOneOrder(@PathVariable("oid") String oidRepre) {
-        logger.debug("INTO /order/" + oidRepre);
-        return null;
+    public RequestReturnObject getOneOrder(@PathVariable("oid") int oid) {
+        logger.debug("INTO /order/" + oid);
+        try {
+            Order order = orderService.checkOrderDetail(oid);
+            Map<String, Spot> spotMap = userService.getAllSpotIdMap();
+
+            ContentOrder result = new ContentOrder(order, spotMap.get(order.getSchedule().getSpotId()));
+            return new RequestReturnObject(RequestReturnObjectState.OK, result);
+
+        } catch (UserNotExistException e) {
+            return new RequestReturnObject(RequestReturnObjectState.INTERIOR_WRONG);
+        }
+
+    }
+
+    /**
+     * @return 获取订单对应的简介
+     */
+    private List<ContentOrderBrief> getBrief(List<Order> orders) {
+        List<ContentOrderBrief> result = new LinkedList<>();
+        for (Order order : orders) {
+            result.add(new ContentOrderBrief(order));
+        }
+        return result;
     }
 }

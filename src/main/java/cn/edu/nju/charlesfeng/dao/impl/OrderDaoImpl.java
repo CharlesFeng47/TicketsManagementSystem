@@ -6,6 +6,8 @@ import cn.edu.nju.charlesfeng.entity.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public class OrderDaoImpl implements OrderDao {
 
@@ -19,6 +21,11 @@ public class OrderDaoImpl implements OrderDao {
     @Override
     public Order getOrder(int id) {
         return (Order) baseDao.get(Order.class, id);
+    }
+
+    @Override
+    public List<Order> getAllOrders() {
+        return baseDao.getAllList(Order.class);
     }
 
     @Override

@@ -21,14 +21,14 @@ public class Order {
     private int id;
 
     /**
-     * 会员ID
+     * 会员
      */
     @ManyToOne
     @JoinColumn(name = "uid", nullable = false)
     private Member member;
 
     /**
-     * 订单下达的计划ID
+     * 订单下达的计划
      */
     @ManyToOne
     @JoinColumn(name = "sid", nullable = false)

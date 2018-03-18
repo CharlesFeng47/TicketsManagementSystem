@@ -49,7 +49,7 @@ public class ScheduleController {
     }
 
     /**
-     * @return 所有日程的简介
+     * @return 所有日程／某一场馆的所有日程的简介
      */
     @GetMapping("all")
     public RequestReturnObject getSchedules(String spotId) {

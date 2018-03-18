@@ -2,6 +2,8 @@ package cn.edu.nju.charlesfeng.dao;
 
 import cn.edu.nju.charlesfeng.entity.Order;
 
+import java.util.List;
+
 /**
  * 数据层对订单的服务操作
  */
@@ -12,6 +14,11 @@ public interface OrderDao {
      * @return 该订单的实体对象
      */
     Order getOrder(int id);
+
+    /**
+     * @return 所有的订单实体
+     */
+    List<Order> getAllOrders();
 
     /**
      * @param order 欲保存的订单实体

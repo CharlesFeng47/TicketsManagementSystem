@@ -1,44 +1,40 @@
-package cn.edu.nju.charlesfeng.entity;
+package cn.edu.nju.charlesfeng.model;
 
-import javax.persistence.*;
+import cn.edu.nju.charlesfeng.entity.NotChoseSeats;
 
 /**
- * 不选座购票时的座位类型信息
+ * 不选座购票时的座位类型信息，供前端使用。（移除Order，避免JSON转换）
  */
-@Entity
-@Table(name = "not_chose_seats")
-public class NotChoseSeats {
+public class ContentNotChoseSeats {
 
     /**
      * 此座位情况的标志符
      */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     /**
      * 此座位情况所在的座位类型名称
      */
-    @Column(name = "name", nullable = false)
     private String seatName;
 
     /**
      * 此座位情况的购买数量
      */
-    @Column(name = "num", nullable = false)
     private int num;
 
     /**
      * 此座位情况的价格
      */
-    @Column(name = "price", nullable = false)
     private double price;
 
-    /**
-     * 此座位情况关联的订单对象
-     */
-    @OneToOne(mappedBy = "notChoseSeats")
-    private Order order;
+    public ContentNotChoseSeats(NotChoseSeats notChoseSeats) {
+        if (notChoseSeats != null) {
+            this.id = notChoseSeats.getId();
+            this.seatName = notChoseSeats.getSeatName();
+            this.num = notChoseSeats.getNum();
+            this.price = notChoseSeats.getPrice();
+        }
+    }
 
     public int getId() {
         return id;
@@ -70,13 +66,5 @@ public class NotChoseSeats {
 
     public void setPrice(double price) {
         this.price = price;
-    }
-
-    public Order getOrder() {
-        return order;
-    }
-
-    public void setOrder(Order order) {
-        this.order = order;
     }
 }

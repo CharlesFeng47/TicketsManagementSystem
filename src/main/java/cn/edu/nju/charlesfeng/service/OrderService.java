@@ -5,16 +5,12 @@ import cn.edu.nju.charlesfeng.entity.NotChoseSeats;
 import cn.edu.nju.charlesfeng.entity.Order;
 import cn.edu.nju.charlesfeng.util.enums.OrderType;
 
+import java.util.List;
+
 /**
  * 系统中订单的服务
  */
 public interface OrderService {
-
-    /**
-     * @param oid 要查看的订单ID
-     * @return 订单详情
-     */
-    Order checkOrderDetail(int oid);
 
     /**
      * 预定计划
@@ -27,6 +23,18 @@ public interface OrderService {
      * @return 预定结果，成果则返回订单实体
      */
     Order subscribe(Member member, String scheduleId, OrderType orderType, NotChoseSeats notChoseSeats, String choseSeatsJson);
+
+    /**
+     * @param mid 查看订单的会员
+     * @return 查看某一会员的全部ing单
+     */
+    List<Order> getMyOrders(String mid);
+
+    /**
+     * @param oid 要查看的订单ID
+     * @return 订单详情
+     */
+    Order checkOrderDetail(int oid);
 
     /**
      * @param oid 要退订的订单ID

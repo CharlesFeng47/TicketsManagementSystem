@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.LinkedList;
 import java.util.List;
 
 @Service
@@ -30,17 +31,12 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Order checkOrderDetail(int oid) {
-        return orderDao.getOrder(oid);
-    }
-
-    @Override
     public Order subscribe(Member member, String scheduleId, OrderType orderType, NotChoseSeats notChoseSeats, String choseSeatsJson) {
         Order order = new Order();
         order.setMember(member);
         order.setSchedule(scheduleDao.getSchedule(scheduleId));
         order.setOrderState(OrderState.ORDERED);
-        order.setOrderType(OrderType.CHOOSE_SEATS);
+        order.setOrderType(orderType);
         order.setOrderTime(LocalDateTime.now());
 
         if (orderType == OrderType.CHOOSE_SEATS) {
@@ -60,6 +56,22 @@ public class OrderServiceImpl implements OrderService {
         }
         orderDao.saveOrder(order);
         return order;
+    }
+
+    @Override
+    public List<Order> getMyOrders(String mid) {
+        List<Order> result = new LinkedList<>();
+        for (Order curOrder : orderDao.getAllOrders()) {
+            if (curOrder.getMember().getId().equals(mid)) {
+                result.add(curOrder);
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public Order checkOrderDetail(int oid) {
+        return orderDao.getOrder(oid);
     }
 
     @Override
