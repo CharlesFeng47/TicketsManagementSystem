@@ -34,6 +34,15 @@ public class Coupon {
     @Column(name = "description", nullable = false)
     private String description;
 
+    public Coupon() {
+    }
+
+    public Coupon(double offPrice, double neededCredit, String description) {
+        this.offPrice = offPrice;
+        this.neededCredit = neededCredit;
+        this.description = description;
+    }
+
     public int getId() {
         return id;
     }

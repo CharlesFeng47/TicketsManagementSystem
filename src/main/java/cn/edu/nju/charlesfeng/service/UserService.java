@@ -1,9 +1,12 @@
 package cn.edu.nju.charlesfeng.service;
 
+import cn.edu.nju.charlesfeng.entity.Coupon;
+import cn.edu.nju.charlesfeng.entity.Member;
 import cn.edu.nju.charlesfeng.entity.SeatInfo;
 import cn.edu.nju.charlesfeng.entity.Spot;
 import cn.edu.nju.charlesfeng.model.User;
 import cn.edu.nju.charlesfeng.util.enums.UserType;
+import cn.edu.nju.charlesfeng.util.exceptions.MemberConvertCouponCreditNotEnoughException;
 import cn.edu.nju.charlesfeng.util.exceptions.UserNotExistException;
 
 import java.util.List;
@@ -61,4 +64,11 @@ public interface UserService {
      * @return 所有场馆ID与其对应实体的映射
      */
     Map<String, Spot> getAllSpotIdMap() throws UserNotExistException;
+
+    /**
+     * @param member 要兑换优惠券的用户
+     * @param coupon 要兑换的优惠券
+     * @return 兑换结果，成功则返回成功更新后的会员实体
+     */
+    Member memberConvertCoupon(Member member, Coupon coupon) throws MemberConvertCouponCreditNotEnoughException;
 }

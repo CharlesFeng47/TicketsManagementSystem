@@ -1,8 +1,6 @@
 package cn.edu.nju.charlesfeng.controller;
 
-import cn.edu.nju.charlesfeng.entity.Schedule;
-import cn.edu.nju.charlesfeng.entity.SeatInfo;
-import cn.edu.nju.charlesfeng.entity.Spot;
+import cn.edu.nju.charlesfeng.entity.*;
 import cn.edu.nju.charlesfeng.model.ContentSpot;
 import cn.edu.nju.charlesfeng.model.RequestReturnObject;
 import cn.edu.nju.charlesfeng.model.User;
@@ -10,6 +8,7 @@ import cn.edu.nju.charlesfeng.service.ScheduleService;
 import cn.edu.nju.charlesfeng.service.UserService;
 import cn.edu.nju.charlesfeng.util.enums.RequestReturnObjectState;
 import cn.edu.nju.charlesfeng.util.enums.UserType;
+import cn.edu.nju.charlesfeng.util.exceptions.MemberConvertCouponCreditNotEnoughException;
 import cn.edu.nju.charlesfeng.util.exceptions.UserNotExistException;
 import com.alibaba.fastjson.JSON;
 import org.apache.log4j.Logger;
@@ -99,4 +98,32 @@ public class UserController {
             return new RequestReturnObject(RequestReturnObjectState.INTERIOR_WRONG);
         }
     }
+
+    /**
+     * 兑换优惠券
+     *
+     * @return 是否兑换成功，失败则提示原因
+     */
+    @PostMapping("coupon_convert")
+    public RequestReturnObject couponConvert(@RequestParam("token") String token, @RequestParam("description") String description,
+                                             @RequestParam("offPrice") double offPrice, @RequestParam("neededCredit") double neededCredit,
+                                             HttpServletRequest request) {
+        logger.debug("INTO /login/coupon_convert");
+        System.out.println(token);
+        System.out.println(description);
+        System.out.println(offPrice);
+        System.out.println(neededCredit);
+
+        HttpSession session = request.getSession();
+        Member curMember = (Member) session.getAttribute(token);
+        try {
+            Member convertedMember = userService.memberConvertCoupon(curMember, new Coupon(offPrice, neededCredit, description));
+            // 更新session中的会员实体
+            session.setAttribute(token, convertedMember);
+            return new RequestReturnObject(RequestReturnObjectState.OK);
+        } catch (MemberConvertCouponCreditNotEnoughException e) {
+            return new RequestReturnObject(RequestReturnObjectState.COUPON_CONVERT_CREDIT_NOT_ENOUGH);
+        }
+    }
+
 }

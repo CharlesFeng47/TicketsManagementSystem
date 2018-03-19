@@ -1,12 +1,14 @@
 package cn.edu.nju.charlesfeng.service.impl;
 
 import cn.edu.nju.charlesfeng.dao.UserDao;
+import cn.edu.nju.charlesfeng.entity.Coupon;
 import cn.edu.nju.charlesfeng.entity.Member;
 import cn.edu.nju.charlesfeng.entity.SeatInfo;
 import cn.edu.nju.charlesfeng.entity.Spot;
 import cn.edu.nju.charlesfeng.model.User;
 import cn.edu.nju.charlesfeng.service.UserService;
 import cn.edu.nju.charlesfeng.util.enums.UserType;
+import cn.edu.nju.charlesfeng.util.exceptions.MemberConvertCouponCreditNotEnoughException;
 import cn.edu.nju.charlesfeng.util.exceptions.UserNotExistException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -76,5 +78,21 @@ public class UserServiceImpl implements UserService {
             result.put(user.getId(), (Spot) user);
         }
         return result;
+    }
+
+    @Override
+    public Member memberConvertCoupon(Member member, Coupon coupon) throws MemberConvertCouponCreditNotEnoughException {
+        // 检验会员剩余积分是否充足
+        if (member.getCreditRemain() > coupon.getNeededCredit()) {
+            List<Coupon> memberCoupons = member.getCoupons();
+            memberCoupons.add(coupon);
+            member.setCreditRemain(member.getCreditRemain() - coupon.getNeededCredit());
+
+            boolean convertResult = this.modifyUser(member, UserType.MEMBER);
+            assert convertResult;
+            return member;
+        } else {
+            throw new MemberConvertCouponCreditNotEnoughException();
+        }
     }
 }

@@ -18,7 +18,9 @@ public enum RequestReturnObjectState implements Serializable {
     // 会员名已被注册
     USER_HAS_BEEN_SIGN_UP(4),
     // 参数缺失
-    ORDER_MEMBER_ID_MISS(5);
+    ORDER_MEMBER_ID_MISS(5),
+    // 优惠券兑换时积分余额不足
+    COUPON_CONVERT_CREDIT_NOT_ENOUGH(6);
 
     private int repre;
 
