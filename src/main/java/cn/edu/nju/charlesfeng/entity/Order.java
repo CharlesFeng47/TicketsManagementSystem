@@ -59,6 +59,13 @@ public class Order {
     private double totalPrice;
 
     /**
+     * 订单使用的优惠券
+     */
+    @OneToOne
+    @JoinColumn(name = "used_coupon_id")
+    private Coupon usedCoupon;
+
+    /**
      * 订单类型为NOT_CHOOSE_SEATS时，选择的座位情况
      */
     @OneToOne(cascade = CascadeType.ALL)
@@ -121,6 +128,14 @@ public class Order {
 
     public void setTotalPrice(double totalPrice) {
         this.totalPrice = totalPrice;
+    }
+
+    public Coupon getUsedCoupon() {
+        return usedCoupon;
+    }
+
+    public void setUsedCoupon(Coupon usedCoupon) {
+        this.usedCoupon = usedCoupon;
     }
 
     public NotChoseSeats getNotChoseSeats() {

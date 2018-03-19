@@ -1,5 +1,6 @@
 package cn.edu.nju.charlesfeng.model;
 
+import cn.edu.nju.charlesfeng.entity.Coupon;
 import cn.edu.nju.charlesfeng.entity.Order;
 import cn.edu.nju.charlesfeng.entity.Spot;
 
@@ -39,6 +40,11 @@ public class ContentOrder {
     private double totalPrice;
 
     /**
+     * 订单使用的优惠券
+     */
+    private Coupon usedCoupon;
+
+    /**
      * 订单类型为NOT_CHOOSE_SEATS时，选择的座位情况
      */
     private ContentNotChoseSeats notChoseSeats;
@@ -56,6 +62,7 @@ public class ContentOrder {
         this.orderType = order.getOrderType().toString();
         this.orderTime = order.getOrderTime().toString().replace('T', ' ');
         this.totalPrice = order.getTotalPrice();
+        this.usedCoupon = order.getUsedCoupon();
         this.notChoseSeats = new ContentNotChoseSeats(order.getNotChoseSeats());
         this.orderedSeatsJson = order.getOrderedSeatsJson();
     }
@@ -102,6 +109,14 @@ public class ContentOrder {
 
     public double getTotalPrice() {
         return totalPrice;
+    }
+
+    public Coupon getUsedCoupon() {
+        return usedCoupon;
+    }
+
+    public void setUsedCoupon(Coupon usedCoupon) {
+        this.usedCoupon = usedCoupon;
     }
 
     public void setTotalPrice(double totalPrice) {

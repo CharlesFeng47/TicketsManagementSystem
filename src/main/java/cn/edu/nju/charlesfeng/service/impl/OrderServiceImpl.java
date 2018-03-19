@@ -68,6 +68,8 @@ public class OrderServiceImpl implements OrderService {
                 memberCoupons.remove(neededToRemove);
                 userDao.updateUser(member, UserType.MEMBER);
             }
+
+            order.setUsedCoupon(neededToRemove);
         }
         orderDao.saveOrder(order);
         return order;
