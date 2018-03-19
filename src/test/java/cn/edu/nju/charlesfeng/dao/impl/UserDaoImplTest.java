@@ -1,10 +1,7 @@
 package cn.edu.nju.charlesfeng.dao.impl;
 
 import cn.edu.nju.charlesfeng.dao.UserDao;
-import cn.edu.nju.charlesfeng.entity.Manager;
-import cn.edu.nju.charlesfeng.entity.Member;
-import cn.edu.nju.charlesfeng.entity.SeatInfo;
-import cn.edu.nju.charlesfeng.entity.Spot;
+import cn.edu.nju.charlesfeng.entity.*;
 import cn.edu.nju.charlesfeng.model.Seat;
 import cn.edu.nju.charlesfeng.model.User;
 import cn.edu.nju.charlesfeng.util.enums.UserType;
@@ -82,15 +79,31 @@ public class UserDaoImplTest {
 
     @Test
     public void testMember() throws Exception {
-        Member member1 = new Member("suzy", "qwertyuiop123456", "12345@126.com");
+        Member member1 = new Member("testUser", "qwertyuiop123456", "12345@126.com");
+        List<Coupon> userCoupons = new LinkedList<>();
+
+        Coupon coupon1 = new Coupon();
+        coupon1.setDescription("测试用优惠券");
+        coupon1.setOffPrice(200);
+        coupon1.setNeededCredit(2000);
+        userCoupons.add(coupon1);
+
+        Coupon coupon2 = new Coupon();
+        coupon2.setDescription("测试用优惠券2");
+        coupon2.setOffPrice(100);
+        coupon2.setNeededCredit(1000);
+        userCoupons.add(coupon2);
+
+        member1.setCoupons(userCoupons);
+
         String saveResult = dao.saveUser(member1, UserType.MEMBER);
         logger.debug(saveResult);
 
-        Member member2 = new Member("suzy", "qwertyuiop", "1234567890@126.com");
-        boolean updateResult = dao.updateUser(member2, UserType.MEMBER);
+        member1.setPwd("qwertyuiop");
+        boolean updateResult = dao.updateUser(member1, UserType.MEMBER);
         logger.debug(updateResult);
 
-        Member resultMember = (Member) dao.getUser("suzy", UserType.MEMBER);
+        Member resultMember = (Member) dao.getUser("testUser", UserType.MEMBER);
         logger.debug(resultMember);
     }
 

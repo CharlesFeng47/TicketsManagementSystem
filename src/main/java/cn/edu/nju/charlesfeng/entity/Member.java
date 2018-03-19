@@ -2,10 +2,10 @@ package cn.edu.nju.charlesfeng.entity;
 
 import cn.edu.nju.charlesfeng.model.User;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * 系统中会员实体
@@ -26,11 +26,23 @@ public class Member extends User implements Serializable {
     @Column(name = "level", nullable = false)
     private int level;
 
-//    /**
-//     * 此会员的优惠券
-//     */
-//    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-//    private List<Coupon> coupons;
+    /**
+     * 总积分，用户计算等级
+     */
+    @Column(name = "credit_total", nullable = false)
+    private double creditTotal;
+
+    /**
+     * 剩余积分（可用于兑换优惠券）
+     */
+    @Column(name = "credit_remain", nullable = false)
+    private double creditRemain;
+
+    /**
+     * 此会员的优惠券
+     */
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private List<Coupon> coupons;
 
     /**
      * 会员是否已经被激活
@@ -48,7 +60,9 @@ public class Member extends User implements Serializable {
         super(id, pwd);
         this.email = email;
         this.level = 1;
-//        this.coupons = new LinkedList<>();
+        this.creditTotal = 0;
+        this.creditRemain = 0;
+        this.coupons = new LinkedList<>();
         this.activated = false;
         this.invalidated = false;
     }
@@ -72,13 +86,29 @@ public class Member extends User implements Serializable {
         this.level = level;
     }
 
-//    public List<Coupon> getCoupons() {
-//        return coupons;
-//    }
-//
-//    public void setCoupons(List<Coupon> coupons) {
-//        this.coupons = coupons;
-//    }
+    public double getCreditTotal() {
+        return creditTotal;
+    }
+
+    public void setCreditTotal(double creditTotal) {
+        this.creditTotal = creditTotal;
+    }
+
+    public double getCreditRemain() {
+        return creditRemain;
+    }
+
+    public void setCreditRemain(double creditRemain) {
+        this.creditRemain = creditRemain;
+    }
+
+    public List<Coupon> getCoupons() {
+        return coupons;
+    }
+
+    public void setCoupons(List<Coupon> coupons) {
+        this.coupons = coupons;
+    }
 
     public boolean isActivated() {
         return activated;
