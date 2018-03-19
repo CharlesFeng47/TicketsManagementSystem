@@ -1,9 +1,6 @@
 package cn.edu.nju.charlesfeng.controller;
 
-import cn.edu.nju.charlesfeng.entity.Member;
-import cn.edu.nju.charlesfeng.entity.NotChoseSeats;
-import cn.edu.nju.charlesfeng.entity.Order;
-import cn.edu.nju.charlesfeng.entity.Spot;
+import cn.edu.nju.charlesfeng.entity.*;
 import cn.edu.nju.charlesfeng.model.ContentOrder;
 import cn.edu.nju.charlesfeng.model.ContentOrderBrief;
 import cn.edu.nju.charlesfeng.model.RequestReturnObject;
@@ -12,6 +9,7 @@ import cn.edu.nju.charlesfeng.service.UserService;
 import cn.edu.nju.charlesfeng.util.enums.OrderType;
 import cn.edu.nju.charlesfeng.util.enums.RequestReturnObjectState;
 import cn.edu.nju.charlesfeng.util.exceptions.UserNotExistException;
+import com.alibaba.fastjson.JSON;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -53,14 +51,18 @@ public class OrderController {
     public RequestReturnObject order(@RequestParam("token") String token,
                                      @RequestParam("scheduleId") String scheduleId,
                                      @RequestParam("order_type") OrderType orderType,
-                                     @RequestParam(value = "not_chose_seats") NotChoseSeats notChoseSeats,
+                                     @RequestParam("not_chose_seats") NotChoseSeats notChoseSeats,
                                      @RequestParam(value = "choose_seats_json", required = false, defaultValue = "") String choseSeatListJson,
+                                     @RequestParam(value = "order_used_coupon") Coupon usedCoupon,
+                                     @RequestParam("order_total_price") double totalPrice,
                                      HttpServletRequest request) {
         logger.debug("INTO /order/save");
+        System.out.println(JSON.toJSONString(usedCoupon));
+        System.out.println(totalPrice);
         HttpSession session = request.getSession();
         Member curMember = (Member) session.getAttribute(token);
 
-        Order order = orderService.subscribe(curMember, scheduleId, orderType, notChoseSeats, choseSeatListJson);
+        Order order = orderService.subscribe(curMember, scheduleId, orderType, notChoseSeats, choseSeatListJson, usedCoupon, totalPrice);
         return new RequestReturnObject(RequestReturnObjectState.OK, order);
     }
 

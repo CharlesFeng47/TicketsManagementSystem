@@ -81,7 +81,7 @@ public class UserController {
                                           @RequestParam("name") String spotName, @RequestParam("site") String site,
                                           @RequestParam("seatInfos") String seatInfosJson, @RequestParam("seatsMap") String seatsMapJson,
                                           @RequestParam("curSeatTypeCount") int curSeatTypeCount, HttpServletRequest request) {
-        logger.debug("INTO /login/spot_sign_up");
+        logger.debug("INTO /user/spot_modify");
 
         List<SeatInfo> seatInfos = JSON.parseArray(seatInfosJson, SeatInfo.class);
 
@@ -108,7 +108,7 @@ public class UserController {
     public RequestReturnObject couponConvert(@RequestParam("token") String token, @RequestParam("description") String description,
                                              @RequestParam("offPrice") double offPrice, @RequestParam("neededCredit") double neededCredit,
                                              HttpServletRequest request) {
-        logger.debug("INTO /login/coupon_convert");
+        logger.debug("INTO /user/coupon_convert");
         System.out.println(token);
         System.out.println(description);
         System.out.println(offPrice);

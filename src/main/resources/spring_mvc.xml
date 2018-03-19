@@ -29,6 +29,8 @@
                 </bean>
                 <bean class="cn.edu.nju.charlesfeng.spring.formatter.ContentNotChoseSeatsFormatter">
                 </bean>
+                <bean class="cn.edu.nju.charlesfeng.spring.formatter.CouponFormatter">
+                </bean>
             </set>
         </property>
     </bean>

@@ -2,14 +2,15 @@ package cn.edu.nju.charlesfeng.service.impl;
 
 import cn.edu.nju.charlesfeng.dao.OrderDao;
 import cn.edu.nju.charlesfeng.dao.ScheduleDao;
+import cn.edu.nju.charlesfeng.dao.UserDao;
+import cn.edu.nju.charlesfeng.entity.Coupon;
 import cn.edu.nju.charlesfeng.entity.Member;
 import cn.edu.nju.charlesfeng.entity.NotChoseSeats;
 import cn.edu.nju.charlesfeng.entity.Order;
-import cn.edu.nju.charlesfeng.model.ChoseSeat;
 import cn.edu.nju.charlesfeng.service.OrderService;
 import cn.edu.nju.charlesfeng.util.enums.OrderState;
 import cn.edu.nju.charlesfeng.util.enums.OrderType;
-import com.alibaba.fastjson.JSON;
+import cn.edu.nju.charlesfeng.util.enums.UserType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,37 +23,52 @@ public class OrderServiceImpl implements OrderService {
 
     private final OrderDao orderDao;
 
-    private ScheduleDao scheduleDao;
+    private final ScheduleDao scheduleDao;
+
+    private final UserDao userDao;
 
     @Autowired
-    public OrderServiceImpl(OrderDao orderDao, ScheduleDao scheduleDao) {
+    public OrderServiceImpl(OrderDao orderDao, ScheduleDao scheduleDao, UserDao userDao) {
         this.orderDao = orderDao;
         this.scheduleDao = scheduleDao;
+        this.userDao = userDao;
     }
 
     @Override
-    public Order subscribe(Member member, String scheduleId, OrderType orderType, NotChoseSeats notChoseSeats, String choseSeatsJson) {
+    public Order subscribe(Member member, String scheduleId, OrderType orderType, NotChoseSeats notChoseSeats,
+                           String choseSeatsJson, Coupon usedCoupon, double totalPrice) {
         Order order = new Order();
         order.setMember(member);
         order.setSchedule(scheduleDao.getSchedule(scheduleId));
         order.setOrderState(OrderState.ORDERED);
         order.setOrderType(orderType);
         order.setOrderTime(LocalDateTime.now());
+        order.setTotalPrice(totalPrice);
 
         if (orderType == OrderType.CHOOSE_SEATS) {
-            double totalPrice = 0;
-            List<ChoseSeat> choseSeats = JSON.parseArray(choseSeatsJson, ChoseSeat.class);
-            for (ChoseSeat cs : choseSeats) {
-                totalPrice += cs.getPrice();
-            }
-            order.setTotalPrice(totalPrice);
-
             order.setOrderedSeatsJson(choseSeatsJson);
         } else if (orderType == OrderType.NOT_CHOOSE_SEATS) {
-            order.setTotalPrice(notChoseSeats.getPrice());
-
             order.setNotChoseSeats(notChoseSeats);
             notChoseSeats.setOrder(order);
+        }
+
+        // 不是 Formatter 初始化的默认值，则需要处理优惠券信息
+        if (usedCoupon.getId() != -1) {
+            List<Coupon> memberCoupons = member.getCoupons();
+
+            // 找到需要移除的
+            Coupon neededToRemove = null;
+            for (Coupon coupon : memberCoupons) {
+                if (coupon.getId() == usedCoupon.getId()) {
+                    neededToRemove = coupon;
+                    break;
+                }
+            }
+
+            if (neededToRemove != null) {
+                memberCoupons.remove(neededToRemove);
+                userDao.updateUser(member, UserType.MEMBER);
+            }
         }
         orderDao.saveOrder(order);
         return order;

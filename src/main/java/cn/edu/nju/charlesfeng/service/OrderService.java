@@ -1,5 +1,6 @@
 package cn.edu.nju.charlesfeng.service;
 
+import cn.edu.nju.charlesfeng.entity.Coupon;
 import cn.edu.nju.charlesfeng.entity.Member;
 import cn.edu.nju.charlesfeng.entity.NotChoseSeats;
 import cn.edu.nju.charlesfeng.entity.Order;
@@ -20,9 +21,12 @@ public interface OrderService {
      * @param orderType      订购类型
      * @param notChoseSeats  不选座订购时的座位情况
      * @param choseSeatsJson 选座订购时的座位情况Json
+     * @param usedCoupon     订购时使用的优惠券
+     * @param totalPrice     订单总价
      * @return 预定结果，成果则返回订单实体
      */
-    Order subscribe(Member member, String scheduleId, OrderType orderType, NotChoseSeats notChoseSeats, String choseSeatsJson);
+    Order subscribe(Member member, String scheduleId, OrderType orderType, NotChoseSeats notChoseSeats,
+                    String choseSeatsJson, Coupon usedCoupon, double totalPrice);
 
     /**
      * @param mid 查看订单的会员
