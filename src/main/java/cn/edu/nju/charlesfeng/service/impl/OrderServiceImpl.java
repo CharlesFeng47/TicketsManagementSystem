@@ -36,7 +36,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Order subscribe(Member member, String scheduleId, OrderType orderType, NotChoseSeats notChoseSeats,
-                           String choseSeatsJson, Coupon usedCoupon, double totalPrice) {
+                           String choseSeatsJson, boolean didUseCoupon, Coupon usedCoupon, double totalPrice) {
         Order order = new Order();
         order.setMember(member);
         order.setSchedule(scheduleDao.getSchedule(scheduleId));
@@ -52,8 +52,7 @@ public class OrderServiceImpl implements OrderService {
             notChoseSeats.setOrder(order);
         }
 
-        // 不是 Formatter 初始化的默认值，则需要处理优惠券信息
-        if (usedCoupon.getId() != -1) {
+        if (didUseCoupon) {
             List<Coupon> memberCoupons = member.getCoupons();
 
             // 找到需要移除的

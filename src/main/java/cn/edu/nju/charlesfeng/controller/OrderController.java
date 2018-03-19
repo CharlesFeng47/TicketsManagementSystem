@@ -53,16 +53,18 @@ public class OrderController {
                                      @RequestParam("order_type") OrderType orderType,
                                      @RequestParam("not_chose_seats") NotChoseSeats notChoseSeats,
                                      @RequestParam(value = "choose_seats_json", required = false, defaultValue = "") String choseSeatListJson,
+                                     @RequestParam(value = "order_did_use_coupon") boolean didUseCoupon,
                                      @RequestParam(value = "order_used_coupon") Coupon usedCoupon,
                                      @RequestParam("order_total_price") double totalPrice,
                                      HttpServletRequest request) {
         logger.debug("INTO /order/save");
+        System.out.println(didUseCoupon);
         System.out.println(JSON.toJSONString(usedCoupon));
         System.out.println(totalPrice);
         HttpSession session = request.getSession();
         Member curMember = (Member) session.getAttribute(token);
 
-        Order order = orderService.subscribe(curMember, scheduleId, orderType, notChoseSeats, choseSeatListJson, usedCoupon, totalPrice);
+        Order order = orderService.subscribe(curMember, scheduleId, orderType, notChoseSeats, choseSeatListJson, didUseCoupon, usedCoupon, totalPrice);
         return new RequestReturnObject(RequestReturnObjectState.OK, order);
     }
 
