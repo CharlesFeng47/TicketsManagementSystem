@@ -5,7 +5,6 @@ import cn.edu.nju.charlesfeng.util.enums.ScheduleItemType;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Map;
 
 /**
  * 场馆中的一项活动／计划
@@ -29,8 +28,9 @@ public class Schedule implements Serializable {
     /**
      * 此活动的举行地点ID
      */
-    @Column(name = "spot_id", nullable = false)
-    private String spotId;
+    @ManyToOne
+    @JoinColumn(name = "spot_id", nullable = false)
+    private Spot spot;
 
     /**
      * 此活动开始的时间
@@ -45,18 +45,12 @@ public class Schedule implements Serializable {
     private ScheduleItemType type;
 
     /**
-     * 此活动中每种座位与其对应价格的映射
+     * 此活动中每种座位与其对应价格的映射 json 串
+     * 注：原本的map注解可以正常工作，但是在将场馆spot映射为实体之后，这个map就不行了
+     * 尝试改将entry封装为对象转为List，仍失败，时间不足，更换json串实现
      */
-    @ElementCollection(fetch = FetchType.EAGER)
-    @MapKeyColumn(name = "seat_id")
-    @Column(name = "price", nullable = false)
-    @CollectionTable(
-            name = "schedule_seat_price",
-            joinColumns = {
-                    @JoinColumn(name = "schedule_id")
-            }
-    )
-    private Map<SeatInfo, Double> seatPrices;
+    @Column(name = "seat_info_price_json", nullable = false)
+    private String seatInfoPricesJson;
 
     /**
      * 此活动的简单描述
@@ -67,13 +61,13 @@ public class Schedule implements Serializable {
     public Schedule() {
     }
 
-    public Schedule(String id, String name, String spotId, LocalDateTime startDateTime, ScheduleItemType type, Map<SeatInfo, Double> seatPrices, String description) {
+    public Schedule(String id, String name, Spot spot, LocalDateTime startDateTime, ScheduleItemType type, String seatInfoPricesJson, String description) {
         this.id = id;
         this.name = name;
-        this.spotId = spotId;
+        this.spot = spot;
         this.startDateTime = startDateTime;
         this.type = type;
-        this.seatPrices = seatPrices;
+        this.seatInfoPricesJson = seatInfoPricesJson;
         this.description = description;
     }
 
@@ -93,12 +87,12 @@ public class Schedule implements Serializable {
         this.name = name;
     }
 
-    public String getSpotId() {
-        return spotId;
+    public Spot getSpot() {
+        return spot;
     }
 
-    public void setSpotId(String spotId) {
-        this.spotId = spotId;
+    public void setSpot(Spot spot) {
+        this.spot = spot;
     }
 
     public LocalDateTime getStartDateTime() {
@@ -117,12 +111,12 @@ public class Schedule implements Serializable {
         this.type = type;
     }
 
-    public Map<SeatInfo, Double> getSeatPrices() {
-        return seatPrices;
+    public String getSeatInfoPricesJson() {
+        return seatInfoPricesJson;
     }
 
-    public void setSeatPrices(Map<SeatInfo, Double> seatPrices) {
-        this.seatPrices = seatPrices;
+    public void setSeatInfoPricesJson(String seatInfoPricesJson) {
+        this.seatInfoPricesJson = seatInfoPricesJson;
     }
 
     public String getDescription() {

@@ -2,13 +2,11 @@ package cn.edu.nju.charlesfeng.model;
 
 import cn.edu.nju.charlesfeng.entity.Schedule;
 import cn.edu.nju.charlesfeng.entity.SeatInfo;
-import cn.edu.nju.charlesfeng.entity.Spot;
 import cn.edu.nju.charlesfeng.util.comparators.SeatPriceMapComparator;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 因为前端没找到合适的方法转化Map，所以方便前端处理
@@ -55,16 +53,19 @@ public class ContentSchedule {
      */
     private String description;
 
-    public ContentSchedule(Schedule schedule, Spot relativeSpot) {
+    public ContentSchedule(Schedule schedule) {
         this.id = schedule.getId();
         this.name = schedule.getName();
-        this.spotName = relativeSpot.getSpotName();
+        this.spotName = schedule.getSpot().getSpotName();
         this.startDateTime = schedule.getStartDateTime().toString().replace('T', ' ');
         this.type = schedule.getType().toString();
         this.description = schedule.getDescription();
 
         // 对计划中的座位按价格降序排序
-        List<Map.Entry<SeatInfo, Double>> relativeList = new ArrayList<>(schedule.getSeatPrices().entrySet());
+        Map<SeatInfo, Double> priceMap = JSON.parseObject(schedule.getSeatInfoPricesJson(), new TypeReference<HashMap<SeatInfo, Double>>() {
+        });
+
+        List<Map.Entry<SeatInfo, Double>> relativeList = new ArrayList<>(priceMap.entrySet());
         relativeList.sort(new SeatPriceMapComparator());
 
         all_seats = new LinkedList<>();

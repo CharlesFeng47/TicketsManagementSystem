@@ -7,19 +7,15 @@ import cn.edu.nju.charlesfeng.model.ContentSchedule;
 import cn.edu.nju.charlesfeng.model.ContentScheduleBrief;
 import cn.edu.nju.charlesfeng.model.RequestReturnObject;
 import cn.edu.nju.charlesfeng.service.ScheduleService;
-import cn.edu.nju.charlesfeng.service.UserService;
 import cn.edu.nju.charlesfeng.util.enums.RequestReturnObjectState;
 import cn.edu.nju.charlesfeng.util.enums.ScheduleItemType;
-import cn.edu.nju.charlesfeng.util.enums.UserType;
 import cn.edu.nju.charlesfeng.util.exceptions.SpotSeatDisorderException;
-import cn.edu.nju.charlesfeng.util.exceptions.UserNotExistException;
 import com.alibaba.fastjson.JSON;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -40,12 +36,9 @@ public class ScheduleController {
 
     private final ScheduleService scheduleService;
 
-    private final UserService userService;
-
     @Autowired
-    public ScheduleController(ScheduleService scheduleService, UserService userService) {
+    public ScheduleController(ScheduleService scheduleService) {
         this.scheduleService = scheduleService;
-        this.userService = userService;
     }
 
     /**
@@ -61,26 +54,17 @@ public class ScheduleController {
             logger.debug("INTO /schedule/all?spotId=" + spotId);
             allSchedules = scheduleService.getSchedulesOfOneSpot(spotId);
         }
-        try {
-            return new RequestReturnObject(RequestReturnObjectState.OK, getBrief(allSchedules));
-        } catch (UserNotExistException e) {
-            return new RequestReturnObject(RequestReturnObjectState.INTERIOR_WRONG);
-        }
+        return new RequestReturnObject(RequestReturnObjectState.OK, getBrief(allSchedules));
     }
 
     /**
      * @return 某一条日程的详情
      */
     @GetMapping("/{id}")
-    public RequestReturnObject getOneSchedule(@PathVariable("id") String id, HttpServletResponse response) {
+    public RequestReturnObject getOneSchedule(@PathVariable("id") String id) {
         logger.debug("INTO /schedule/" + id);
         Schedule resultSchedule = scheduleService.getOneSchedule(id);
-        try {
-            Spot relativeSpot = (Spot) userService.getUser(resultSchedule.getSpotId(), UserType.SPOT);
-            return new RequestReturnObject(RequestReturnObjectState.OK, new ContentSchedule(resultSchedule, relativeSpot));
-        } catch (UserNotExistException e) {
-            return new RequestReturnObject(RequestReturnObjectState.INTERIOR_WRONG);
-        }
+        return new RequestReturnObject(RequestReturnObjectState.OK, new ContentSchedule(resultSchedule));
     }
 
     /**
@@ -111,14 +95,14 @@ public class ScheduleController {
 
         Schedule toSave = new Schedule();
         toSave.setName(name);
-        toSave.setSpotId(curSpot.getId());
+        toSave.setSpot(curSpot);
         toSave.setType(scheduleItemType);
         toSave.setDescription(description);
 
         // 时间相关的处理
         toSave.setStartDateTime(convertDateTime(dateString, timeString));
         // 价格对应表的处理
-        toSave.setSeatPrices(convertPriceMap(nameListJson, priceListJson, curSpot));
+        toSave.setSeatInfoPricesJson(convertPriceMapJson(nameListJson, priceListJson, curSpot));
 
         Schedule result = scheduleService.publishSchedule(toSave);
         return new RequestReturnObject(RequestReturnObjectState.OK, result);
@@ -140,14 +124,14 @@ public class ScheduleController {
         Schedule toModify = new Schedule();
         toModify.setId(scheduleId);
         toModify.setName(name);
-        toModify.setSpotId(curSpot.getId());
+        toModify.setSpot(curSpot);
         toModify.setType(scheduleItemType);
         toModify.setDescription(description);
 
         // 时间相关的处理
         toModify.setStartDateTime(convertDateTime(dateString, timeString));
         // 价格对应表的处理
-        toModify.setSeatPrices(convertPriceMap(nameListJson, priceListJson, curSpot));
+        toModify.setSeatInfoPricesJson(convertPriceMapJson(nameListJson, priceListJson, curSpot));
 
         boolean result = scheduleService.modifySchedule(toModify);
         if (result) return new RequestReturnObject(RequestReturnObjectState.OK);
@@ -157,13 +141,10 @@ public class ScheduleController {
     /**
      * @return 获取日程对应的简介
      */
-    private List<ContentScheduleBrief> getBrief(List<Schedule> schedules) throws UserNotExistException {
+    private List<ContentScheduleBrief> getBrief(List<Schedule> schedules) {
         List<ContentScheduleBrief> result = new LinkedList<>();
-        Map<String, Spot> spotMap = userService.getAllSpotIdMap();
         for (Schedule schedule : schedules) {
-            Spot relativeSpot = spotMap.get(schedule.getSpotId());
-            assert relativeSpot != null;
-            result.add(new ContentScheduleBrief(schedule, relativeSpot));
+            result.add(new ContentScheduleBrief(schedule));
         }
         return result;
     }
@@ -180,9 +161,9 @@ public class ScheduleController {
     }
 
     /**
-     * 将前端发回的日期时间String转换为LocalDateTime
+     * 将前端发回的座位名称、价格形成map映射，并以json串的形式返回
      */
-    private Map<SeatInfo, Double> convertPriceMap(String nameListJson, String priceListJson, Spot curSpot) throws SpotSeatDisorderException {
+    private String convertPriceMapJson(String nameListJson, String priceListJson, Spot curSpot) throws SpotSeatDisorderException {
         List<String> nameList = JSON.parseArray(nameListJson, String.class);
         List<Double> priceList = JSON.parseArray(priceListJson, Double.class);
         Map<SeatInfo, Double> priceMap = new LinkedHashMap<>();
@@ -196,6 +177,6 @@ public class ScheduleController {
                 priceMap.put(curSeatInfo, priceList.get(i));
             }
         }
-        return priceMap;
+        return JSON.toJSONString(priceMap);
     }
 }

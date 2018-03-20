@@ -60,6 +60,12 @@ public class Order {
     private LocalDateTime orderTime;
 
     /**
+     * 订单价格计算过程（因为之后可能存在积分变动等，所以会导致前端计算错误）
+     */
+    @Column(name = "cal_process", nullable = false)
+    private String calProcess;
+
+    /**
      * 订单总价
      */
     @Column(name = "total_price", nullable = false)
@@ -135,6 +141,14 @@ public class Order {
 
     public void setOrderTime(LocalDateTime orderTime) {
         this.orderTime = orderTime;
+    }
+
+    public String getCalProcess() {
+        return calProcess;
+    }
+
+    public void setCalProcess(String calProcess) {
+        this.calProcess = calProcess;
     }
 
     public double getTotalPrice() {

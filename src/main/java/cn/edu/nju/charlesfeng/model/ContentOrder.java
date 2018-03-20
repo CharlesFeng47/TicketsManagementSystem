@@ -2,7 +2,6 @@ package cn.edu.nju.charlesfeng.model;
 
 import cn.edu.nju.charlesfeng.entity.Coupon;
 import cn.edu.nju.charlesfeng.entity.Order;
-import cn.edu.nju.charlesfeng.entity.Spot;
 
 /**
  * 前端展示的订单
@@ -40,6 +39,11 @@ public class ContentOrder {
     private String orderTime;
 
     /**
+     * 订单价格计算过程（因为之后可能存在积分变动等，所以会导致前端计算错误）
+     */
+    private String calProcess;
+
+    /**
      * 订单总价
      */
     private double totalPrice;
@@ -60,13 +64,14 @@ public class ContentOrder {
      */
     private String orderedSeatsJson;
 
-    public ContentOrder(Order order, Spot relativeSpot) {
+    public ContentOrder(Order order) {
         this.id = order.getId();
-        this.schedule = new ContentSchedule(order.getSchedule(), relativeSpot);
+        this.schedule = new ContentSchedule(order.getSchedule());
         this.orderWay = order.getOrderWay().toString();
         this.orderState = order.getOrderState().toString();
         this.orderType = order.getOrderType().toString();
         this.orderTime = order.getOrderTime().toString().replace('T', ' ');
+        this.calProcess = order.getCalProcess();
         this.totalPrice = order.getTotalPrice();
         this.usedCoupon = order.getUsedCoupon();
         this.notChoseSeats = new ContentNotChoseSeats(order.getNotChoseSeats());
@@ -119,6 +124,14 @@ public class ContentOrder {
 
     public void setOrderTime(String orderTime) {
         this.orderTime = orderTime;
+    }
+
+    public String getCalProcess() {
+        return calProcess;
+    }
+
+    public void setCalProcess(String calProcess) {
+        this.calProcess = calProcess;
     }
 
     public double getTotalPrice() {

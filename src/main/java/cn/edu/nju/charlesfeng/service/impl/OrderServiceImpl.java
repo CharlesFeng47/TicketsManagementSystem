@@ -41,13 +41,15 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Order subscribe(User curUser, String scheduleId, OrderType orderType, NotChoseSeats notChoseSeats,
                            String choseSeatsJson, OrderWay orderWay, boolean onSpotIsMember, String onSpotMemberId,
-                           boolean didUseCoupon, Coupon usedCoupon, double totalPrice) throws UserNotExistException, InteriorWrongException {
+                           boolean didUseCoupon, Coupon usedCoupon, String calProcess, double totalPrice)
+            throws UserNotExistException, InteriorWrongException {
         Order order = new Order();
         order.setSchedule(scheduleDao.getSchedule(scheduleId));
         order.setOrderWay(orderWay);
         order.setOrderState(OrderState.ORDERED);
         order.setOrderType(orderType);
         order.setOrderTime(LocalDateTime.now());
+        order.setCalProcess(calProcess);
         order.setTotalPrice(totalPrice);
 
         if (orderType == OrderType.CHOOSE_SEATS) {

@@ -3,19 +3,16 @@ package cn.edu.nju.charlesfeng.controller;
 import cn.edu.nju.charlesfeng.entity.Coupon;
 import cn.edu.nju.charlesfeng.entity.NotChoseSeats;
 import cn.edu.nju.charlesfeng.entity.Order;
-import cn.edu.nju.charlesfeng.entity.Spot;
 import cn.edu.nju.charlesfeng.model.ContentOrder;
 import cn.edu.nju.charlesfeng.model.ContentOrderBrief;
 import cn.edu.nju.charlesfeng.model.RequestReturnObject;
 import cn.edu.nju.charlesfeng.model.User;
 import cn.edu.nju.charlesfeng.service.OrderService;
-import cn.edu.nju.charlesfeng.service.UserService;
 import cn.edu.nju.charlesfeng.util.enums.OrderType;
 import cn.edu.nju.charlesfeng.util.enums.OrderWay;
 import cn.edu.nju.charlesfeng.util.enums.RequestReturnObjectState;
 import cn.edu.nju.charlesfeng.util.exceptions.InteriorWrongException;
 import cn.edu.nju.charlesfeng.util.exceptions.UserNotExistException;
-import com.alibaba.fastjson.JSON;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +21,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 对订单信息的控制器
@@ -37,12 +33,9 @@ public class OrderController {
 
     private final OrderService orderService;
 
-    private UserService userService;
-
     @Autowired
-    public OrderController(OrderService orderService, UserService userService) {
+    public OrderController(OrderService orderService) {
         this.orderService = orderService;
-        this.userService = userService;
     }
 
     /**
@@ -64,21 +57,16 @@ public class OrderController {
                                      @RequestParam("on_spot_member_id") String onSpotMemberId,
                                      @RequestParam(value = "order_did_use_coupon") boolean didUseCoupon,
                                      @RequestParam(value = "order_used_coupon") Coupon usedCoupon,
+                                     @RequestParam("order_cal_process") String calProcess,
                                      @RequestParam("order_total_price") double totalPrice,
                                      HttpServletRequest request) {
         logger.debug("INTO /order/save");
-        System.out.println(orderWay);
-        System.out.println(onSpotIsMember);
-        System.out.println(onSpotMemberId);
-        System.out.println(didUseCoupon);
-        System.out.println(JSON.toJSONString(usedCoupon));
-        System.out.println(totalPrice);
         HttpSession session = request.getSession();
         User curUser = (User) session.getAttribute(token);
 
         try {
             Order order = orderService.subscribe(curUser, scheduleId, orderType, notChoseSeats, choseSeatListJson,
-                    orderWay, onSpotIsMember, onSpotMemberId, didUseCoupon, usedCoupon, totalPrice);
+                    orderWay, onSpotIsMember, onSpotMemberId, didUseCoupon, usedCoupon, calProcess, totalPrice);
             return new RequestReturnObject(RequestReturnObjectState.OK, order);
         } catch (UserNotExistException | InteriorWrongException e) {
             return new RequestReturnObject(RequestReturnObjectState.INTERIOR_WRONG);
@@ -105,16 +93,10 @@ public class OrderController {
     @GetMapping("/{oid}")
     public RequestReturnObject getOneOrder(@PathVariable("oid") int oid) {
         logger.debug("INTO /order/" + oid);
-        try {
-            Order order = orderService.checkOrderDetail(oid);
-            Map<String, Spot> spotMap = userService.getAllSpotIdMap();
+        Order order = orderService.checkOrderDetail(oid);
+        ContentOrder result = new ContentOrder(order);
+        return new RequestReturnObject(RequestReturnObjectState.OK, result);
 
-            ContentOrder result = new ContentOrder(order, spotMap.get(order.getSchedule().getSpotId()));
-            return new RequestReturnObject(RequestReturnObjectState.OK, result);
-
-        } catch (UserNotExistException e) {
-            return new RequestReturnObject(RequestReturnObjectState.INTERIOR_WRONG);
-        }
 
     }
 

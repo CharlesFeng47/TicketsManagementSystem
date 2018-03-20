@@ -29,12 +29,13 @@ public interface OrderService {
      * @param onSpotMemberId 场馆现场购票时的会员编号
      * @param didUseCoupon   订座时是否使用优惠券
      * @param usedCoupon     订购时使用的优惠券
+     * @param calProcess     订购是价格的计算过程
      * @param totalPrice     订单总价
      * @return 预定结果，成果则返回订单实体
      */
     Order subscribe(User curUser, String scheduleId, OrderType orderType, NotChoseSeats notChoseSeats,
                     String choseSeatsJson, OrderWay orderWay, boolean onSpotIsMember, String onSpotMemberId,
-                    boolean didUseCoupon, Coupon usedCoupon, double totalPrice) throws UserNotExistException, InteriorWrongException;
+                    boolean didUseCoupon, Coupon usedCoupon, String calProcess, double totalPrice) throws UserNotExistException, InteriorWrongException;
 
     // TODO 付款后增加积分
 

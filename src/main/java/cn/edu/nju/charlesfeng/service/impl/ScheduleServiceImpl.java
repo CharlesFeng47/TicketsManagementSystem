@@ -30,7 +30,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         List<Schedule> result = new LinkedList<>();
         List<Schedule> allSchedule = getAllSchedules();
         for (Schedule schedule : allSchedule) {
-            if (schedule.getSpotId().equals(spotId)) {
+            if (schedule.getSpot().getId().equals(spotId)) {
                 result.add(schedule);
             }
         }

@@ -1,6 +1,9 @@
 package cn.edu.nju.charlesfeng.controller;
 
-import cn.edu.nju.charlesfeng.entity.*;
+import cn.edu.nju.charlesfeng.entity.Coupon;
+import cn.edu.nju.charlesfeng.entity.Member;
+import cn.edu.nju.charlesfeng.entity.Schedule;
+import cn.edu.nju.charlesfeng.entity.SeatInfo;
 import cn.edu.nju.charlesfeng.model.ContentMemberOfSpot;
 import cn.edu.nju.charlesfeng.model.ContentSpot;
 import cn.edu.nju.charlesfeng.model.RequestReturnObject;
@@ -62,13 +65,8 @@ public class UserController {
             return new RequestReturnObject(RequestReturnObjectState.OK);
         } else {
             logger.debug("INTO /user/spot?scheduleId=" + scheduleId);
-            try {
-                Schedule schedule = scheduleService.getOneSchedule(scheduleId);
-                Spot resultSpot = (Spot) userService.getUser(schedule.getSpotId(), UserType.SPOT);
-                return new RequestReturnObject(RequestReturnObjectState.OK, new ContentSpot(resultSpot));
-            } catch (UserNotExistException e) {
-                return new RequestReturnObject(RequestReturnObjectState.INTERIOR_WRONG);
-            }
+            Schedule schedule = scheduleService.getOneSchedule(scheduleId);
+            return new RequestReturnObject(RequestReturnObjectState.OK, new ContentSpot(schedule.getSpot()));
         }
     }
 

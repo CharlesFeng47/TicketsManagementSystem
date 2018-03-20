@@ -9,6 +9,7 @@ import cn.edu.nju.charlesfeng.util.enums.ScheduleItemType;
 import cn.edu.nju.charlesfeng.util.enums.UserType;
 import cn.edu.nju.charlesfeng.util.testUtil.DaoTestHelper;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -67,7 +68,7 @@ public class ScheduleDaoImplTest {
     public void testSaveSchedule() throws Exception {
         Map<SeatInfo, Double> seatPrices = new HashMap<>();
 
-        Spot spot = (Spot) userDao.getUser("0000001", UserType.SPOT);
+        Spot spot = (Spot) userDao.getUser("2191960", UserType.SPOT);
         List<SeatInfo> seats = spot.getSeatInfos();
         int i = 1;
         for (SeatInfo seat : seats) {
@@ -79,7 +80,7 @@ public class ScheduleDaoImplTest {
         StringBuilder sb = new StringBuilder();
         sb.append(now.getYear()).append(now.getMonthValue()).append(now.getDayOfMonth());
         sb.append(now.getHour()).append(now.getMinute()).append(now.getSecond());
-        Schedule schedule = new Schedule(sb.toString(), "测试用日程名字2", "0000001", LocalDateTime.now(), ScheduleItemType.CONCERT, seatPrices, "测试用日程描述");
+        Schedule schedule = new Schedule(sb.toString(), "测试用日程名字2", spot, LocalDateTime.now(), ScheduleItemType.CONCERT, JSON.toJSONString(seatPrices), "测试用日程描述");
         scheduleDao.saveSchedule(schedule);
     }
 
@@ -88,12 +89,14 @@ public class ScheduleDaoImplTest {
      * TODO
      */
     @Test
-    public void testUpdateSchedule() throws Exception {
-        Schedule schedule = scheduleDao.getSchedule("2018330342");
-        Map<SeatInfo, Double> map = schedule.getSeatPrices();
+    public void testUpdateSchedule() {
+        Schedule schedule = scheduleDao.getSchedule("2018320233151");
+        Map<SeatInfo, Double> map = JSON.parseObject(schedule.getSeatInfoPricesJson(), new TypeReference<HashMap<SeatInfo, Double>>() {
+        });
         for (Map.Entry<SeatInfo, Double> entry : map.entrySet()) {
-            if (entry.getKey().getId() == "s2") entry.setValue((double) 500);
+            if (entry.getKey().getId().equals("s320223610/2")) entry.setValue((double) 1000);
         }
+        schedule.setSeatInfoPricesJson(JSON.toJSONString(map));
         scheduleDao.updateSchedule(schedule);
     }
 

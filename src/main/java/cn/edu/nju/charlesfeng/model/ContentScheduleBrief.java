@@ -1,7 +1,6 @@
 package cn.edu.nju.charlesfeng.model;
 
 import cn.edu.nju.charlesfeng.entity.Schedule;
-import cn.edu.nju.charlesfeng.entity.Spot;
 
 /**
  * 前端展示的日程简介
@@ -33,10 +32,10 @@ public class ContentScheduleBrief {
      */
     private String type;
 
-    public ContentScheduleBrief(Schedule schedule, Spot relativeSpot) {
+    public ContentScheduleBrief(Schedule schedule) {
         this.id = schedule.getId();
         this.name = schedule.getName();
-        this.spotName = relativeSpot.getSpotName();
+        this.spotName = schedule.getSpot().getSpotName();
         this.startDateTime = schedule.getStartDateTime().toString().replace('T', ' ');
         this.type = schedule.getType().toString();
     }
