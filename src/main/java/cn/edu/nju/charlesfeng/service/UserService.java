@@ -4,6 +4,7 @@ import cn.edu.nju.charlesfeng.entity.Coupon;
 import cn.edu.nju.charlesfeng.entity.Member;
 import cn.edu.nju.charlesfeng.entity.SeatInfo;
 import cn.edu.nju.charlesfeng.entity.Spot;
+import cn.edu.nju.charlesfeng.model.ContentMemberOfSpot;
 import cn.edu.nju.charlesfeng.model.User;
 import cn.edu.nju.charlesfeng.util.enums.UserType;
 import cn.edu.nju.charlesfeng.util.exceptions.MemberConvertCouponCreditNotEnoughException;
@@ -71,4 +72,10 @@ public interface UserService {
      * @return 兑换结果，成功则返回成功更新后的会员实体
      */
     Member memberConvertCoupon(Member member, Coupon coupon) throws MemberConvertCouponCreditNotEnoughException;
+
+    /**
+     * @param mid 欲获取的会员ID
+     * @return 场馆能获取到的用户信息
+     */
+    ContentMemberOfSpot getMemberOfSpot(String mid) throws UserNotExistException;
 }

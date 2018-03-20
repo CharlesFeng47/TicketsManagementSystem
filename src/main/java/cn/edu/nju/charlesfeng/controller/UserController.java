@@ -1,6 +1,7 @@
 package cn.edu.nju.charlesfeng.controller;
 
 import cn.edu.nju.charlesfeng.entity.*;
+import cn.edu.nju.charlesfeng.model.ContentMemberOfSpot;
 import cn.edu.nju.charlesfeng.model.ContentSpot;
 import cn.edu.nju.charlesfeng.model.RequestReturnObject;
 import cn.edu.nju.charlesfeng.model.User;
@@ -123,6 +124,22 @@ public class UserController {
             return new RequestReturnObject(RequestReturnObjectState.OK);
         } catch (MemberConvertCouponCreditNotEnoughException e) {
             return new RequestReturnObject(RequestReturnObjectState.COUPON_CONVERT_CREDIT_NOT_ENOUGH);
+        }
+    }
+
+    /**
+     * @return 场馆获取到的会员信息
+     */
+    @PostMapping("spot_get_member_info")
+    public RequestReturnObject spotGetMemberInfo(@RequestParam("mid") String mid, HttpServletRequest request) {
+        logger.debug("INTO /user/spot_get_member_info");
+        System.out.println(mid);
+
+        try {
+            ContentMemberOfSpot result = userService.getMemberOfSpot(mid);
+            return new RequestReturnObject(RequestReturnObjectState.OK, result);
+        } catch (UserNotExistException e) {
+            return new RequestReturnObject(RequestReturnObjectState.USER_NOT_EXIST);
         }
     }
 

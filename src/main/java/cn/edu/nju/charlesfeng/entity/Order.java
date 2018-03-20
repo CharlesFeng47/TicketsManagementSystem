@@ -2,6 +2,7 @@ package cn.edu.nju.charlesfeng.entity;
 
 import cn.edu.nju.charlesfeng.util.enums.OrderState;
 import cn.edu.nju.charlesfeng.util.enums.OrderType;
+import cn.edu.nju.charlesfeng.util.enums.OrderWay;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -24,7 +25,7 @@ public class Order {
      * 会员
      */
     @ManyToOne
-    @JoinColumn(name = "uid", nullable = false)
+    @JoinColumn(name = "mid")
     private Member member;
 
     /**
@@ -33,6 +34,12 @@ public class Order {
     @ManyToOne
     @JoinColumn(name = "sid", nullable = false)
     private Schedule schedule;
+
+    /**
+     * 订单下达方式
+     */
+    @Column(name = "way", nullable = false)
+    private OrderWay orderWay;
 
     /**
      * 订单状态
@@ -104,6 +111,14 @@ public class Order {
 
     public void setSchedule(Schedule schedule) {
         this.schedule = schedule;
+    }
+
+    public OrderWay getOrderWay() {
+        return orderWay;
+    }
+
+    public void setOrderWay(OrderWay orderWay) {
+        this.orderWay = orderWay;
     }
 
     public OrderType getOrderType() {

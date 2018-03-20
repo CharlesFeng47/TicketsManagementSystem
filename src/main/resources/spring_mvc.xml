@@ -31,6 +31,8 @@
                 </bean>
                 <bean class="cn.edu.nju.charlesfeng.spring.formatter.CouponFormatter">
                 </bean>
+                <bean class="cn.edu.nju.charlesfeng.spring.formatter.OrderWayFormatter">
+                </bean>
             </set>
         </property>
     </bean>

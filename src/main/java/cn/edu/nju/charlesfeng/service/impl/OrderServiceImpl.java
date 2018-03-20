@@ -7,10 +7,14 @@ import cn.edu.nju.charlesfeng.entity.Coupon;
 import cn.edu.nju.charlesfeng.entity.Member;
 import cn.edu.nju.charlesfeng.entity.NotChoseSeats;
 import cn.edu.nju.charlesfeng.entity.Order;
+import cn.edu.nju.charlesfeng.model.User;
 import cn.edu.nju.charlesfeng.service.OrderService;
 import cn.edu.nju.charlesfeng.util.enums.OrderState;
 import cn.edu.nju.charlesfeng.util.enums.OrderType;
+import cn.edu.nju.charlesfeng.util.enums.OrderWay;
 import cn.edu.nju.charlesfeng.util.enums.UserType;
+import cn.edu.nju.charlesfeng.util.exceptions.InteriorWrongException;
+import cn.edu.nju.charlesfeng.util.exceptions.UserNotExistException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,11 +39,12 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Order subscribe(Member member, String scheduleId, OrderType orderType, NotChoseSeats notChoseSeats,
-                           String choseSeatsJson, boolean didUseCoupon, Coupon usedCoupon, double totalPrice) {
+    public Order subscribe(User curUser, String scheduleId, OrderType orderType, NotChoseSeats notChoseSeats,
+                           String choseSeatsJson, OrderWay orderWay, boolean onSpotIsMember, String onSpotMemberId,
+                           boolean didUseCoupon, Coupon usedCoupon, double totalPrice) throws UserNotExistException, InteriorWrongException {
         Order order = new Order();
-        order.setMember(member);
         order.setSchedule(scheduleDao.getSchedule(scheduleId));
+        order.setOrderWay(orderWay);
         order.setOrderState(OrderState.ORDERED);
         order.setOrderType(orderType);
         order.setOrderTime(LocalDateTime.now());
@@ -52,25 +57,22 @@ public class OrderServiceImpl implements OrderService {
             notChoseSeats.setOrder(order);
         }
 
-        if (didUseCoupon) {
-            List<Coupon> memberCoupons = member.getCoupons();
-
-            // 找到需要移除的
-            Coupon neededToRemove = null;
-            for (Coupon coupon : memberCoupons) {
-                if (coupon.getId() == usedCoupon.getId()) {
-                    neededToRemove = coupon;
-                    break;
-                }
+        Member buyer;
+        if (orderWay == OrderWay.BUY_ON_MEMBER) {
+            buyer = (Member) curUser;
+            order.setMember(buyer);
+            order = updateCouponOfBuyer(didUseCoupon, buyer, usedCoupon, order);
+        } else if (orderWay == OrderWay.BUY_ON_SPOT) {
+            // 现场购买可以是非会员
+            if (onSpotIsMember) {
+                buyer = (Member) userDao.getUser(onSpotMemberId, UserType.MEMBER);
+                order.setMember(buyer);
+                order = updateCouponOfBuyer(didUseCoupon, buyer, usedCoupon, order);
             }
-
-            if (neededToRemove != null) {
-                memberCoupons.remove(neededToRemove);
-                userDao.updateUser(member, UserType.MEMBER);
-            }
-
-            order.setUsedCoupon(neededToRemove);
+        } else {
+            throw new InteriorWrongException();
         }
+
         orderDao.saveOrder(order);
         return order;
     }
@@ -79,7 +81,8 @@ public class OrderServiceImpl implements OrderService {
     public List<Order> getMyOrders(String mid) {
         List<Order> result = new LinkedList<>();
         for (Order curOrder : orderDao.getAllOrders()) {
-            if (curOrder.getMember().getId().equals(mid)) {
+            Member curMember = curOrder.getMember();
+            if (curMember != null && curMember.getId().equals(mid)) {
                 result.add(curOrder);
             }
         }
@@ -94,5 +97,28 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public boolean unsubscribe(String oid) {
         return false;
+    }
+
+    private Order updateCouponOfBuyer(boolean didUseCoupon, Member buyer, Coupon usedCoupon, Order curOrder) {
+        if (didUseCoupon) {
+            List<Coupon> memberCoupons = buyer.getCoupons();
+
+            // 找到需要移除的
+            Coupon neededToRemove = null;
+            for (Coupon coupon : memberCoupons) {
+                if (coupon.getId() == usedCoupon.getId()) {
+                    neededToRemove = coupon;
+                    break;
+                }
+            }
+
+            // 使用的优惠券一定可以被找到
+            assert neededToRemove != null;
+            curOrder.setUsedCoupon(neededToRemove);
+
+            memberCoupons.remove(neededToRemove);
+            userDao.updateUser(buyer, UserType.MEMBER);
+        }
+        return curOrder;
     }
 }

@@ -20,6 +20,11 @@ public class ContentOrder {
     private ContentSchedule schedule;
 
     /**
+     * 订单下达方式
+     */
+    private String orderWay;
+
+    /**
      * 订单状态
      */
     private String orderState;
@@ -58,6 +63,7 @@ public class ContentOrder {
     public ContentOrder(Order order, Spot relativeSpot) {
         this.id = order.getId();
         this.schedule = new ContentSchedule(order.getSchedule(), relativeSpot);
+        this.orderWay = order.getOrderWay().toString();
         this.orderState = order.getOrderState().toString();
         this.orderType = order.getOrderType().toString();
         this.orderTime = order.getOrderTime().toString().replace('T', ' ');
@@ -81,6 +87,14 @@ public class ContentOrder {
 
     public void setSchedule(ContentSchedule schedule) {
         this.schedule = schedule;
+    }
+
+    public String getOrderWay() {
+        return orderWay;
+    }
+
+    public void setOrderWay(String orderWay) {
+        this.orderWay = orderWay;
     }
 
     public String getOrderState() {

@@ -1,13 +1,19 @@
 package cn.edu.nju.charlesfeng.controller;
 
-import cn.edu.nju.charlesfeng.entity.*;
+import cn.edu.nju.charlesfeng.entity.Coupon;
+import cn.edu.nju.charlesfeng.entity.NotChoseSeats;
+import cn.edu.nju.charlesfeng.entity.Order;
+import cn.edu.nju.charlesfeng.entity.Spot;
 import cn.edu.nju.charlesfeng.model.ContentOrder;
 import cn.edu.nju.charlesfeng.model.ContentOrderBrief;
 import cn.edu.nju.charlesfeng.model.RequestReturnObject;
+import cn.edu.nju.charlesfeng.model.User;
 import cn.edu.nju.charlesfeng.service.OrderService;
 import cn.edu.nju.charlesfeng.service.UserService;
 import cn.edu.nju.charlesfeng.util.enums.OrderType;
+import cn.edu.nju.charlesfeng.util.enums.OrderWay;
 import cn.edu.nju.charlesfeng.util.enums.RequestReturnObjectState;
+import cn.edu.nju.charlesfeng.util.exceptions.InteriorWrongException;
 import cn.edu.nju.charlesfeng.util.exceptions.UserNotExistException;
 import com.alibaba.fastjson.JSON;
 import org.apache.log4j.Logger;
@@ -53,19 +59,30 @@ public class OrderController {
                                      @RequestParam("order_type") OrderType orderType,
                                      @RequestParam("not_chose_seats") NotChoseSeats notChoseSeats,
                                      @RequestParam(value = "choose_seats_json", required = false, defaultValue = "") String choseSeatListJson,
+                                     @RequestParam("order_way") OrderWay orderWay,
+                                     @RequestParam("on_spot_is_member") boolean onSpotIsMember,
+                                     @RequestParam("on_spot_member_id") String onSpotMemberId,
                                      @RequestParam(value = "order_did_use_coupon") boolean didUseCoupon,
                                      @RequestParam(value = "order_used_coupon") Coupon usedCoupon,
                                      @RequestParam("order_total_price") double totalPrice,
                                      HttpServletRequest request) {
         logger.debug("INTO /order/save");
+        System.out.println(orderWay);
+        System.out.println(onSpotIsMember);
+        System.out.println(onSpotMemberId);
         System.out.println(didUseCoupon);
         System.out.println(JSON.toJSONString(usedCoupon));
         System.out.println(totalPrice);
         HttpSession session = request.getSession();
-        Member curMember = (Member) session.getAttribute(token);
+        User curUser = (User) session.getAttribute(token);
 
-        Order order = orderService.subscribe(curMember, scheduleId, orderType, notChoseSeats, choseSeatListJson, didUseCoupon, usedCoupon, totalPrice);
-        return new RequestReturnObject(RequestReturnObjectState.OK, order);
+        try {
+            Order order = orderService.subscribe(curUser, scheduleId, orderType, notChoseSeats, choseSeatListJson,
+                    orderWay, onSpotIsMember, onSpotMemberId, didUseCoupon, usedCoupon, totalPrice);
+            return new RequestReturnObject(RequestReturnObjectState.OK, order);
+        } catch (UserNotExistException | InteriorWrongException e) {
+            return new RequestReturnObject(RequestReturnObjectState.INTERIOR_WRONG);
+        }
     }
 
     /**

@@ -5,6 +5,7 @@ import cn.edu.nju.charlesfeng.entity.Coupon;
 import cn.edu.nju.charlesfeng.entity.Member;
 import cn.edu.nju.charlesfeng.entity.SeatInfo;
 import cn.edu.nju.charlesfeng.entity.Spot;
+import cn.edu.nju.charlesfeng.model.ContentMemberOfSpot;
 import cn.edu.nju.charlesfeng.model.User;
 import cn.edu.nju.charlesfeng.service.UserService;
 import cn.edu.nju.charlesfeng.util.enums.UserType;
@@ -94,5 +95,11 @@ public class UserServiceImpl implements UserService {
         } else {
             throw new MemberConvertCouponCreditNotEnoughException();
         }
+    }
+
+    @Override
+    public ContentMemberOfSpot getMemberOfSpot(String mid) throws UserNotExistException {
+        Member result = (Member) userDao.getUser(mid, UserType.MEMBER);
+        return new ContentMemberOfSpot(result);
     }
 }
