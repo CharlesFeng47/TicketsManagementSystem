@@ -93,18 +93,12 @@ public class ScheduleController {
         HttpSession session = request.getSession();
         Spot curSpot = (Spot) session.getAttribute(token);
 
-        Schedule toSave = new Schedule();
-        toSave.setName(name);
-        toSave.setSpot(curSpot);
-        toSave.setType(scheduleItemType);
-        toSave.setDescription(description);
-
         // 时间相关的处理
-        toSave.setStartDateTime(convertDateTime(dateString, timeString));
+        LocalDateTime dateTime = convertDateTime(dateString, timeString);
         // 价格对应表的处理
-        toSave.setSeatInfoPricesJson(convertPriceMapJson(nameListJson, priceListJson, curSpot));
+        String seatInfoPricesJson = convertPriceMapJson(nameListJson, priceListJson, curSpot);
 
-        Schedule result = scheduleService.publishSchedule(toSave);
+        Schedule result = scheduleService.publishSchedule(name, curSpot, dateTime, scheduleItemType, seatInfoPricesJson, description);
         return new RequestReturnObject(RequestReturnObjectState.OK, result);
     }
 
@@ -121,19 +115,12 @@ public class ScheduleController {
         HttpSession session = request.getSession();
         Spot curSpot = (Spot) session.getAttribute(token);
 
-        Schedule toModify = new Schedule();
-        toModify.setId(scheduleId);
-        toModify.setName(name);
-        toModify.setSpot(curSpot);
-        toModify.setType(scheduleItemType);
-        toModify.setDescription(description);
-
         // 时间相关的处理
-        toModify.setStartDateTime(convertDateTime(dateString, timeString));
+        LocalDateTime dateTime = convertDateTime(dateString, timeString);
         // 价格对应表的处理
-        toModify.setSeatInfoPricesJson(convertPriceMapJson(nameListJson, priceListJson, curSpot));
+        String seatInfoPricesJson = convertPriceMapJson(nameListJson, priceListJson, curSpot);
 
-        boolean result = scheduleService.modifySchedule(toModify);
+        boolean result = scheduleService.modifySchedule(scheduleId, name, curSpot, dateTime, scheduleItemType, seatInfoPricesJson, description);
         if (result) return new RequestReturnObject(RequestReturnObjectState.OK);
         else return new RequestReturnObject(RequestReturnObjectState.INTERIOR_WRONG);
     }

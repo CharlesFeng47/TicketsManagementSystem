@@ -2,7 +2,9 @@ package cn.edu.nju.charlesfeng.service.impl;
 
 import cn.edu.nju.charlesfeng.dao.ScheduleDao;
 import cn.edu.nju.charlesfeng.entity.Schedule;
+import cn.edu.nju.charlesfeng.entity.Spot;
 import cn.edu.nju.charlesfeng.service.ScheduleService;
+import cn.edu.nju.charlesfeng.util.enums.ScheduleItemType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -48,15 +50,35 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
-    public Schedule publishSchedule(Schedule schedule) {
-        schedule.setId(generateId());
-        scheduleDao.saveSchedule(schedule);
-        return schedule;
+    public Schedule publishSchedule(String name, Spot curSpot, LocalDateTime startDateTime, ScheduleItemType scheduleItemType,
+                                    String seatInfoPricesJson, String description) {
+        Schedule toSave = new Schedule();
+        toSave.setId(generateId());
+        toSave.setName(name);
+        toSave.setSpot(curSpot);
+        toSave.setStartDateTime(startDateTime);
+        toSave.setType(scheduleItemType);
+        toSave.setSeatInfoPricesJson(seatInfoPricesJson);
+        toSave.setDescription(description);
+
+        // 默认的剩余座位就是场馆的座位图
+        toSave.setRemainSeatsJson(curSpot.getAllSeatsJson());
+
+        scheduleDao.saveSchedule(toSave);
+        return toSave;
     }
 
     @Override
-    public boolean modifySchedule(Schedule schedule) {
-        return scheduleDao.updateSchedule(schedule);
+    public boolean modifySchedule(String scheduleId, String name, Spot curSpot, LocalDateTime startDateTime,
+                                  ScheduleItemType scheduleItemType, String seatInfoPricesJson, String description) {
+        Schedule toModify = scheduleDao.getSchedule(scheduleId);
+        toModify.setName(name);
+        toModify.setSpot(curSpot);
+        toModify.setStartDateTime(startDateTime);
+        toModify.setType(scheduleItemType);
+        toModify.setSeatInfoPricesJson(seatInfoPricesJson);
+        toModify.setDescription(description);
+        return scheduleDao.updateSchedule(toModify);
     }
 
     @Override

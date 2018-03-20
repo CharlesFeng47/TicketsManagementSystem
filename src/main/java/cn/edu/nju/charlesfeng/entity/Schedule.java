@@ -58,6 +58,12 @@ public class Schedule implements Serializable {
     @Column(name = "description", nullable = false)
     private String description;
 
+    /**
+     * 此次计划此场馆中座位的剩余情况 json 串
+     */
+    @Column(name = "remain_seats_json", nullable = false)
+    private String remainSeatsJson;
+
     public Schedule() {
     }
 
@@ -125,5 +131,13 @@ public class Schedule implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getRemainSeatsJson() {
+        return remainSeatsJson;
+    }
+
+    public void setRemainSeatsJson(String remainSeatsJson) {
+        this.remainSeatsJson = remainSeatsJson;
     }
 }

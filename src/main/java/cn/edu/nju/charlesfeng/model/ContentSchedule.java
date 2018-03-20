@@ -39,19 +39,29 @@ public class ContentSchedule {
     private String type;
 
     /**
+     * 此活动中场馆的座位名称
+     */
+    private List<String> seatNames;
+
+    /**
      * 此活动中每种座位与其对应价格的映射
      */
-    private List<SeatInfo> all_seats;
+    private List<SeatInfo> allSeats;
 
     /**
      * 此活动中与每种座位对应的价格
      */
-    private List<Double> all_prices;
+    private List<Double> allPrices;
 
     /**
      * 此活动的简单描述
      */
     private String description;
+
+    /**
+     * 此次计划此场馆中座位的剩余情况 json 串
+     */
+    private String remainSeatsJson;
 
     public ContentSchedule(Schedule schedule) {
         this.id = schedule.getId();
@@ -60,6 +70,12 @@ public class ContentSchedule {
         this.startDateTime = schedule.getStartDateTime().toString().replace('T', ' ');
         this.type = schedule.getType().toString();
         this.description = schedule.getDescription();
+        this.remainSeatsJson = schedule.getRemainSeatsJson();
+
+        this.seatNames = new LinkedList<>();
+        for (SeatInfo seatInfo : schedule.getSpot().getSeatInfos()) {
+            this.seatNames.add(seatInfo.getSeatName());
+        }
 
         // 对计划中的座位按价格降序排序
         Map<SeatInfo, Double> priceMap = JSON.parseObject(schedule.getSeatInfoPricesJson(), new TypeReference<HashMap<SeatInfo, Double>>() {
@@ -68,11 +84,11 @@ public class ContentSchedule {
         List<Map.Entry<SeatInfo, Double>> relativeList = new ArrayList<>(priceMap.entrySet());
         relativeList.sort(new SeatPriceMapComparator());
 
-        all_seats = new LinkedList<>();
-        all_prices = new LinkedList<>();
+        allSeats = new LinkedList<>();
+        allPrices = new LinkedList<>();
         for (Map.Entry<SeatInfo, Double> entry : relativeList) {
-            all_seats.add(entry.getKey());
-            all_prices.add(entry.getValue());
+            allSeats.add(entry.getKey());
+            allPrices.add(entry.getValue());
         }
     }
 
@@ -116,20 +132,28 @@ public class ContentSchedule {
         this.type = type;
     }
 
-    public List<SeatInfo> getAll_seats() {
-        return all_seats;
+    public List<String> getSeatNames() {
+        return seatNames;
     }
 
-    public void setAll_seats(List<SeatInfo> all_seats) {
-        this.all_seats = all_seats;
+    public void setSeatNames(List<String> seatNames) {
+        this.seatNames = seatNames;
     }
 
-    public List<Double> getAll_prices() {
-        return all_prices;
+    public List<SeatInfo> getAllSeats() {
+        return allSeats;
     }
 
-    public void setAll_prices(List<Double> all_prices) {
-        this.all_prices = all_prices;
+    public void setAllSeats(List<SeatInfo> allSeats) {
+        this.allSeats = allSeats;
+    }
+
+    public List<Double> getAllPrices() {
+        return allPrices;
+    }
+
+    public void setAllPrices(List<Double> allPrices) {
+        this.allPrices = allPrices;
     }
 
     public String getDescription() {
@@ -138,5 +162,13 @@ public class ContentSchedule {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getRemainSeatsJson() {
+        return remainSeatsJson;
+    }
+
+    public void setRemainSeatsJson(String remainSeatsJson) {
+        this.remainSeatsJson = remainSeatsJson;
     }
 }
