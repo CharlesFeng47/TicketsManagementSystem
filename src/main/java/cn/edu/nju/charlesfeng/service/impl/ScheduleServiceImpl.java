@@ -63,6 +63,8 @@ public class ScheduleServiceImpl implements ScheduleService {
 
         // 默认的剩余座位就是场馆的座位图
         toSave.setRemainSeatsJson(curSpot.getAllSeatsJson());
+        // 默认无已预订座位，初始化为空值
+        toSave.setBookedSeatsIdJson("[]");
 
         scheduleDao.saveSchedule(toSave);
         return toSave;

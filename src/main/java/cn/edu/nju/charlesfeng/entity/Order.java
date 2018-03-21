@@ -30,6 +30,8 @@ public class Order {
 
     /**
      * 订单下达的计划
+     * 尝试使用级联更新 CascadeType.MERGE，但是需要在Schedule增加Order的List，太麻烦了就算了。。
+     * @link http://westerly-lzh.github.io/cn/2014/12/JPA-CascadeType-Explaining/
      */
     @ManyToOne
     @JoinColumn(name = "sid", nullable = false)

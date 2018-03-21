@@ -59,9 +59,22 @@ public class ContentSchedule {
     private String description;
 
     /**
+     * 此场馆中座位的具体情况 json 串
+     * 在前端用于生成座位图
+     */
+    private String allSeatsJson;
+
+    /**
      * 此次计划此场馆中座位的剩余情况 json 串
+     * 在前端用于计算座位类型的剩余数量
      */
     private String remainSeatsJson;
+
+    /**
+     * 此次计划此场馆中已经被预定了的座位ID列表 json 串
+     * 在前端用于设置这些座位不可预定
+     */
+    private String bookedSeatsIdJson;
 
     public ContentSchedule(Schedule schedule) {
         this.id = schedule.getId();
@@ -70,7 +83,9 @@ public class ContentSchedule {
         this.startDateTime = schedule.getStartDateTime().toString().replace('T', ' ');
         this.type = schedule.getType().toString();
         this.description = schedule.getDescription();
+        this.allSeatsJson = schedule.getSpot().getAllSeatsJson();
         this.remainSeatsJson = schedule.getRemainSeatsJson();
+        this.bookedSeatsIdJson = schedule.getBookedSeatsIdJson();
 
         this.seatNames = new LinkedList<>();
         for (SeatInfo seatInfo : schedule.getSpot().getSeatInfos()) {
@@ -164,11 +179,27 @@ public class ContentSchedule {
         this.description = description;
     }
 
+    public String getAllSeatsJson() {
+        return allSeatsJson;
+    }
+
+    public void setAllSeatsJson(String allSeatsJson) {
+        this.allSeatsJson = allSeatsJson;
+    }
+
     public String getRemainSeatsJson() {
         return remainSeatsJson;
     }
 
     public void setRemainSeatsJson(String remainSeatsJson) {
         this.remainSeatsJson = remainSeatsJson;
+    }
+
+    public String getBookedSeatsIdJson() {
+        return bookedSeatsIdJson;
+    }
+
+    public void setBookedSeatsIdJson(String bookedSeatsIdJson) {
+        this.bookedSeatsIdJson = bookedSeatsIdJson;
     }
 }

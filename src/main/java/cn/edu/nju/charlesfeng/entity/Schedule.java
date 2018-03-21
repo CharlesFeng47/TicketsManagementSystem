@@ -59,15 +59,21 @@ public class Schedule implements Serializable {
     private String description;
 
     /**
-     * 此次计划此场馆中座位的剩余情况 json 串
+     * 此次计划此场馆中座位的剩余情况 json 串（与场馆中 allSeatsJson 的区别在于此 remainSeatsJson 被预定后字符专为大写）
      */
     @Column(name = "remain_seats_json", nullable = false)
     private String remainSeatsJson;
 
+    /**
+     * 此次计划此场馆中已经被预定了的座位ID列表 json 串
+     */
+    @Column(name = "booked_seats_id_json", nullable = false)
+    private String bookedSeatsIdJson;
+
     public Schedule() {
     }
 
-    public Schedule(String id, String name, Spot spot, LocalDateTime startDateTime, ScheduleItemType type, String seatInfoPricesJson, String description) {
+    public Schedule(String id, String name, Spot spot, LocalDateTime startDateTime, ScheduleItemType type, String seatInfoPricesJson, String description, String remainSeatsJson, String bookedSeatsIdJson) {
         this.id = id;
         this.name = name;
         this.spot = spot;
@@ -75,6 +81,8 @@ public class Schedule implements Serializable {
         this.type = type;
         this.seatInfoPricesJson = seatInfoPricesJson;
         this.description = description;
+        this.remainSeatsJson = remainSeatsJson;
+        this.bookedSeatsIdJson = bookedSeatsIdJson;
     }
 
     public String getId() {
@@ -139,5 +147,13 @@ public class Schedule implements Serializable {
 
     public void setRemainSeatsJson(String remainSeatsJson) {
         this.remainSeatsJson = remainSeatsJson;
+    }
+
+    public String getBookedSeatsIdJson() {
+        return bookedSeatsIdJson;
+    }
+
+    public void setBookedSeatsIdJson(String bookedSeatsIdJson) {
+        this.bookedSeatsIdJson = bookedSeatsIdJson;
     }
 }

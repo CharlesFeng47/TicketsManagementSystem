@@ -80,7 +80,9 @@ public class ScheduleDaoImplTest {
         StringBuilder sb = new StringBuilder();
         sb.append(now.getYear()).append(now.getMonthValue()).append(now.getDayOfMonth());
         sb.append(now.getHour()).append(now.getMinute()).append(now.getSecond());
-        Schedule schedule = new Schedule(sb.toString(), "测试用日程名字2", spot, LocalDateTime.now(), ScheduleItemType.CONCERT, JSON.toJSONString(seatPrices), "测试用日程描述");
+        Schedule schedule = new Schedule(sb.toString(), "测试用日程名字2", spot, LocalDateTime.now(),
+                ScheduleItemType.CONCERT, JSON.toJSONString(seatPrices), "测试用日程描述",
+                spot.getAllSeatsJson(), "[]");
         scheduleDao.saveSchedule(schedule);
     }
 
@@ -90,7 +92,7 @@ public class ScheduleDaoImplTest {
      */
     @Test
     public void testUpdateSchedule() {
-        Schedule schedule = scheduleDao.getSchedule("2018320233151");
+        Schedule schedule = scheduleDao.getSchedule("2018321132430");
         Map<SeatInfo, Double> map = JSON.parseObject(schedule.getSeatInfoPricesJson(), new TypeReference<HashMap<SeatInfo, Double>>() {
         });
         for (Map.Entry<SeatInfo, Double> entry : map.entrySet()) {

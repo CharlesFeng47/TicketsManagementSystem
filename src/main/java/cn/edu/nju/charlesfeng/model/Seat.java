@@ -1,38 +1,46 @@
 package cn.edu.nju.charlesfeng.model;
 
 /**
- * 场馆中座位的一个实体类
+ * 场馆中的座位表示
  */
 public class Seat {
 
     /**
-     * 此座位所在的行
+     * 此座位ID（行_列）
      */
-    private int row;
+    private String id;
 
     /**
-     * 此座位所在的列
+     * 此座位名称
      */
-    private int column;
+    private String seatName;
 
-    public Seat(int row, int column) {
-        this.row = row;
-        this.column = column;
+    /**
+     * 此座位价格
+     */
+    private double price;
+
+    public String getId() {
+        return id;
     }
 
-    public int getRow() {
-        return row;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public void setRow(int row) {
-        this.row = row;
+    public String getSeatName() {
+        return seatName;
     }
 
-    public int getColumn() {
-        return column;
+    public void setSeatName(String seatName) {
+        this.seatName = seatName;
     }
 
-    public void setColumn(int column) {
-        this.column = column;
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
     }
 }

@@ -160,14 +160,6 @@ public class UserDaoImplTest {
         seatInfos.add(seat3);
 
         List<Seat> allSeats = new LinkedList<>();
-        allSeats.add(new Seat(1, 1));
-        allSeats.add(new Seat(1, 2));
-        allSeats.add(new Seat(1, 3));
-        allSeats.add(new Seat(1, 4));
-        allSeats.add(new Seat(2, 1));
-        allSeats.add(new Seat(2, 2));
-        allSeats.add(new Seat(2, 3));
-        allSeats.add(new Seat(2, 4));
         String allSeatsJson = JSON.toJSONString(allSeats);
 
         Spot spot1 = new Spot("0000002", "qwertyuiop", "南京江苏大剧院", false, "南京河西新区", seatInfos, allSeatsJson, 2);

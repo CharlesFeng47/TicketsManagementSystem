@@ -3,10 +3,8 @@ package cn.edu.nju.charlesfeng.service.impl;
 import cn.edu.nju.charlesfeng.dao.OrderDao;
 import cn.edu.nju.charlesfeng.dao.ScheduleDao;
 import cn.edu.nju.charlesfeng.dao.UserDao;
-import cn.edu.nju.charlesfeng.entity.Coupon;
-import cn.edu.nju.charlesfeng.entity.Member;
-import cn.edu.nju.charlesfeng.entity.NotChoseSeats;
-import cn.edu.nju.charlesfeng.entity.Order;
+import cn.edu.nju.charlesfeng.entity.*;
+import cn.edu.nju.charlesfeng.model.Seat;
 import cn.edu.nju.charlesfeng.model.User;
 import cn.edu.nju.charlesfeng.service.OrderService;
 import cn.edu.nju.charlesfeng.util.enums.OrderState;
@@ -15,6 +13,7 @@ import cn.edu.nju.charlesfeng.util.enums.OrderWay;
 import cn.edu.nju.charlesfeng.util.enums.UserType;
 import cn.edu.nju.charlesfeng.util.exceptions.InteriorWrongException;
 import cn.edu.nju.charlesfeng.util.exceptions.UserNotExistException;
+import com.alibaba.fastjson.JSON;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -43,8 +42,11 @@ public class OrderServiceImpl implements OrderService {
                            String choseSeatsJson, OrderWay orderWay, boolean onSpotIsMember, String onSpotMemberId,
                            boolean didUseCoupon, Coupon usedCoupon, String calProcess, double totalPrice)
             throws UserNotExistException, InteriorWrongException {
+
+        Schedule toOrderSchedule = scheduleDao.getSchedule(scheduleId);
+
         Order order = new Order();
-        order.setSchedule(scheduleDao.getSchedule(scheduleId));
+        order.setSchedule(toOrderSchedule);
         order.setOrderWay(orderWay);
         order.setOrderState(OrderState.ORDERED);
         order.setOrderType(orderType);
@@ -54,6 +56,26 @@ public class OrderServiceImpl implements OrderService {
 
         if (orderType == OrderType.CHOOSE_SEATS) {
             order.setOrderedSeatsJson(choseSeatsJson);
+
+            List<Seat> curbBookedSeats = JSON.parseArray(choseSeatsJson, Seat.class);
+            List<String> curBookedIds = getSeatListIds(curbBookedSeats);
+
+            // 对schedule进行处理，预定的座位更新
+            List<String> alreadyBookedIds = JSON.parseArray(toOrderSchedule.getBookedSeatsIdJson(), String.class);
+            alreadyBookedIds.addAll(curBookedIds);
+            toOrderSchedule.setBookedSeatsIdJson(JSON.toJSONString(alreadyBookedIds));
+
+            List<String> curRemainSeatMap = JSON.parseArray(toOrderSchedule.getRemainSeatsJson(), String.class);
+            for (String id : curBookedIds) {
+                String[] idParts = id.split("_");
+                int rowIndex = Integer.parseInt(idParts[0]) - 1;
+                int colIndex = Integer.parseInt(idParts[1]) - 1;
+
+                curRemainSeatMap.set(rowIndex, uppercaseSpecificChar(curRemainSeatMap.get(rowIndex), colIndex));
+            }
+            toOrderSchedule.setRemainSeatsJson(JSON.toJSONString(curRemainSeatMap));
+            scheduleDao.updateSchedule(toOrderSchedule);
+
         } else if (orderType == OrderType.NOT_CHOOSE_SEATS) {
             order.setNotChoseSeats(notChoseSeats);
             notChoseSeats.setOrder(order);
@@ -101,6 +123,32 @@ public class OrderServiceImpl implements OrderService {
         return false;
     }
 
+
+    /**
+     * 获得预定座位的ID
+     */
+    private List<String> getSeatListIds(List<Seat> seats) {
+        List<String> ids = new LinkedList<>();
+        for (Seat seat : seats) {
+            ids.add(seat.getId());
+        }
+        return ids;
+    }
+
+    /**
+     * 替换指定位置的座位
+     */
+    private String uppercaseSpecificChar(String str, int pos) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(str.substring(0, pos));
+        sb.append((char) (str.charAt(pos) - 0x20));
+        if (pos < str.length() - 1) sb.append(str.substring(pos + 1));
+        return sb.toString();
+    }
+
+    /**
+     * 根据参数决定是否要更新买家的优惠券，如果需要就更新
+     */
     private Order updateCouponOfBuyer(boolean didUseCoupon, Member buyer, Coupon usedCoupon, Order curOrder) {
         if (didUseCoupon) {
             List<Coupon> memberCoupons = buyer.getCoupons();

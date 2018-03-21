@@ -3,10 +3,6 @@ package cn.edu.nju.charlesfeng.model;
 import cn.edu.nju.charlesfeng.entity.SeatInfo;
 import cn.edu.nju.charlesfeng.entity.Spot;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -23,25 +19,21 @@ public class ContentSpot {
     /**
      * 此场馆的名字
      */
-    @Column(name = "spot_name", nullable = false)
     private String spotName;
 
     /**
      * 此场馆的座位信息
      */
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<String> seatNames;
 
     /**
      * 此场馆中座位的具体情况 json 串
      */
-    @Column(name = "all_seats_json", nullable = false)
     private String allSeatsJson;
 
     /**
      * 此场馆座位图中的座位类型数量
      */
-    @Column(name = "seat_type_count", nullable = false)
     private int curSeatTypeCount;
 
     public ContentSpot(Spot spot) {
