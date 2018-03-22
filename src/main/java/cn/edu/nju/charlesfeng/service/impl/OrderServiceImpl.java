@@ -1,5 +1,6 @@
 package cn.edu.nju.charlesfeng.service.impl;
 
+import cn.edu.nju.charlesfeng.dao.AlipayDao;
 import cn.edu.nju.charlesfeng.dao.OrderDao;
 import cn.edu.nju.charlesfeng.dao.ScheduleDao;
 import cn.edu.nju.charlesfeng.dao.UserDao;
@@ -11,6 +12,8 @@ import cn.edu.nju.charlesfeng.util.enums.OrderState;
 import cn.edu.nju.charlesfeng.util.enums.OrderType;
 import cn.edu.nju.charlesfeng.util.enums.OrderWay;
 import cn.edu.nju.charlesfeng.util.enums.UserType;
+import cn.edu.nju.charlesfeng.util.exceptions.AlipayBalanceNotAdequateException;
+import cn.edu.nju.charlesfeng.util.exceptions.AlipayWrongPwdException;
 import cn.edu.nju.charlesfeng.util.exceptions.InteriorWrongException;
 import cn.edu.nju.charlesfeng.util.exceptions.UserNotExistException;
 import com.alibaba.fastjson.JSON;
@@ -30,17 +33,20 @@ public class OrderServiceImpl implements OrderService {
 
     private final UserDao userDao;
 
+    private final AlipayDao alipayDao;
+
     @Autowired
-    public OrderServiceImpl(OrderDao orderDao, ScheduleDao scheduleDao, UserDao userDao) {
+    public OrderServiceImpl(OrderDao orderDao, ScheduleDao scheduleDao, UserDao userDao, AlipayDao alipayDao) {
         this.orderDao = orderDao;
         this.scheduleDao = scheduleDao;
         this.userDao = userDao;
+        this.alipayDao = alipayDao;
     }
 
     @Override
-    public Order subscribe(User curUser, String scheduleId, OrderType orderType, NotChoseSeats notChoseSeats,
-                           String choseSeatsJson, OrderWay orderWay, boolean onSpotIsMember, String onSpotMemberId,
-                           boolean didUseCoupon, Coupon usedCoupon, String calProcess, double totalPrice)
+    public int subscribe(User curUser, String scheduleId, OrderType orderType, NotChoseSeats notChoseSeats,
+                         String choseSeatsJson, OrderWay orderWay, boolean onSpotIsMember, String onSpotMemberId,
+                         boolean didUseCoupon, Coupon usedCoupon, String calProcess, double totalPrice)
             throws UserNotExistException, InteriorWrongException {
 
         Schedule toOrderSchedule = scheduleDao.getSchedule(scheduleId);
@@ -97,8 +103,26 @@ public class OrderServiceImpl implements OrderService {
             throw new InteriorWrongException();
         }
 
-        orderDao.saveOrder(order);
-        return order;
+        return orderDao.saveOrder(order);
+    }
+
+    @Override
+    public boolean payOrder(Member member, int oid, String paymentId, String paymentPwd) throws AlipayWrongPwdException, AlipayBalanceNotAdequateException {
+        AlipayEntity alipayEntity = alipayDao.getAlipayEntity(paymentId);
+        if (alipayEntity.getPwd().equals(paymentPwd)) {
+            Order toPay = orderDao.getOrder(oid);
+
+            // 检查支付宝余额是否充足
+            if (toPay.getTotalPrice() > alipayEntity.getBalance()) {
+                throw new AlipayBalanceNotAdequateException();
+            }
+
+            // TODO 支付宝减少余额，场馆未结算部分余额增加
+
+            return true;
+        } else {
+            throw new AlipayWrongPwdException();
+        }
     }
 
     @Override

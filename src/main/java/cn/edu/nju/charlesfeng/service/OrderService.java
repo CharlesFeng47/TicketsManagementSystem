@@ -1,11 +1,14 @@
 package cn.edu.nju.charlesfeng.service;
 
 import cn.edu.nju.charlesfeng.entity.Coupon;
+import cn.edu.nju.charlesfeng.entity.Member;
 import cn.edu.nju.charlesfeng.entity.NotChoseSeats;
 import cn.edu.nju.charlesfeng.entity.Order;
 import cn.edu.nju.charlesfeng.model.User;
 import cn.edu.nju.charlesfeng.util.enums.OrderType;
 import cn.edu.nju.charlesfeng.util.enums.OrderWay;
+import cn.edu.nju.charlesfeng.util.exceptions.AlipayBalanceNotAdequateException;
+import cn.edu.nju.charlesfeng.util.exceptions.AlipayWrongPwdException;
 import cn.edu.nju.charlesfeng.util.exceptions.InteriorWrongException;
 import cn.edu.nju.charlesfeng.util.exceptions.UserNotExistException;
 
@@ -33,11 +36,20 @@ public interface OrderService {
      * @param totalPrice     订单总价
      * @return 预定结果，成果则返回订单实体
      */
-    Order subscribe(User curUser, String scheduleId, OrderType orderType, NotChoseSeats notChoseSeats,
-                    String choseSeatsJson, OrderWay orderWay, boolean onSpotIsMember, String onSpotMemberId,
-                    boolean didUseCoupon, Coupon usedCoupon, String calProcess, double totalPrice) throws UserNotExistException, InteriorWrongException;
+    int subscribe(User curUser, String scheduleId, OrderType orderType, NotChoseSeats notChoseSeats,
+                  String choseSeatsJson, OrderWay orderWay, boolean onSpotIsMember, String onSpotMemberId,
+                  boolean didUseCoupon, Coupon usedCoupon, String calProcess, double totalPrice) throws UserNotExistException, InteriorWrongException;
 
     // TODO 付款后增加积分
+
+    /**
+     * @param member     支付的用户
+     * @param oid        支付的订单编号
+     * @param paymentId  支付的账号
+     * @param paymentPwd 支付的密码
+     * @return 支付结果，成功则true
+     */
+    boolean payOrder(Member member, int oid, String paymentId, String paymentPwd) throws AlipayWrongPwdException, AlipayBalanceNotAdequateException;
 
     /**
      * @param mid 查看订单的会员

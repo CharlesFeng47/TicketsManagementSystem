@@ -1,5 +1,6 @@
 package cn.edu.nju.charlesfeng.util.testUtil;
 
+import cn.edu.nju.charlesfeng.dao.AlipayDao;
 import cn.edu.nju.charlesfeng.dao.OrderDao;
 import cn.edu.nju.charlesfeng.dao.ScheduleDao;
 import cn.edu.nju.charlesfeng.dao.UserDao;
@@ -25,10 +26,16 @@ public class DaoTestHelper {
      */
     public static final OrderDao orderDao;
 
+    /**
+     * AlipayDao Bean
+     */
+    public static final AlipayDao alipayDao;
+
     static {
         ApplicationContext applicationContext = ApplicationContextHelper.getApplicationContext();
         userDao = applicationContext.getBean(UserDao.class);
         scheduleDao = applicationContext.getBean(ScheduleDao.class);
         orderDao = applicationContext.getBean(OrderDao.class);
+        alipayDao = applicationContext.getBean(AlipayDao.class);
     }
 }

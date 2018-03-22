@@ -65,9 +65,9 @@ public class OrderController {
         User curUser = (User) session.getAttribute(token);
 
         try {
-            Order order = orderService.subscribe(curUser, scheduleId, orderType, notChoseSeats, choseSeatListJson,
+            int orderId = orderService.subscribe(curUser, scheduleId, orderType, notChoseSeats, choseSeatListJson,
                     orderWay, onSpotIsMember, onSpotMemberId, didUseCoupon, usedCoupon, calProcess, totalPrice);
-            return new RequestReturnObject(RequestReturnObjectState.OK, order);
+            return new RequestReturnObject(RequestReturnObjectState.OK, orderId);
         } catch (UserNotExistException | InteriorWrongException e) {
             return new RequestReturnObject(RequestReturnObjectState.INTERIOR_WRONG);
         }
@@ -96,8 +96,22 @@ public class OrderController {
         Order order = orderService.checkOrderDetail(oid);
         ContentOrder result = new ContentOrder(order);
         return new RequestReturnObject(RequestReturnObjectState.OK, result);
+    }
 
+    /**
+     * 支付订单
+     */
+    @PostMapping("/pay")
+    public RequestReturnObject payOrder(@RequestParam("token") String token, @RequestParam("oid") String oid,
+                                        @RequestParam("payment_id") String id, @RequestParam("payment_pwd") String pwd,
+                                        HttpServletRequest request) {
+        logger.debug("INTO /order/pay");
+        System.out.println(token);
+        System.out.println(oid);
+        System.out.println(id);
+        System.out.println(pwd);
 
+        return new RequestReturnObject(RequestReturnObjectState.OK);
     }
 
     /**
