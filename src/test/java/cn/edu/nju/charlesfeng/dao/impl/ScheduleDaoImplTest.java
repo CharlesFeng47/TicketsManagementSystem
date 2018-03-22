@@ -7,6 +7,7 @@ import cn.edu.nju.charlesfeng.entity.Schedule;
 import cn.edu.nju.charlesfeng.entity.SeatInfo;
 import cn.edu.nju.charlesfeng.entity.Spot;
 import cn.edu.nju.charlesfeng.util.enums.ScheduleItemType;
+import cn.edu.nju.charlesfeng.util.enums.ScheduleState;
 import cn.edu.nju.charlesfeng.util.enums.UserType;
 import cn.edu.nju.charlesfeng.util.testUtil.DaoTestHelper;
 import com.alibaba.fastjson.JSON;
@@ -49,10 +50,7 @@ public class ScheduleDaoImplTest {
     @Test
     public void testGetSchedule() throws Exception {
         Schedule schedule = scheduleDao.getSchedule("2018322194122");
-        String json = JSON.toJSONString(schedule);
-        System.out.println(json);
-        Schedule another = JSON.parseObject(json, Schedule.class);
-        System.out.println(another.getId());
+        System.out.println(schedule.getOrders().size());
     }
 
     @Test
@@ -85,7 +83,7 @@ public class ScheduleDaoImplTest {
         sb.append(now.getHour()).append(now.getMinute()).append(now.getSecond());
         Schedule schedule = new Schedule(sb.toString(), "测试用日程名字2", spot, LocalDateTime.now(),
                 ScheduleItemType.CONCERT, JSON.toJSONString(seatPrices), "测试用日程描述",
-                spot.getAllSeatsJson(), "[]", orders);
+                spot.getAllSeatsJson(), "[]", orders, ScheduleState.RELEASED, 0);
         scheduleDao.saveSchedule(schedule);
     }
 

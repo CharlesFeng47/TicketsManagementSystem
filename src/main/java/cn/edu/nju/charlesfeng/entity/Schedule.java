@@ -1,6 +1,7 @@
 package cn.edu.nju.charlesfeng.entity;
 
 import cn.edu.nju.charlesfeng.util.enums.ScheduleItemType;
+import cn.edu.nju.charlesfeng.util.enums.ScheduleState;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -77,15 +78,27 @@ public class Schedule implements Serializable {
      * 此计划相关的订单
      */
     @OneToMany(mappedBy = "schedule", targetEntity = Order.class,
-            fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+            fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @Column(name = "orders", nullable = false)
     @Fetch(FetchMode.SUBSELECT)
     private List<Order> orders;
 
+    /**
+     * 计划的状态
+     */
+    @Column(name = "state", nullable = false)
+    private ScheduleState state;
+
+    /**
+     * 订单下达之后支付款项，暂存到计划中，待结算
+     */
+    @Column(name = "balance", nullable = false)
+    private double balance;
+
     public Schedule() {
     }
 
-    public Schedule(String id, String name, Spot spot, LocalDateTime startDateTime, ScheduleItemType type, String seatInfoPricesJson, String description, String remainSeatsJson, String bookedSeatsIdJson, List<Order> orders) {
+    public Schedule(String id, String name, Spot spot, LocalDateTime startDateTime, ScheduleItemType type, String seatInfoPricesJson, String description, String remainSeatsJson, String bookedSeatsIdJson, List<Order> orders, ScheduleState state, double balance) {
         this.id = id;
         this.name = name;
         this.spot = spot;
@@ -96,6 +109,8 @@ public class Schedule implements Serializable {
         this.remainSeatsJson = remainSeatsJson;
         this.bookedSeatsIdJson = bookedSeatsIdJson;
         this.orders = orders;
+        this.state = state;
+        this.balance = balance;
     }
 
     public String getId() {
@@ -176,5 +191,21 @@ public class Schedule implements Serializable {
 
     public void setOrders(List<Order> orders) {
         this.orders = orders;
+    }
+
+    public ScheduleState getState() {
+        return state;
+    }
+
+    public void setState(ScheduleState state) {
+        this.state = state;
+    }
+
+    public double getBalance() {
+        return balance;
+    }
+
+    public void setBalance(double balance) {
+        this.balance = balance;
     }
 }

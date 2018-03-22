@@ -80,6 +80,7 @@ public class OrderServiceImpl implements OrderService {
                 curRemainSeatMap.set(rowIndex, uppercaseSpecificChar(curRemainSeatMap.get(rowIndex), colIndex));
             }
             toOrderSchedule.setRemainSeatsJson(JSON.toJSONString(curRemainSeatMap));
+            // 因为此时此order还未被存储，所以不受级联更新
             scheduleDao.updateSchedule(toOrderSchedule);
 
         } else if (orderType == OrderType.NOT_CHOOSE_SEATS) {
@@ -109,18 +110,26 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public boolean payOrder(Member member, int oid, String paymentId, String paymentPwd) throws AlipayWrongPwdException, AlipayBalanceNotAdequateException {
         AlipayEntity alipayEntity = alipayDao.getAlipayEntity(paymentId);
-        if (alipayEntity.getPwd().equals(paymentPwd)) {
+        if (alipayEntity != null && alipayEntity.getPwd().equals(paymentPwd)) {
             Order toPay = orderDao.getOrder(oid);
+            final double payMoney = toPay.getTotalPrice();
 
             // 检查支付宝余额是否充足
-            final double remainBalance = alipayEntity.getBalance() - toPay.getTotalPrice();
+            final double remainBalance = alipayEntity.getBalance() - payMoney;
             if (remainBalance < 0) {
                 throw new AlipayBalanceNotAdequateException();
             }
 
-            // TODO 支付宝减少余额，场馆未结算部分余额增加
+            // 支付宝减少余额
             alipayEntity.setBalance(remainBalance);
             alipayDao.update(alipayEntity);
+
+            // 订单状态改变
+            toPay.setOrderState(OrderState.PAYED);
+            // 场馆未结算部分余额增加，级联更新
+            Schedule curSchedule = toPay.getSchedule();
+            curSchedule.setBalance(curSchedule.getBalance() + payMoney);
+            orderDao.updateOrder(toPay);
 
             return true;
         } else {

@@ -5,6 +5,7 @@ import cn.edu.nju.charlesfeng.entity.Schedule;
 import cn.edu.nju.charlesfeng.entity.Spot;
 import cn.edu.nju.charlesfeng.service.ScheduleService;
 import cn.edu.nju.charlesfeng.util.enums.ScheduleItemType;
+import cn.edu.nju.charlesfeng.util.enums.ScheduleState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -65,6 +66,10 @@ public class ScheduleServiceImpl implements ScheduleService {
         toSave.setRemainSeatsJson(curSpot.getAllSeatsJson());
         // 默认无已预订座位，初始化为空值
         toSave.setBookedSeatsIdJson("[]");
+        // 默认为已发布
+        toSave.setState(ScheduleState.RELEASED);
+        // 默认已经购买的金额／未结算金额为0
+        toSave.setBalance(0);
 
         scheduleDao.saveSchedule(toSave);
         return toSave;

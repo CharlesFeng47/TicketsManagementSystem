@@ -34,7 +34,7 @@ public class Order {
      *
      * @link http://westerly-lzh.github.io/cn/2014/12/JPA-CascadeType-Explaining/
      */
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "sid", nullable = false)
     private Schedule schedule;
 

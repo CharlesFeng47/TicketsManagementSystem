@@ -13,7 +13,6 @@ import cn.edu.nju.charlesfeng.util.enums.OrderWay;
 import cn.edu.nju.charlesfeng.util.enums.UserType;
 import cn.edu.nju.charlesfeng.util.exceptions.UserNotExistException;
 import cn.edu.nju.charlesfeng.util.testUtil.DaoTestHelper;
-import com.alibaba.fastjson.JSON;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -60,6 +59,8 @@ public class OrderDaoImplTest {
     @Test
     public void testSaveOrder() throws Exception {
         Order order = getNewOrder();
+        Schedule curSchedule = scheduleDao.getSchedule("2018322194122");
+        order.setSchedule(curSchedule);
         orderDao.saveOrder(order);
     }
 
@@ -78,18 +79,12 @@ public class OrderDaoImplTest {
      * 测试order中的schedule改变，级联更新
      */
     @Test
-    public void testUpdateScheduleOfOrder() throws Exception {
+    public void testUpdateScheduleOfOrder() {
         Order order = orderDao.getOrder(7);
         order.setOrderTime(LocalDateTime.now());
         Schedule schedule = order.getSchedule();
-        schedule.setName("测试用日程名字4");
-
-        Order order2 = getNewOrder();
-        schedule.getOrders().add(order2);
-        orderDao.saveOrder(order2);
-
-        System.out.println(JSON.toJSONString(schedule));
-        scheduleDao.updateSchedule(schedule);
+        schedule.setName("测试用日程名字6");
+        orderDao.updateOrder(order);
     }
 
     private Order getNewOrder() throws UserNotExistException {
@@ -111,9 +106,6 @@ public class OrderDaoImplTest {
 
         Member curMember = (Member) userDao.getUser("suzy", UserType.MEMBER);
         order.setMember(curMember);
-
-        Schedule curSchedule = scheduleDao.getSchedule("2018322194122");
-        order.setSchedule(curSchedule);
         return order;
     }
 

@@ -55,7 +55,7 @@ public class BaseDaoImpl implements BaseDao {
     public boolean update(Object bean) {
         Session session = sessionFactory.openSession();
         Transaction tx = session.beginTransaction();
-        session.update(bean);
+        session.merge(bean);
         tx.commit();
         session.close();
         return true;
