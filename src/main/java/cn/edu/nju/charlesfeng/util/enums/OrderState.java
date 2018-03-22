@@ -6,7 +6,7 @@ package cn.edu.nju.charlesfeng.util.enums;
 public enum OrderState {
 
     ORDERED("已下单"),
-    CANCELLED("已取消"),
+    CANCELLED("逾期未付款自动取消"),
     PAYED("已支付"),
     CHECKED("已检票"),
     EXPIRED("已过期"),
