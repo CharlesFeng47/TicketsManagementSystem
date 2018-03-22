@@ -1,9 +1,6 @@
 package cn.edu.nju.charlesfeng.controller;
 
-import cn.edu.nju.charlesfeng.entity.Coupon;
-import cn.edu.nju.charlesfeng.entity.Member;
-import cn.edu.nju.charlesfeng.entity.NotChoseSeats;
-import cn.edu.nju.charlesfeng.entity.Order;
+import cn.edu.nju.charlesfeng.entity.*;
 import cn.edu.nju.charlesfeng.model.ContentOrder;
 import cn.edu.nju.charlesfeng.model.ContentOrderBrief;
 import cn.edu.nju.charlesfeng.model.RequestReturnObject;
@@ -12,10 +9,7 @@ import cn.edu.nju.charlesfeng.service.OrderService;
 import cn.edu.nju.charlesfeng.util.enums.OrderType;
 import cn.edu.nju.charlesfeng.util.enums.OrderWay;
 import cn.edu.nju.charlesfeng.util.enums.RequestReturnObjectState;
-import cn.edu.nju.charlesfeng.util.exceptions.AlipayBalanceNotAdequateException;
-import cn.edu.nju.charlesfeng.util.exceptions.AlipayWrongPwdException;
-import cn.edu.nju.charlesfeng.util.exceptions.InteriorWrongException;
-import cn.edu.nju.charlesfeng.util.exceptions.UserNotExistException;
+import cn.edu.nju.charlesfeng.util.exceptions.*;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -109,11 +103,6 @@ public class OrderController {
                                         @RequestParam("payment_id") String id, @RequestParam("payment_pwd") String pwd,
                                         HttpServletRequest request) {
         logger.debug("INTO /order/pay");
-        System.out.println(token);
-        System.out.println(oid);
-        System.out.println(id);
-        System.out.println(pwd);
-
         HttpSession session = request.getSession();
         Member curMember = (Member) session.getAttribute(token);
         try {
@@ -123,6 +112,32 @@ public class OrderController {
             return new RequestReturnObject(RequestReturnObjectState.PAY_WRONG_PWD);
         } catch (AlipayBalanceNotAdequateException e) {
             return new RequestReturnObject(RequestReturnObjectState.PAY_BALANCE_NOT_ADEQUATE);
+        }
+    }
+
+    /**
+     * 检票登记
+     */
+    @PostMapping("/check_ticket")
+    public RequestReturnObject checkTicket(@RequestParam("token") String token, @RequestParam("oid") String oid,
+                                           HttpServletRequest request) {
+        logger.debug("INTO /order/check_ticket");
+        System.out.println(token);
+        System.out.println(oid);
+
+        HttpSession session = request.getSession();
+        Spot curSpot = (Spot) session.getAttribute(token);
+        assert curSpot != null;
+
+        try {
+            orderService.checkTicket(getOidInteger(oid));
+            return new RequestReturnObject(RequestReturnObjectState.OK);
+        } catch (TicketHasBeenCheckedException e) {
+            return new RequestReturnObject(RequestReturnObjectState.TICKET_HAS_BEEN_CHECKED);
+        } catch (TicketStateWrongException e) {
+            return new RequestReturnObject(RequestReturnObjectState.TICKET_STATE_WRONG);
+        } catch (OrderNotExistException e) {
+            return new RequestReturnObject(RequestReturnObjectState.TICKET_NOT_EXIST);
         }
     }
 

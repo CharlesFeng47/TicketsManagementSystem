@@ -7,10 +7,7 @@ import cn.edu.nju.charlesfeng.entity.Order;
 import cn.edu.nju.charlesfeng.model.User;
 import cn.edu.nju.charlesfeng.util.enums.OrderType;
 import cn.edu.nju.charlesfeng.util.enums.OrderWay;
-import cn.edu.nju.charlesfeng.util.exceptions.AlipayBalanceNotAdequateException;
-import cn.edu.nju.charlesfeng.util.exceptions.AlipayWrongPwdException;
-import cn.edu.nju.charlesfeng.util.exceptions.InteriorWrongException;
-import cn.edu.nju.charlesfeng.util.exceptions.UserNotExistException;
+import cn.edu.nju.charlesfeng.util.exceptions.*;
 
 import java.util.List;
 
@@ -50,6 +47,12 @@ public interface OrderService {
      * @return 支付结果，成功则true
      */
     boolean payOrder(Member member, int oid, String paymentId, String paymentPwd) throws AlipayWrongPwdException, AlipayBalanceNotAdequateException;
+
+    /**
+     * @param oid 检票登记的订单号
+     * @return 检票结果，成功则true
+     */
+    boolean checkTicket(int oid) throws TicketHasBeenCheckedException, TicketStateWrongException, OrderNotExistException;
 
     /**
      * @param mid 查看订单的会员

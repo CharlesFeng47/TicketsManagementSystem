@@ -12,10 +12,7 @@ import cn.edu.nju.charlesfeng.util.enums.OrderState;
 import cn.edu.nju.charlesfeng.util.enums.OrderType;
 import cn.edu.nju.charlesfeng.util.enums.OrderWay;
 import cn.edu.nju.charlesfeng.util.enums.UserType;
-import cn.edu.nju.charlesfeng.util.exceptions.AlipayBalanceNotAdequateException;
-import cn.edu.nju.charlesfeng.util.exceptions.AlipayWrongPwdException;
-import cn.edu.nju.charlesfeng.util.exceptions.InteriorWrongException;
-import cn.edu.nju.charlesfeng.util.exceptions.UserNotExistException;
+import cn.edu.nju.charlesfeng.util.exceptions.*;
 import com.alibaba.fastjson.JSON;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -129,12 +126,23 @@ public class OrderServiceImpl implements OrderService {
             // 场馆未结算部分余额增加，级联更新
             Schedule curSchedule = toPay.getSchedule();
             curSchedule.setBalance(curSchedule.getBalance() + payMoney);
-            orderDao.updateOrder(toPay);
-
-            return true;
+            return orderDao.updateOrder(toPay);
         } else {
             throw new AlipayWrongPwdException();
         }
+    }
+
+    @Override
+    public boolean checkTicket(int oid) throws TicketHasBeenCheckedException, TicketStateWrongException, OrderNotExistException {
+        Order toCheck = orderDao.getOrder(oid);
+        if (toCheck == null) throw new OrderNotExistException();
+
+        final OrderState curState = toCheck.getOrderState();
+
+        if (curState == OrderState.PAYED) toCheck.setOrderState(OrderState.CHECKED);
+        else if (curState == OrderState.CHECKED) throw new TicketHasBeenCheckedException();
+        else throw new TicketStateWrongException();
+        return orderDao.updateOrder(toCheck);
     }
 
     @Override

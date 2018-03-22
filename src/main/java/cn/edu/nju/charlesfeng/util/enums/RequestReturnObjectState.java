@@ -24,7 +24,13 @@ public enum RequestReturnObjectState implements Serializable {
     // 支付宝账户余额不足
     PAY_BALANCE_NOT_ADEQUATE(7),
     // 支付宝账户密码错误
-    PAY_WRONG_PWD(8);
+    PAY_WRONG_PWD(8),
+    // 订单已经被检票登记过了
+    TICKET_HAS_BEEN_CHECKED(9),
+    // 订单检票登记时的其他异常
+    TICKET_STATE_WRONG(10),
+    // 订单不存在
+    TICKET_NOT_EXIST(11);
 
     private int repre;
 
