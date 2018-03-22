@@ -113,11 +113,14 @@ public class OrderServiceImpl implements OrderService {
             Order toPay = orderDao.getOrder(oid);
 
             // 检查支付宝余额是否充足
-            if (toPay.getTotalPrice() > alipayEntity.getBalance()) {
+            final double remainBalance = alipayEntity.getBalance() - toPay.getTotalPrice();
+            if (remainBalance < 0) {
                 throw new AlipayBalanceNotAdequateException();
             }
 
             // TODO 支付宝减少余额，场馆未结算部分余额增加
+            alipayEntity.setBalance(remainBalance);
+            alipayDao.update(alipayEntity);
 
             return true;
         } else {

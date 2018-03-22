@@ -20,7 +20,11 @@ public enum RequestReturnObjectState implements Serializable {
     // 参数缺失
     ORDER_MEMBER_ID_MISS(5),
     // 优惠券兑换时积分余额不足
-    COUPON_CONVERT_CREDIT_NOT_ENOUGH(6);
+    COUPON_CONVERT_CREDIT_NOT_ENOUGH(6),
+    // 支付宝账户余额不足
+    PAY_BALANCE_NOT_ADEQUATE(7),
+    // 支付宝账户密码错误
+    PAY_WRONG_PWD(8);
 
     private int repre;
 

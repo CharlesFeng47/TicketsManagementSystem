@@ -29,11 +29,12 @@ public class Order {
     private Member member;
 
     /**
-     * 订单下达的计划
-     * 尝试使用级联更新 CascadeType.MERGE，但是需要在Schedule增加Order的List，太麻烦了就算了。。
+     * 订单下达的计划，级联更新的主控方在Schedule，所以要更新得使用ScheduleDao
+     * （schedule更新了，其包含的order也会更新）
+     *
      * @link http://westerly-lzh.github.io/cn/2014/12/JPA-CascadeType-Explaining/
      */
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "sid", nullable = false)
     private Schedule schedule;
 

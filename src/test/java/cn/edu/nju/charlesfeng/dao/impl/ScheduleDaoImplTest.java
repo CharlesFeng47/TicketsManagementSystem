@@ -2,6 +2,7 @@ package cn.edu.nju.charlesfeng.dao.impl;
 
 import cn.edu.nju.charlesfeng.dao.ScheduleDao;
 import cn.edu.nju.charlesfeng.dao.UserDao;
+import cn.edu.nju.charlesfeng.entity.Order;
 import cn.edu.nju.charlesfeng.entity.Schedule;
 import cn.edu.nju.charlesfeng.entity.SeatInfo;
 import cn.edu.nju.charlesfeng.entity.Spot;
@@ -16,6 +17,7 @@ import org.junit.Test;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -46,7 +48,7 @@ public class ScheduleDaoImplTest {
      */
     @Test
     public void testGetSchedule() throws Exception {
-        Schedule schedule = scheduleDao.getSchedule("2018330342");
+        Schedule schedule = scheduleDao.getSchedule("2018322194122");
         String json = JSON.toJSONString(schedule);
         System.out.println(json);
         Schedule another = JSON.parseObject(json, Schedule.class);
@@ -75,6 +77,7 @@ public class ScheduleDaoImplTest {
             seatPrices.put(seat, (double) (i * 400));
             i++;
         }
+        List<Order> orders = new LinkedList<>();
 
         LocalDateTime now = LocalDateTime.now();
         StringBuilder sb = new StringBuilder();
@@ -82,7 +85,7 @@ public class ScheduleDaoImplTest {
         sb.append(now.getHour()).append(now.getMinute()).append(now.getSecond());
         Schedule schedule = new Schedule(sb.toString(), "测试用日程名字2", spot, LocalDateTime.now(),
                 ScheduleItemType.CONCERT, JSON.toJSONString(seatPrices), "测试用日程描述",
-                spot.getAllSeatsJson(), "[]");
+                spot.getAllSeatsJson(), "[]", orders);
         scheduleDao.saveSchedule(schedule);
     }
 

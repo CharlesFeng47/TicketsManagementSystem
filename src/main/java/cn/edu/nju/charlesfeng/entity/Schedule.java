@@ -1,10 +1,13 @@
 package cn.edu.nju.charlesfeng.entity;
 
 import cn.edu.nju.charlesfeng.util.enums.ScheduleItemType;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * 场馆中的一项活动／计划
@@ -70,10 +73,19 @@ public class Schedule implements Serializable {
     @Column(name = "booked_seats_id_json", nullable = false)
     private String bookedSeatsIdJson;
 
+    /**
+     * 此计划相关的订单
+     */
+    @OneToMany(mappedBy = "schedule", targetEntity = Order.class,
+            fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @Column(name = "orders", nullable = false)
+    @Fetch(FetchMode.SUBSELECT)
+    private List<Order> orders;
+
     public Schedule() {
     }
 
-    public Schedule(String id, String name, Spot spot, LocalDateTime startDateTime, ScheduleItemType type, String seatInfoPricesJson, String description, String remainSeatsJson, String bookedSeatsIdJson) {
+    public Schedule(String id, String name, Spot spot, LocalDateTime startDateTime, ScheduleItemType type, String seatInfoPricesJson, String description, String remainSeatsJson, String bookedSeatsIdJson, List<Order> orders) {
         this.id = id;
         this.name = name;
         this.spot = spot;
@@ -83,6 +95,7 @@ public class Schedule implements Serializable {
         this.description = description;
         this.remainSeatsJson = remainSeatsJson;
         this.bookedSeatsIdJson = bookedSeatsIdJson;
+        this.orders = orders;
     }
 
     public String getId() {
@@ -155,5 +168,13 @@ public class Schedule implements Serializable {
 
     public void setBookedSeatsIdJson(String bookedSeatsIdJson) {
         this.bookedSeatsIdJson = bookedSeatsIdJson;
+    }
+
+    public List<Order> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(List<Order> orders) {
+        this.orders = orders;
     }
 }

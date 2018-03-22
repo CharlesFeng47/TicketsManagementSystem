@@ -1,6 +1,7 @@
 package cn.edu.nju.charlesfeng.controller;
 
 import cn.edu.nju.charlesfeng.entity.Coupon;
+import cn.edu.nju.charlesfeng.entity.Member;
 import cn.edu.nju.charlesfeng.entity.NotChoseSeats;
 import cn.edu.nju.charlesfeng.entity.Order;
 import cn.edu.nju.charlesfeng.model.ContentOrder;
@@ -11,6 +12,8 @@ import cn.edu.nju.charlesfeng.service.OrderService;
 import cn.edu.nju.charlesfeng.util.enums.OrderType;
 import cn.edu.nju.charlesfeng.util.enums.OrderWay;
 import cn.edu.nju.charlesfeng.util.enums.RequestReturnObjectState;
+import cn.edu.nju.charlesfeng.util.exceptions.AlipayBalanceNotAdequateException;
+import cn.edu.nju.charlesfeng.util.exceptions.AlipayWrongPwdException;
 import cn.edu.nju.charlesfeng.util.exceptions.InteriorWrongException;
 import cn.edu.nju.charlesfeng.util.exceptions.UserNotExistException;
 import org.apache.log4j.Logger;
@@ -111,7 +114,16 @@ public class OrderController {
         System.out.println(id);
         System.out.println(pwd);
 
-        return new RequestReturnObject(RequestReturnObjectState.OK);
+        HttpSession session = request.getSession();
+        Member curMember = (Member) session.getAttribute(token);
+        try {
+            orderService.payOrder(curMember, getOidInteger(oid), id, pwd);
+            return new RequestReturnObject(RequestReturnObjectState.OK);
+        } catch (AlipayWrongPwdException e) {
+            return new RequestReturnObject(RequestReturnObjectState.PAY_WRONG_PWD);
+        } catch (AlipayBalanceNotAdequateException e) {
+            return new RequestReturnObject(RequestReturnObjectState.PAY_BALANCE_NOT_ADEQUATE);
+        }
     }
 
     /**
@@ -123,5 +135,12 @@ public class OrderController {
             result.add(new ContentOrderBrief(order));
         }
         return result;
+    }
+
+    /**
+     * 将界面展示的八位oid变为整数
+     */
+    private int getOidInteger(String oid) {
+        return Integer.parseInt(oid);
     }
 }
