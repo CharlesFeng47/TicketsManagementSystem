@@ -43,13 +43,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean modifyUser(User user, UserType userType) {
-        return userDao.updateUser(user, userType);
+    public boolean modifyMember(Member curMember, String pwd) {
+        curMember.setPwd(pwd);
+        return userDao.updateUser(curMember, UserType.MEMBER);
     }
 
     @Override
-    public boolean modifySpot(String sid, String pwd, String spotName, String site, List<SeatInfo> seatInfos, String seatsMapJson, int curSeatTypeCount) throws UserNotExistException {
-        Spot curSpot = (Spot) userDao.getUser(sid, UserType.SPOT);
+    public boolean modifySpot(Spot curSpot, String pwd, String spotName, String site, List<SeatInfo> seatInfos, String seatsMapJson, int curSeatTypeCount) throws UserNotExistException {
         curSpot.setPwd(pwd);
         curSpot.setSpotName(spotName);
         curSpot.setSite(site);
@@ -89,7 +89,7 @@ public class UserServiceImpl implements UserService {
             memberCoupons.add(coupon);
             member.setCreditRemain(member.getCreditRemain() - coupon.getNeededCredit());
 
-            boolean convertResult = this.modifyUser(member, UserType.MEMBER);
+            boolean convertResult = userDao.updateUser(member, UserType.MEMBER);
             assert convertResult;
             return member;
         } else {

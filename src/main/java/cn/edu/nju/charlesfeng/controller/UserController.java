@@ -1,9 +1,6 @@
 package cn.edu.nju.charlesfeng.controller;
 
-import cn.edu.nju.charlesfeng.entity.Coupon;
-import cn.edu.nju.charlesfeng.entity.Member;
-import cn.edu.nju.charlesfeng.entity.Schedule;
-import cn.edu.nju.charlesfeng.entity.SeatInfo;
+import cn.edu.nju.charlesfeng.entity.*;
 import cn.edu.nju.charlesfeng.model.ContentMemberOfSpot;
 import cn.edu.nju.charlesfeng.model.ContentSpot;
 import cn.edu.nju.charlesfeng.model.RequestReturnObject;
@@ -71,26 +68,54 @@ public class UserController {
     }
 
     /**
+     * 会员修改
+     *
+     * @return 该场馆对应的token
+     */
+    @PostMapping("member_modify")
+    public RequestReturnObject memberModify(@RequestParam("token") String token, @RequestParam("pwd") String pwd,
+                                            HttpServletRequest request) {
+        logger.debug("INTO /user/member_modify");
+
+        HttpSession session = request.getSession();
+        Member curMember = (Member) session.getAttribute(token);
+        assert curMember != null;
+
+        try {
+            boolean result = userService.modifyMember(curMember, pwd);
+            if (result) {
+                // 重新设置session attribute
+                User nowMember = userService.getUser(curMember.getId(), UserType.MEMBER);
+                session.setAttribute(token, nowMember);
+                return new RequestReturnObject(RequestReturnObjectState.OK);
+            } else return new RequestReturnObject(RequestReturnObjectState.INTERIOR_WRONG);
+        } catch (UserNotExistException e) {
+            return new RequestReturnObject(RequestReturnObjectState.INTERIOR_WRONG);
+        }
+    }
+
+    /**
      * 场馆修改
      *
      * @return 该场馆对应的token
      */
     @PostMapping("spot_modify")
-    public RequestReturnObject spotModify(@RequestParam("id") String spotId, @RequestParam("password") String pwd,
+    public RequestReturnObject spotModify(@RequestParam("token") String token, @RequestParam("password") String pwd,
                                           @RequestParam("name") String spotName, @RequestParam("site") String site,
                                           @RequestParam("seatInfos") String seatInfosJson, @RequestParam("seatsMap") String seatsMapJson,
                                           @RequestParam("curSeatTypeCount") int curSeatTypeCount, HttpServletRequest request) {
         logger.debug("INTO /user/spot_modify");
+        HttpSession session = request.getSession();
+        Spot curSpot = (Spot) session.getAttribute(token);
+        assert curSpot != null;
 
         List<SeatInfo> seatInfos = JSON.parseArray(seatInfosJson, SeatInfo.class);
-
         try {
-            boolean result = userService.modifySpot(spotId, pwd, spotName, site, seatInfos, seatsMapJson, curSeatTypeCount);
+            boolean result = userService.modifySpot(curSpot, pwd, spotName, site, seatInfos, seatsMapJson, curSeatTypeCount);
             if (result) {
-                User curSpot = userService.getUser(spotId, UserType.SPOT);
-                String token = "SPOT: " + curSpot.getId();
-                HttpSession session = request.getSession();
-                session.setAttribute(token, curSpot);
+                // 重新设置session attribute
+                User nowSpot = userService.getUser(curSpot.getId(), UserType.SPOT);
+                session.setAttribute(token, nowSpot);
                 return new RequestReturnObject(RequestReturnObjectState.OK, token);
             } else return new RequestReturnObject(RequestReturnObjectState.INTERIOR_WRONG);
         } catch (UserNotExistException e) {

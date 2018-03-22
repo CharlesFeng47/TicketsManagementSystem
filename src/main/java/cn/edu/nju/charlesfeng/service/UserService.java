@@ -35,14 +35,14 @@ public interface UserService {
     boolean invalidate(String mid) throws UserNotExistException;
 
     /**
-     * @param user     欲修改用户信息的用户实体
-     * @param userType 欲修改用户信息的用户类型
+     * @param curMember 欲修改会员的实体
+     * @param pwd       欲修改会员的密码
      * @return 修改结果，成果则true
      */
-    boolean modifyUser(User user, UserType userType);
+    boolean modifyMember(Member curMember, String pwd);
 
     /**
-     * @param sid              场馆id
+     * @param curSpot          要修改的场馆实体
      * @param pwd              场馆使用的密码
      * @param spotName         此场馆的名称
      * @param site             此场馆的地点
@@ -51,7 +51,7 @@ public interface UserService {
      * @param curSeatTypeCount 此场馆中的座位类型数量
      * @return 【场馆】是否成功修改，成功则返回此场馆实体
      */
-    boolean modifySpot(String sid, String pwd, String spotName, String site, List<SeatInfo> seatInfos, String seatsMapJson,
+    boolean modifySpot(Spot curSpot, String pwd, String spotName, String site, List<SeatInfo> seatInfos, String seatsMapJson,
                        int curSeatTypeCount) throws UserNotExistException;
 
     /**
