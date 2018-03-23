@@ -29,10 +29,10 @@ public interface UserService {
     /**
      * 【会员】会员注销、取消资格
      *
-     * @param mid 欲注销，使会员资格被取消的会员ID
+     * @param member 欲注销，使会员资格被取消的会员
      * @return 注销结果，成果则true
      */
-    boolean invalidate(String mid) throws UserNotExistException;
+    boolean invalidate(Member member);
 
     /**
      * @param curMember 欲修改会员的实体

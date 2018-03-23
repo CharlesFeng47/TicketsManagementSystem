@@ -166,4 +166,25 @@ public class UserController {
         }
     }
 
+    /**
+     * @return 会员注销账户
+     */
+    @PostMapping("member_invalidate")
+    public RequestReturnObject memberInvalidate(@RequestParam("token") String token, HttpServletRequest request) {
+        logger.debug("INTO /user/member_invalidate");
+
+        HttpSession session = request.getSession();
+        Member curMember = (Member) session.getAttribute(token);
+
+        boolean result = userService.invalidate(curMember);
+        if (result) {
+            // 将此用户注销
+            session.setAttribute(token, null);
+            return new RequestReturnObject(RequestReturnObjectState.OK);
+        } else {
+            return new RequestReturnObject(RequestReturnObjectState.INTERIOR_WRONG);
+        }
+
+    }
+
 }

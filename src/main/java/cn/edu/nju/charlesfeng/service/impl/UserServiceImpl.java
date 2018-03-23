@@ -35,11 +35,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean invalidate(String mid) throws UserNotExistException {
-        Member member = (Member) userDao.getUser(mid, UserType.MEMBER);
+    public boolean invalidate(Member member) {
         member.setInvalidated(true);
-        userDao.updateUser(member, UserType.MEMBER);
-        return true;
+        return userDao.updateUser(member, UserType.MEMBER);
     }
 
     @Override

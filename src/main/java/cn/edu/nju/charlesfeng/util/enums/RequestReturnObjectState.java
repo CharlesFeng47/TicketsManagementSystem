@@ -30,7 +30,11 @@ public enum RequestReturnObjectState implements Serializable {
     // 订单检票登记时的其他异常
     TICKET_STATE_WRONG(10),
     // 订单不存在
-    TICKET_NOT_EXIST(11);
+    TICKET_NOT_EXIST(11),
+    // 会员已注销
+    MEMBER_INVALIDATE(12),
+    // 会员账号未激活
+    MEMBER_INACTIVE(13);
 
     private int repre;
 

@@ -1,5 +1,6 @@
 package cn.edu.nju.charlesfeng.controller;
 
+import cn.edu.nju.charlesfeng.entity.Member;
 import cn.edu.nju.charlesfeng.entity.SeatInfo;
 import cn.edu.nju.charlesfeng.entity.Spot;
 import cn.edu.nju.charlesfeng.model.ContentUser;
@@ -51,6 +52,15 @@ public class LogInController {
         logger.debug("INTO /login");
         try {
             User curUser = logInService.logIn(uid, pwd, userType);
+
+            if (userType == UserType.MEMBER) {
+                // 会员检查是否已注销
+                final Member curMember = (Member) curUser;
+                if (curMember.isInvalidated())
+                    return new RequestReturnObject(RequestReturnObjectState.MEMBER_INVALIDATE);
+                else if (!curMember.isActivated())
+                    return new RequestReturnObject(RequestReturnObjectState.MEMBER_INACTIVE);
+            }
 
             String token = userType.toString() + ": " + curUser.getId();
             HttpSession session = request.getSession();
