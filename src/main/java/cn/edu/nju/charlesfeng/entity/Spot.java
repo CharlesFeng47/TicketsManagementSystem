@@ -50,6 +50,12 @@ public class Spot extends User implements Serializable {
     @Column(name = "seat_type_count", nullable = false)
     private int curSeatTypeCount;
 
+    /**
+     * 结算会员支付时的到款账户
+     */
+    @Column(name = "alipay_id", nullable = false)
+    private String alipayId;
+
     public Spot() {
     }
 
@@ -109,5 +115,13 @@ public class Spot extends User implements Serializable {
 
     public void setCurSeatTypeCount(int curSeatTypeCount) {
         this.curSeatTypeCount = curSeatTypeCount;
+    }
+
+    public String getAlipayId() {
+        return alipayId;
+    }
+
+    public void setAlipayId(String alipayId) {
+        this.alipayId = alipayId;
     }
 }

@@ -9,6 +9,7 @@ import cn.edu.nju.charlesfeng.model.User;
 import cn.edu.nju.charlesfeng.service.LogInService;
 import cn.edu.nju.charlesfeng.util.enums.RequestReturnObjectState;
 import cn.edu.nju.charlesfeng.util.enums.UserType;
+import cn.edu.nju.charlesfeng.util.exceptions.AlipayEntityNotExistException;
 import cn.edu.nju.charlesfeng.util.exceptions.UserHasBeenSignUpException;
 import cn.edu.nju.charlesfeng.util.exceptions.UserNotExistException;
 import cn.edu.nju.charlesfeng.util.exceptions.WrongPwdException;
@@ -104,21 +105,23 @@ public class LogInController {
      */
     @PostMapping("spot_sign_up")
     public RequestReturnObject spotSignUp(@RequestParam("password") String pwd, @RequestParam("name") String spotName,
-                                          @RequestParam("site") String site, @RequestParam("seatInfos") String seatInfosJson,
-                                          @RequestParam("seatsMap") String seatsMapJson, @RequestParam("curSeatTypeCount") int curSeatTypeCount,
-                                          HttpServletRequest request) {
+                                          @RequestParam("site") String site, @RequestParam("alipayId") String alipayId,
+                                          @RequestParam("seatInfos") String seatInfosJson, @RequestParam("seatsMap") String seatsMapJson,
+                                          @RequestParam("curSeatTypeCount") int curSeatTypeCount, HttpServletRequest request) {
         logger.debug("INTO /login/spot_sign_up");
 
         List<SeatInfo> seatInfos = JSON.parseArray(seatInfosJson, SeatInfo.class);
 
         try {
-            Spot curSpot = logInService.registerSpot(pwd, spotName, site, seatInfos, seatsMapJson, curSeatTypeCount);
+            Spot curSpot = logInService.registerSpot(pwd, spotName, site, alipayId, seatInfos, seatsMapJson, curSeatTypeCount);
             String token = "SPOT: " + curSpot.getId();
             HttpSession session = request.getSession();
             session.setAttribute(token, curSpot);
             return new RequestReturnObject(RequestReturnObjectState.OK, token);
         } catch (UserNotExistException e) {
             return new RequestReturnObject(RequestReturnObjectState.INTERIOR_WRONG);
+        } catch (AlipayEntityNotExistException e) {
+            return new RequestReturnObject(RequestReturnObjectState.ALIPAY_ENTITY_NOT_EXIST);
         }
     }
 

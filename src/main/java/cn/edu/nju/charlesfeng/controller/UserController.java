@@ -8,6 +8,7 @@ import cn.edu.nju.charlesfeng.model.User;
 import cn.edu.nju.charlesfeng.service.UserService;
 import cn.edu.nju.charlesfeng.util.enums.RequestReturnObjectState;
 import cn.edu.nju.charlesfeng.util.enums.UserType;
+import cn.edu.nju.charlesfeng.util.exceptions.AlipayEntityNotExistException;
 import cn.edu.nju.charlesfeng.util.exceptions.MemberConvertCouponCreditNotEnoughException;
 import cn.edu.nju.charlesfeng.util.exceptions.UserNotExistException;
 import com.alibaba.fastjson.JSON;
@@ -84,8 +85,9 @@ public class UserController {
     @PostMapping("spot_modify")
     public RequestReturnObject spotModify(@RequestParam("token") String token, @RequestParam("password") String pwd,
                                           @RequestParam("name") String spotName, @RequestParam("site") String site,
-                                          @RequestParam("seatInfos") String seatInfosJson, @RequestParam("seatsMap") String seatsMapJson,
-                                          @RequestParam("curSeatTypeCount") int curSeatTypeCount, HttpServletRequest request) {
+                                          @RequestParam("alipayId") String alipayId, @RequestParam("seatInfos") String seatInfosJson,
+                                          @RequestParam("seatsMap") String seatsMapJson, @RequestParam("curSeatTypeCount") int curSeatTypeCount,
+                                          HttpServletRequest request) {
         logger.debug("INTO /user/spot_modify");
         HttpSession session = request.getSession();
         Spot curSpot = (Spot) session.getAttribute(token);
@@ -93,7 +95,7 @@ public class UserController {
 
         List<SeatInfo> seatInfos = JSON.parseArray(seatInfosJson, SeatInfo.class);
         try {
-            boolean result = userService.modifySpot(curSpot, pwd, spotName, site, seatInfos, seatsMapJson, curSeatTypeCount);
+            boolean result = userService.modifySpot(curSpot, pwd, spotName, site, alipayId, seatInfos, seatsMapJson, curSeatTypeCount);
             if (result) {
                 // 重新设置session attribute
                 User nowSpot = userService.getUser(curSpot.getId(), UserType.SPOT);
@@ -102,6 +104,8 @@ public class UserController {
             } else return new RequestReturnObject(RequestReturnObjectState.INTERIOR_WRONG);
         } catch (UserNotExistException e) {
             return new RequestReturnObject(RequestReturnObjectState.INTERIOR_WRONG);
+        } catch (AlipayEntityNotExistException e) {
+            return new RequestReturnObject(RequestReturnObjectState.ALIPAY_ENTITY_NOT_EXIST);
         }
     }
 

@@ -1,15 +1,14 @@
 package cn.edu.nju.charlesfeng.service.impl;
 
+import cn.edu.nju.charlesfeng.dao.AlipayDao;
 import cn.edu.nju.charlesfeng.dao.UserDao;
-import cn.edu.nju.charlesfeng.entity.Coupon;
-import cn.edu.nju.charlesfeng.entity.Member;
-import cn.edu.nju.charlesfeng.entity.SeatInfo;
-import cn.edu.nju.charlesfeng.entity.Spot;
+import cn.edu.nju.charlesfeng.entity.*;
 import cn.edu.nju.charlesfeng.model.ContentMemberOfSpot;
 import cn.edu.nju.charlesfeng.model.UnexaminedSpot;
 import cn.edu.nju.charlesfeng.model.User;
 import cn.edu.nju.charlesfeng.service.UserService;
 import cn.edu.nju.charlesfeng.util.enums.UserType;
+import cn.edu.nju.charlesfeng.util.exceptions.AlipayEntityNotExistException;
 import cn.edu.nju.charlesfeng.util.exceptions.MemberConvertCouponCreditNotEnoughException;
 import cn.edu.nju.charlesfeng.util.exceptions.UserNotExistException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +24,12 @@ public class UserServiceImpl implements UserService {
 
     private final UserDao userDao;
 
+    private final AlipayDao alipayDao;
+
     @Autowired
-    public UserServiceImpl(UserDao userDao) {
+    public UserServiceImpl(UserDao userDao, AlipayDao alipayDao) {
         this.userDao = userDao;
+        this.alipayDao = alipayDao;
     }
 
     @Override
@@ -49,13 +51,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean modifySpot(Spot curSpot, String pwd, String spotName, String site, List<SeatInfo> seatInfos, String seatsMapJson, int curSeatTypeCount) throws UserNotExistException {
+    public boolean modifySpot(Spot curSpot, String pwd, String spotName, String site, String alipayId,
+                              List<SeatInfo> seatInfos, String seatsMapJson, int curSeatTypeCount) throws AlipayEntityNotExistException {
+        AlipayEntity alipayEntity = alipayDao.getAlipayEntity(alipayId);
+        if (alipayEntity == null) throw new AlipayEntityNotExistException();
+
         // 修改场馆信息后之后需要经理审批
         curSpot.setExamined(false);
 
         curSpot.setPwd(pwd);
         curSpot.setSpotName(spotName);
         curSpot.setSite(site);
+        curSpot.setAlipayId(alipayId);
         curSpot.setAllSeatsJson(seatsMapJson);
         curSpot.setCurSeatTypeCount(curSeatTypeCount);
 

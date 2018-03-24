@@ -8,6 +8,7 @@ import cn.edu.nju.charlesfeng.model.ContentMemberOfSpot;
 import cn.edu.nju.charlesfeng.model.UnexaminedSpot;
 import cn.edu.nju.charlesfeng.model.User;
 import cn.edu.nju.charlesfeng.util.enums.UserType;
+import cn.edu.nju.charlesfeng.util.exceptions.AlipayEntityNotExistException;
 import cn.edu.nju.charlesfeng.util.exceptions.MemberConvertCouponCreditNotEnoughException;
 import cn.edu.nju.charlesfeng.util.exceptions.UserNotExistException;
 
@@ -47,13 +48,14 @@ public interface UserService {
      * @param pwd              场馆使用的密码
      * @param spotName         此场馆的名称
      * @param site             此场馆的地点
+     * @param alipayId         此场馆的结算支付宝账户
      * @param seatInfos        此场馆的座位信息
      * @param seatsMapJson     此场馆中的座位表JSON
      * @param curSeatTypeCount 此场馆中的座位类型数量
      * @return 【场馆】是否成功修改，成功则返回此场馆实体
      */
-    boolean modifySpot(Spot curSpot, String pwd, String spotName, String site, List<SeatInfo> seatInfos, String seatsMapJson,
-                       int curSeatTypeCount) throws UserNotExistException;
+    boolean modifySpot(Spot curSpot, String pwd, String spotName, String site, String alipayId,
+                       List<SeatInfo> seatInfos, String seatsMapJson, int curSeatTypeCount) throws AlipayEntityNotExistException;
 
     /**
      * @param id   要查看的用户ID

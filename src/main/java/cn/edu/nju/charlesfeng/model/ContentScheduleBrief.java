@@ -32,12 +32,24 @@ public class ContentScheduleBrief {
      */
     private String type;
 
+    /**
+     * 计划的状态
+     */
+    private String state;
+
+    /**
+     * 订单下达之后支付款项，暂存到计划中，待结算
+     */
+    private double balance;
+
     public ContentScheduleBrief(Schedule schedule) {
         this.id = schedule.getId();
         this.name = schedule.getName();
         this.spotName = schedule.getSpot().getSpotName();
         this.startDateTime = schedule.getStartDateTime().toString().replace('T', ' ');
         this.type = schedule.getType().toString();
+        this.state = schedule.getState().toString();
+        this.balance = schedule.getBalance();
     }
 
     public String getId() {
@@ -78,5 +90,21 @@ public class ContentScheduleBrief {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public double getBalance() {
+        return balance;
+    }
+
+    public void setBalance(double balance) {
+        this.balance = balance;
     }
 }

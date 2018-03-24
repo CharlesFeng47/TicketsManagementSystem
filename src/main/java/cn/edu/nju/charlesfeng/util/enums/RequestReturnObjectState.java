@@ -34,7 +34,11 @@ public enum RequestReturnObjectState implements Serializable {
     // 会员已注销
     MEMBER_INVALIDATE(12),
     // 会员账号未激活
-    MEMBER_INACTIVE(13);
+    MEMBER_INACTIVE(13),
+    // 计划不能被结算
+    SCHEDULE_NOT_SEETLABLE(14),
+    // 支付宝账号不存在
+    ALIPAY_ENTITY_NOT_EXIST(15);
 
     private int repre;
 

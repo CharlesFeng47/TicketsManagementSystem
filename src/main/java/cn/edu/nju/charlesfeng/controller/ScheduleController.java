@@ -1,5 +1,6 @@
 package cn.edu.nju.charlesfeng.controller;
 
+import cn.edu.nju.charlesfeng.entity.Manager;
 import cn.edu.nju.charlesfeng.entity.Schedule;
 import cn.edu.nju.charlesfeng.entity.SeatInfo;
 import cn.edu.nju.charlesfeng.entity.Spot;
@@ -9,6 +10,7 @@ import cn.edu.nju.charlesfeng.model.RequestReturnObject;
 import cn.edu.nju.charlesfeng.service.ScheduleService;
 import cn.edu.nju.charlesfeng.util.enums.RequestReturnObjectState;
 import cn.edu.nju.charlesfeng.util.enums.ScheduleItemType;
+import cn.edu.nju.charlesfeng.util.exceptions.ScheduleNotSettlableException;
 import cn.edu.nju.charlesfeng.util.exceptions.SpotSeatDisorderException;
 import com.alibaba.fastjson.JSON;
 import org.apache.log4j.Logger;
@@ -77,6 +79,27 @@ public class ScheduleController {
             return new RequestReturnObject(RequestReturnObjectState.OK);
         } else {
             return new RequestReturnObject(RequestReturnObjectState.INTERIOR_WRONG);
+        }
+    }
+
+    /**
+     * 结算单条计划
+     */
+    @PostMapping("settle")
+    public RequestReturnObject settleOneSchedule(@RequestParam("token") String token, @RequestParam("scheduleId") String scheduleId,
+                                                 HttpServletRequest request) {
+        logger.debug("INTO /schedule/settle: " + scheduleId);
+
+        HttpSession session = request.getSession();
+        Manager manager = (Manager) session.getAttribute(token);
+        assert manager != null;
+
+        try {
+            boolean result = scheduleService.settleOneSchedule(scheduleId);
+            if (result) return new RequestReturnObject(RequestReturnObjectState.OK);
+            else return new RequestReturnObject(RequestReturnObjectState.SCHEDULE_NOT_SEETLABLE);
+        } catch (ScheduleNotSettlableException e) {
+            return new RequestReturnObject(RequestReturnObjectState.SCHEDULE_NOT_SEETLABLE);
         }
     }
 

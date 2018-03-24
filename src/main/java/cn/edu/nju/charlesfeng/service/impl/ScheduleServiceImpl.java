@@ -1,11 +1,14 @@
 package cn.edu.nju.charlesfeng.service.impl;
 
+import cn.edu.nju.charlesfeng.dao.AlipayDao;
 import cn.edu.nju.charlesfeng.dao.ScheduleDao;
+import cn.edu.nju.charlesfeng.entity.AlipayEntity;
 import cn.edu.nju.charlesfeng.entity.Schedule;
 import cn.edu.nju.charlesfeng.entity.Spot;
 import cn.edu.nju.charlesfeng.service.ScheduleService;
 import cn.edu.nju.charlesfeng.util.enums.ScheduleItemType;
 import cn.edu.nju.charlesfeng.util.enums.ScheduleState;
+import cn.edu.nju.charlesfeng.util.exceptions.ScheduleNotSettlableException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,9 +21,12 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     private final ScheduleDao scheduleDao;
 
+    private final AlipayDao alipayDao;
+
     @Autowired
-    public ScheduleServiceImpl(ScheduleDao scheduleDao) {
+    public ScheduleServiceImpl(ScheduleDao scheduleDao, AlipayDao alipayDao) {
         this.scheduleDao = scheduleDao;
+        this.alipayDao = alipayDao;
     }
 
     @Override
@@ -89,8 +95,24 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
-    public boolean checkTickets() {
-        return false;
+    public boolean settleOneSchedule(String scheduleId) throws ScheduleNotSettlableException {
+        // 结算的比例
+        final double settlePercent = 0.8;
+
+        Schedule toSettle = scheduleDao.getSchedule(scheduleId);
+
+        if (toSettle.getState() == ScheduleState.COMPLETED) {
+            // 可以被结算
+            // 计划状态改变
+            toSettle.setState(ScheduleState.SETTLED);
+
+            // 计划中会员支付的金额被结算
+            Spot settledSpot = toSettle.getSpot();
+            AlipayEntity alipayEntity = alipayDao.getAlipayEntity(settledSpot.getAlipayId());
+            alipayEntity.setBalance(alipayEntity.getBalance() + toSettle.getBalance() * settlePercent);
+            alipayDao.update(alipayEntity);
+        } else throw new ScheduleNotSettlableException();
+        return scheduleDao.updateSchedule(toSettle);
     }
 
     /**

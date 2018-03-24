@@ -3,6 +3,7 @@ package cn.edu.nju.charlesfeng.service;
 import cn.edu.nju.charlesfeng.entity.Schedule;
 import cn.edu.nju.charlesfeng.entity.Spot;
 import cn.edu.nju.charlesfeng.util.enums.ScheduleItemType;
+import cn.edu.nju.charlesfeng.util.exceptions.ScheduleNotSettlableException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -61,8 +62,8 @@ public interface ScheduleService {
                            String seatInfoPricesJson, String description);
 
     /**
-     * 对一次日程活动的检票
-     * TODO 需求不明确
+     * @param scheduleId 要结算的计划ID
+     * @return 结算结果，成功则true
      */
-    boolean checkTickets();
+    boolean settleOneSchedule(String scheduleId) throws ScheduleNotSettlableException;
 }
