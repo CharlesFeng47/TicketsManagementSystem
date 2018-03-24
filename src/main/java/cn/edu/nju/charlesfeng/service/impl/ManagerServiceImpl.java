@@ -1,6 +1,6 @@
 package cn.edu.nju.charlesfeng.service.impl;
 
-import cn.edu.nju.charlesfeng.model.UnexaminedSpotApplication;
+import cn.edu.nju.charlesfeng.model.UnexaminedSpot;
 import cn.edu.nju.charlesfeng.service.ManagerService;
 
 import java.util.Set;
@@ -9,7 +9,7 @@ public class ManagerServiceImpl implements ManagerService {
 
 
     @Override
-    public Set<UnexaminedSpotApplication> getAllUnexaminedSpotApplications() {
+    public Set<UnexaminedSpot> getAllUnexaminedSpotApplications() {
         return null;
     }
 

@@ -6,6 +6,7 @@ import cn.edu.nju.charlesfeng.entity.Member;
 import cn.edu.nju.charlesfeng.entity.SeatInfo;
 import cn.edu.nju.charlesfeng.entity.Spot;
 import cn.edu.nju.charlesfeng.model.ContentMemberOfSpot;
+import cn.edu.nju.charlesfeng.model.UnexaminedSpot;
 import cn.edu.nju.charlesfeng.model.User;
 import cn.edu.nju.charlesfeng.service.UserService;
 import cn.edu.nju.charlesfeng.util.enums.UserType;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -48,6 +50,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean modifySpot(Spot curSpot, String pwd, String spotName, String site, List<SeatInfo> seatInfos, String seatsMapJson, int curSeatTypeCount) throws UserNotExistException {
+        // 修改场馆信息后之后需要经理审批
+        curSpot.setExamined(false);
+
         curSpot.setPwd(pwd);
         curSpot.setSpotName(spotName);
         curSpot.setSite(site);
@@ -99,5 +104,24 @@ public class UserServiceImpl implements UserService {
     public ContentMemberOfSpot getMemberOfSpot(String mid) throws UserNotExistException {
         Member result = (Member) userDao.getUser(mid, UserType.MEMBER);
         return new ContentMemberOfSpot(result);
+    }
+
+    @Override
+    public List<UnexaminedSpot> getAllUnexaminedSpots() throws UserNotExistException {
+        List<UnexaminedSpot> result = new LinkedList<>();
+        for (User curUser : userDao.getAllUser(UserType.SPOT)) {
+            final Spot curSpot = (Spot) curUser;
+            if (!curSpot.isExamined()) {
+                result.add(new UnexaminedSpot(curSpot));
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public boolean examineSpot(String sid) throws UserNotExistException {
+        Spot toExamine = (Spot) userDao.getUser(sid, UserType.SPOT);
+        toExamine.setExamined(true);
+        return userDao.updateUser(toExamine, UserType.SPOT);
     }
 }

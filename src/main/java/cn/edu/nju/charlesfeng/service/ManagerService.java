@@ -1,6 +1,6 @@
 package cn.edu.nju.charlesfeng.service;
 
-import cn.edu.nju.charlesfeng.model.UnexaminedSpotApplication;
+import cn.edu.nju.charlesfeng.model.UnexaminedSpot;
 
 import java.util.Set;
 
@@ -14,7 +14,7 @@ public interface ManagerService {
      *
      * @return 所有未被审批的场馆申请
      */
-    Set<UnexaminedSpotApplication> getAllUnexaminedSpotApplications();
+    Set<UnexaminedSpot> getAllUnexaminedSpotApplications();
 
     /**
      * 审批各场馆注册/修改场馆信息的申请

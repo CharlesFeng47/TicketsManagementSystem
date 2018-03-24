@@ -5,6 +5,7 @@ import cn.edu.nju.charlesfeng.entity.Member;
 import cn.edu.nju.charlesfeng.entity.SeatInfo;
 import cn.edu.nju.charlesfeng.entity.Spot;
 import cn.edu.nju.charlesfeng.model.ContentMemberOfSpot;
+import cn.edu.nju.charlesfeng.model.UnexaminedSpot;
 import cn.edu.nju.charlesfeng.model.User;
 import cn.edu.nju.charlesfeng.util.enums.UserType;
 import cn.edu.nju.charlesfeng.util.exceptions.MemberConvertCouponCreditNotEnoughException;
@@ -78,4 +79,15 @@ public interface UserService {
      * @return 场馆能获取到的用户信息
      */
     ContentMemberOfSpot getMemberOfSpot(String mid) throws UserNotExistException;
+
+    /**
+     * @return 获取所有未被审核的场馆信息
+     */
+    List<UnexaminedSpot> getAllUnexaminedSpots() throws UserNotExistException;
+
+    /**
+     * @param sid 审核通过的场馆ID
+     * @return 审核结果，成功则true
+     */
+    boolean examineSpot(String sid) throws UserNotExistException;
 }
