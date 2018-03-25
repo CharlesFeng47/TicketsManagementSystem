@@ -2,7 +2,6 @@ package cn.edu.nju.charlesfeng.model;
 
 import cn.edu.nju.charlesfeng.entity.Schedule;
 import cn.edu.nju.charlesfeng.entity.SeatInfo;
-import cn.edu.nju.charlesfeng.util.comparators.SeatPriceMapComparator;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 
@@ -97,7 +96,7 @@ public class ContentSchedule {
         });
 
         List<Map.Entry<SeatInfo, Double>> relativeList = new ArrayList<>(priceMap.entrySet());
-        relativeList.sort(new SeatPriceMapComparator());
+//        relativeList.sort(new SeatPriceMapComparator());
 
         allSeats = new LinkedList<>();
         allPrices = new LinkedList<>();

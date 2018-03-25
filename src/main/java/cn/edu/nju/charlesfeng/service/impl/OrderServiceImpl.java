@@ -8,6 +8,7 @@ import cn.edu.nju.charlesfeng.entity.*;
 import cn.edu.nju.charlesfeng.model.Seat;
 import cn.edu.nju.charlesfeng.model.User;
 import cn.edu.nju.charlesfeng.service.OrderService;
+import cn.edu.nju.charlesfeng.util.OrderSeatHelper;
 import cn.edu.nju.charlesfeng.util.enums.OrderState;
 import cn.edu.nju.charlesfeng.util.enums.OrderType;
 import cn.edu.nju.charlesfeng.util.enums.OrderWay;
@@ -61,7 +62,7 @@ public class OrderServiceImpl implements OrderService {
             order.setOrderedSeatsJson(choseSeatsJson);
 
             List<Seat> curbBookedSeats = JSON.parseArray(choseSeatsJson, Seat.class);
-            List<String> curBookedIds = getSeatListIds(curbBookedSeats);
+            List<String> curBookedIds = OrderSeatHelper.getSeatListIds(curbBookedSeats);
 
             // 对schedule进行处理，预定的座位更新
             List<String> alreadyBookedIds = JSON.parseArray(toOrderSchedule.getBookedSeatsIdJson(), String.class);
@@ -193,20 +194,8 @@ public class OrderServiceImpl implements OrderService {
         return orderDao.updateOrder(toUnsubscribe);
     }
 
-
     /**
-     * 获得预定座位的ID
-     */
-    private List<String> getSeatListIds(List<Seat> seats) {
-        List<String> ids = new LinkedList<>();
-        for (Seat seat : seats) {
-            ids.add(seat.getId());
-        }
-        return ids;
-    }
-
-    /**
-     * 替换指定位置的座位
+     * 替换指定位置的座位为大写
      */
     private String uppercaseSpecificChar(String str, int pos) {
         StringBuilder sb = new StringBuilder();
