@@ -104,6 +104,7 @@ public class OrderServiceImpl implements OrderService {
         return orderDao.saveOrder(order);
     }
 
+    // TODO 付款后积分增加
     @Override
     public boolean payOrder(Member member, int oid, String paymentId, String paymentPwd) throws AlipayWrongPwdException, AlipayBalanceNotAdequateException {
         AlipayEntity alipayEntity = alipayDao.getAlipayEntity(paymentId);
@@ -162,9 +163,34 @@ public class OrderServiceImpl implements OrderService {
         return orderDao.getOrder(oid);
     }
 
+    // TODO 退款后积分减少
     @Override
-    public boolean unsubscribe(String oid) {
-        return false;
+    public boolean unsubscribe(Member member, int oid, String paymentId) throws InteriorWrongException, OrderNotRefundableException, AlipayEntityNotExistException {
+        Order toUnsubscribe = orderDao.getOrder(oid);
+        if (!toUnsubscribe.getMember().getId().equals(member.getId())) throw new InteriorWrongException();
+
+        final LocalDateTime now = LocalDateTime.now();
+        if (toUnsubscribe.getOrderState() != OrderState.PAYED) throw new OrderNotRefundableException();
+        if (now.isAfter(toUnsubscribe.getSchedule().getStartDateTime())) throw new OrderNotRefundableException();
+
+        // 可以退款
+        toUnsubscribe.setOrderState(OrderState.REFUND);
+
+        AlipayEntity buyerAE = alipayDao.getAlipayEntity(paymentId);
+        if (buyerAE == null) throw new AlipayEntityNotExistException();
+
+        // 会员款项增加
+        final double unsubscribeMoney = toUnsubscribe.getTotalPrice() * getRefundPercent(now, toUnsubscribe.getSchedule().getStartDateTime());
+        buyerAE.setBalance(buyerAE.getBalance() + unsubscribeMoney);
+
+        // 场馆款项减少
+        AlipayEntity spotAE = alipayDao.getAlipayEntity(toUnsubscribe.getSchedule().getSpot().getAlipayId());
+        spotAE.setBalance(spotAE.getBalance() - unsubscribeMoney);
+
+        alipayDao.update(buyerAE);
+        alipayDao.update(spotAE);
+
+        return orderDao.updateOrder(toUnsubscribe);
     }
 
 
@@ -214,5 +240,13 @@ public class OrderServiceImpl implements OrderService {
             userDao.updateUser(buyer, UserType.MEMBER);
         }
         return curOrder;
+    }
+
+    /**
+     * 根据据订单中计划开始的时间时限确定退款的比例
+     */
+    private double getRefundPercent(LocalDateTime now, LocalDateTime scheduleTime) {
+        // TODO 不同时限退款不同
+        return 1;
     }
 }

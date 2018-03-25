@@ -37,8 +37,6 @@ public interface OrderService {
                   String choseSeatsJson, OrderWay orderWay, boolean onSpotIsMember, String onSpotMemberId,
                   boolean didUseCoupon, Coupon usedCoupon, String calProcess, double totalPrice) throws UserNotExistException, InteriorWrongException;
 
-    // TODO 付款后增加积分
-
     /**
      * @param member     支付的用户
      * @param oid        支付的订单编号
@@ -67,8 +65,10 @@ public interface OrderService {
     Order checkOrderDetail(int oid);
 
     /**
-     * @param oid 要退订的订单ID
+     * @param member    要退订的用户
+     * @param oid       要退订的订单ID
+     * @param paymentId 退款到账账户
      * @return 退订结果，成功则true
      */
-    boolean unsubscribe(String oid);
+    boolean unsubscribe(Member member, int oid, String paymentId) throws InteriorWrongException, OrderNotRefundableException, AlipayEntityNotExistException;
 }

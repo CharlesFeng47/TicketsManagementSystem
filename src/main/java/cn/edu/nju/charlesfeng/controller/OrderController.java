@@ -99,19 +99,41 @@ public class OrderController {
      * 支付订单
      */
     @PostMapping("/pay")
-    public RequestReturnObject payOrder(@RequestParam("token") String token, @RequestParam("oid") String oid,
+    public RequestReturnObject payOrder(@RequestParam("token") String token, @RequestParam("oid") int oid,
                                         @RequestParam("payment_id") String id, @RequestParam("payment_pwd") String pwd,
                                         HttpServletRequest request) {
         logger.debug("INTO /order/pay");
         HttpSession session = request.getSession();
         Member curMember = (Member) session.getAttribute(token);
         try {
-            orderService.payOrder(curMember, getOidInteger(oid), id, pwd);
+            orderService.payOrder(curMember, oid, id, pwd);
             return new RequestReturnObject(RequestReturnObjectState.OK);
         } catch (AlipayWrongPwdException e) {
             return new RequestReturnObject(RequestReturnObjectState.PAY_WRONG_PWD);
         } catch (AlipayBalanceNotAdequateException e) {
             return new RequestReturnObject(RequestReturnObjectState.PAY_BALANCE_NOT_ADEQUATE);
+        }
+    }
+
+    /**
+     * 订单退订
+     */
+    @PostMapping("/unsubscribe")
+    public RequestReturnObject unsubscribeOrder(@RequestParam("token") String token, @RequestParam("oid") int oid,
+                                                @RequestParam("payment_id") String id, HttpServletRequest request) {
+        logger.debug("INTO /order/unsubscribe");
+        HttpSession session = request.getSession();
+        Member curMember = (Member) session.getAttribute(token);
+        try {
+            orderService.unsubscribe(curMember, oid, id);
+            return new RequestReturnObject(RequestReturnObjectState.OK);
+        } catch (InteriorWrongException e) {
+            e.printStackTrace();
+            return new RequestReturnObject(RequestReturnObjectState.INTERIOR_WRONG);
+        } catch (OrderNotRefundableException e) {
+            return new RequestReturnObject(RequestReturnObjectState.ORDER_NOT_REFUNDABLE);
+        } catch (AlipayEntityNotExistException e) {
+            return new RequestReturnObject(RequestReturnObjectState.ALIPAY_ENTITY_NOT_EXIST);
         }
     }
 

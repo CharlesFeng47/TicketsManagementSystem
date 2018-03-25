@@ -31,7 +31,7 @@ public class OrderTask {
     /**
      * 15分钟内未成功支付的订单自动取消
      */
-    @Scheduled(cron = "0 1 * * * ?")
+    @Scheduled(cron = "0 0/1 * * * ?")
     public void unpayedOrderAutoCancel() {
         logger.info("UnpayedOrderAutoCancel Task 开始工作");
 
@@ -46,6 +46,28 @@ public class OrderTask {
                 if (differ > autoCancelledDurationSeconds) {
                     curOrder.setOrderState(OrderState.CANCELLED);
                     orderDao.updateOrder(curOrder);
+
+                    //  TODO 座位释放
+
+                }
+            }
+        }
+    }
+
+    /**
+     * 未检票的订单自动过期
+     */
+    @Scheduled(cron = "0 0 * * * ?")
+    public void unpcheckedOrderAutoExpire() {
+        logger.info("unpcheckedOrderAutoExpire Task 开始工作");
+
+        final LocalDateTime curTime = LocalDateTime.now();
+        List<Order> orders = orderDao.getAllOrders();
+        for (Order curOrder : orders) {
+            if (curOrder.getOrderState() == OrderState.PAYED) {
+                if (curTime.isAfter(curOrder.getSchedule().getStartDateTime())) {
+                    curOrder.setOrderState(OrderState.EXPIRED);
+                    orderDao.updateOrder(curOrder);
                 }
             }
         }
@@ -54,7 +76,7 @@ public class OrderTask {
     /**
      * 每5分钟，对已支付但没有配票的订单进行配票
      */
-    @Scheduled(cron = "0 5 * * * ?")
+    @Scheduled(cron = "0 0/5 * * * ?")
     public void distributeTicket() {
         logger.info("DistributeTicket Task 开始工作");
 
