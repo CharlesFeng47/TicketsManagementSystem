@@ -40,7 +40,11 @@ public enum RequestReturnObjectState implements Serializable {
     // 支付宝账号不存在
     ALIPAY_ENTITY_NOT_EXIST(15),
     // 订单不可被退款
-    ORDER_NOT_REFUNDABLE(16);
+    ORDER_NOT_REFUNDABLE(16),
+    // 用户链接错误
+    MEMBER_ACTIVATE_URL_EXPIRE(17),
+    // 用户链接错误
+    MEMBER_ACTIVATE_URL_WRONG(18);
 
     private int repre;
 

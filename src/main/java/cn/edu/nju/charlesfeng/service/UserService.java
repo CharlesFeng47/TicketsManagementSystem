@@ -9,9 +9,11 @@ import cn.edu.nju.charlesfeng.model.UnexaminedSpot;
 import cn.edu.nju.charlesfeng.model.User;
 import cn.edu.nju.charlesfeng.util.enums.UserType;
 import cn.edu.nju.charlesfeng.util.exceptions.AlipayEntityNotExistException;
+import cn.edu.nju.charlesfeng.util.exceptions.MemberActiveUrlExpiredException;
 import cn.edu.nju.charlesfeng.util.exceptions.MemberConvertCouponCreditNotEnoughException;
 import cn.edu.nju.charlesfeng.util.exceptions.UserNotExistException;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Map;
 
@@ -21,12 +23,12 @@ import java.util.Map;
 public interface UserService {
 
     /**
-     * TODO 参数未定
      * 【会员】通过邮箱验证会员，验证后才可登录
      *
+     * @param activeUrl 验证的连接参数
      * @return 邮箱验证结果
      */
-    boolean activateByMail();
+    boolean activateByMail(String activeUrl) throws UnsupportedEncodingException, UserNotExistException, MemberActiveUrlExpiredException;
 
     /**
      * 【会员】会员注销、取消资格

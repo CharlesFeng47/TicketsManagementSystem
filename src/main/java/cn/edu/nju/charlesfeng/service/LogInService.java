@@ -5,10 +5,7 @@ import cn.edu.nju.charlesfeng.entity.SeatInfo;
 import cn.edu.nju.charlesfeng.entity.Spot;
 import cn.edu.nju.charlesfeng.model.User;
 import cn.edu.nju.charlesfeng.util.enums.UserType;
-import cn.edu.nju.charlesfeng.util.exceptions.AlipayEntityNotExistException;
-import cn.edu.nju.charlesfeng.util.exceptions.UserHasBeenSignUpException;
-import cn.edu.nju.charlesfeng.util.exceptions.UserNotExistException;
-import cn.edu.nju.charlesfeng.util.exceptions.WrongPwdException;
+import cn.edu.nju.charlesfeng.util.exceptions.*;
 
 import java.util.List;
 
@@ -23,7 +20,7 @@ public interface LogInService {
      * @param email 欲登录的会员邮箱
      * @return 【会员】是否成功注册，成功则返回此会员实体
      */
-    Member registerMember(String id, String pwd, String email) throws UserNotExistException, UserHasBeenSignUpException;
+    Member registerMember(String id, String pwd, String email) throws UserNotExistException, UserHasBeenSignUpException, InteriorWrongException;
 
     /**
      * @param pwd              场馆使用的密码

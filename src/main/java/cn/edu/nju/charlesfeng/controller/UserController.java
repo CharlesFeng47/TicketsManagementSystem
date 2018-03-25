@@ -9,6 +9,7 @@ import cn.edu.nju.charlesfeng.service.UserService;
 import cn.edu.nju.charlesfeng.util.enums.RequestReturnObjectState;
 import cn.edu.nju.charlesfeng.util.enums.UserType;
 import cn.edu.nju.charlesfeng.util.exceptions.AlipayEntityNotExistException;
+import cn.edu.nju.charlesfeng.util.exceptions.MemberActiveUrlExpiredException;
 import cn.edu.nju.charlesfeng.util.exceptions.MemberConvertCouponCreditNotEnoughException;
 import cn.edu.nju.charlesfeng.util.exceptions.UserNotExistException;
 import com.alibaba.fastjson.JSON;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 /**
@@ -229,6 +231,26 @@ public class UserController {
             return new RequestReturnObject(RequestReturnObjectState.OK);
         } catch (UserNotExistException e) {
             return new RequestReturnObject(RequestReturnObjectState.INTERIOR_WRONG);
+        }
+    }
+
+    /**
+     * @return 会员邮箱链接验证
+     */
+    @PostMapping("member_active")
+    public RequestReturnObject examineSpot(@RequestParam("activeUrl") String activeUrl, HttpServletRequest request) {
+        logger.debug("INTO /user/member_active");
+
+        System.out.println(activeUrl);
+        try {
+            userService.activateByMail(activeUrl);
+            return new RequestReturnObject(RequestReturnObjectState.OK);
+        } catch (UnsupportedEncodingException e) {
+            return new RequestReturnObject(RequestReturnObjectState.INTERIOR_WRONG);
+        } catch (UserNotExistException e) {
+            return new RequestReturnObject(RequestReturnObjectState.MEMBER_ACTIVATE_URL_WRONG);
+        } catch (MemberActiveUrlExpiredException e) {
+            return new RequestReturnObject(RequestReturnObjectState.MEMBER_ACTIVATE_URL_EXPIRE);
         }
     }
 

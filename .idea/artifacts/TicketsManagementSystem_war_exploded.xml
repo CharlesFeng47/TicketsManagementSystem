@@ -39,6 +39,9 @@
           <element id="library" level="project" name="Maven: org.springframework:spring-orm:5.0.3.RELEASE" />
           <element id="library" level="project" name="Maven: org.springframework:spring-jdbc:5.0.3.RELEASE" />
           <element id="library" level="project" name="Maven: org.aspectj:aspectjweaver:1.8.13" />
+          <element id="library" level="project" name="Maven: io.github.biezhi:oh-my-email:0.0.3" />
+          <element id="library" level="project" name="Maven: com.sun.mail:javax.mail:1.6.0" />
+          <element id="library" level="project" name="Maven: javax.activation:activation:1.1" />
         </element>
       </element>
       <element id="directory" name="META-INF">

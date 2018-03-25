@@ -8,39 +8,51 @@ import cn.edu.nju.charlesfeng.entity.SeatInfo;
 import cn.edu.nju.charlesfeng.entity.Spot;
 import cn.edu.nju.charlesfeng.model.User;
 import cn.edu.nju.charlesfeng.service.LogInService;
+import cn.edu.nju.charlesfeng.service.MailService;
 import cn.edu.nju.charlesfeng.util.IdGenerator;
 import cn.edu.nju.charlesfeng.util.enums.UserType;
-import cn.edu.nju.charlesfeng.util.exceptions.AlipayEntityNotExistException;
-import cn.edu.nju.charlesfeng.util.exceptions.UserHasBeenSignUpException;
-import cn.edu.nju.charlesfeng.util.exceptions.UserNotExistException;
-import cn.edu.nju.charlesfeng.util.exceptions.WrongPwdException;
+import cn.edu.nju.charlesfeng.util.exceptions.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.mail.MessagingException;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
 @Service
 public class LogInServiceImpl implements LogInService {
 
+    private final MailService mailService;
+
     private final UserDao userDao;
 
     private final AlipayDao alipayDao;
 
     @Autowired
-    public LogInServiceImpl(UserDao dao, AlipayDao alipayDao) {
+    public LogInServiceImpl(MailService mailService, UserDao dao, AlipayDao alipayDao) {
+        this.mailService = mailService;
         this.userDao = dao;
         this.alipayDao = alipayDao;
     }
 
     @Override
-    public Member registerMember(String id, String pwd, String email) throws UserNotExistException, UserHasBeenSignUpException {
+    public Member registerMember(String id, String pwd, String email) throws UserNotExistException, UserHasBeenSignUpException, InteriorWrongException {
         List<String> allMemberIds = getAllIds(userDao.getAllUser(UserType.MEMBER));
         if (allMemberIds.indexOf(id) >= 0) throw new UserHasBeenSignUpException();
         else {
             Member newMember = new Member(id, pwd, email);
             userDao.saveUser(newMember, UserType.MEMBER);
-            return (Member) userDao.getUser(id, UserType.MEMBER);
+
+            // 注册成功后发送邮箱链接
+            Member curMember = (Member) userDao.getUser(id, UserType.MEMBER);
+            try {
+                mailService.sendMail(curMember);
+            } catch (IOException | MessagingException e) {
+                throw new InteriorWrongException();
+            }
+
+            return curMember;
         }
     }
 

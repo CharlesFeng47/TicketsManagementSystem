@@ -1,5 +1,6 @@
 package cn.edu.nju.charlesfeng.model;
 
+import cn.edu.nju.charlesfeng.entity.Member;
 import cn.edu.nju.charlesfeng.entity.Spot;
 import cn.edu.nju.charlesfeng.util.enums.UserType;
 
@@ -19,6 +20,11 @@ public class ContentUser {
     private String[] role;
 
     /**
+     * 会员是否已经被激活
+     */
+    private boolean activated;
+
+    /**
      * 场馆是否已经被审核
      */
     private boolean examined;
@@ -28,6 +34,7 @@ public class ContentUser {
         role = new String[1];
         role[0] = userType.toString();
 
+        if (userType == UserType.MEMBER) this.activated = ((Member) user).isActivated();
         if (userType == UserType.SPOT) this.examined = ((Spot) user).isExamined();
     }
 
@@ -45,6 +52,14 @@ public class ContentUser {
 
     public void setRole(String[] role) {
         this.role = role;
+    }
+
+    public boolean isActivated() {
+        return activated;
+    }
+
+    public void setActivated(boolean activated) {
+        this.activated = activated;
     }
 
     public boolean isExamined() {

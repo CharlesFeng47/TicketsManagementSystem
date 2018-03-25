@@ -9,15 +9,14 @@ import cn.edu.nju.charlesfeng.model.User;
 import cn.edu.nju.charlesfeng.service.UserService;
 import cn.edu.nju.charlesfeng.util.enums.UserType;
 import cn.edu.nju.charlesfeng.util.exceptions.AlipayEntityNotExistException;
+import cn.edu.nju.charlesfeng.util.exceptions.MemberActiveUrlExpiredException;
 import cn.edu.nju.charlesfeng.util.exceptions.MemberConvertCouponCreditNotEnoughException;
 import cn.edu.nju.charlesfeng.util.exceptions.UserNotExistException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.io.UnsupportedEncodingException;
+import java.util.*;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -33,9 +32,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean activateByMail() {
-        // TODO mail验证
-        return false;
+    public boolean activateByMail(String activeUrl) throws UnsupportedEncodingException, UserNotExistException, MemberActiveUrlExpiredException {
+        byte[] base64decodedBytes = Base64.getUrlDecoder().decode(activeUrl);
+        String toActivateMemberId = new String(base64decodedBytes, "utf-8");
+
+        Member toActivate = (Member) userDao.getUser(toActivateMemberId, UserType.MEMBER);
+        if (toActivate.isActivated()) throw new MemberActiveUrlExpiredException();
+        toActivate.setActivated(true);
+        return userDao.updateUser(toActivate, UserType.MEMBER);
     }
 
     @Override

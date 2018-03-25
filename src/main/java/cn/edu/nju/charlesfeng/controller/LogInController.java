@@ -9,10 +9,7 @@ import cn.edu.nju.charlesfeng.model.User;
 import cn.edu.nju.charlesfeng.service.LogInService;
 import cn.edu.nju.charlesfeng.util.enums.RequestReturnObjectState;
 import cn.edu.nju.charlesfeng.util.enums.UserType;
-import cn.edu.nju.charlesfeng.util.exceptions.AlipayEntityNotExistException;
-import cn.edu.nju.charlesfeng.util.exceptions.UserHasBeenSignUpException;
-import cn.edu.nju.charlesfeng.util.exceptions.UserNotExistException;
-import cn.edu.nju.charlesfeng.util.exceptions.WrongPwdException;
+import cn.edu.nju.charlesfeng.util.exceptions.*;
 import com.alibaba.fastjson.JSON;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -91,7 +88,7 @@ public class LogInController {
             HttpSession session = request.getSession();
             session.setAttribute(token, curUser);
             return new RequestReturnObject(RequestReturnObjectState.OK, token);
-        } catch (UserNotExistException e) {
+        } catch (UserNotExistException | InteriorWrongException e) {
             return new RequestReturnObject(RequestReturnObjectState.INTERIOR_WRONG);
         } catch (UserHasBeenSignUpException e) {
             return new RequestReturnObject(RequestReturnObjectState.USER_HAS_BEEN_SIGN_UP);
