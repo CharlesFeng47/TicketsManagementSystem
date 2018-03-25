@@ -1,1 +1,3 @@
 target/*
+
+src/main/resources/my_mail_config.properties
