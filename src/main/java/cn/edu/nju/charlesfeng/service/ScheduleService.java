@@ -14,6 +14,11 @@ import java.util.List;
 public interface ScheduleService {
 
     /**
+     * @return 所有日程
+     */
+    List<Schedule> getAllSchedules();
+
+    /**
      * @return 用户可见的所有日程（即不含已过期的日程计划）
      */
     List<Schedule> getAllAvailableSchedules();

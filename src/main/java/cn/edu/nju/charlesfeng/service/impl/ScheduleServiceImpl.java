@@ -30,6 +30,11 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
+    public List<Schedule> getAllSchedules() {
+        return scheduleDao.getAllSchedules();
+    }
+
+    @Override
     public List<Schedule> getAllAvailableSchedules() {
         LocalDateTime now = LocalDateTime.now();
         List<Schedule> result = new LinkedList<>();

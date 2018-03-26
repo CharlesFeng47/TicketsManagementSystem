@@ -44,7 +44,7 @@ public class ScheduleController {
     }
 
     /**
-     * @return 所有日程／某一场馆的所有日程的简介
+     * @return 所有用户可见的日程／某一场馆的所有日程的简介
      */
     @GetMapping("all")
     public RequestReturnObject getSchedules(String spotId) {
@@ -56,6 +56,17 @@ public class ScheduleController {
             logger.debug("INTO /schedule/all?spotId=" + spotId);
             allSchedules = scheduleService.getSchedulesOfOneSpot(spotId);
         }
+        return new RequestReturnObject(RequestReturnObjectState.OK, getBrief(allSchedules));
+    }
+
+    /**
+     * @return 所有用户可见的日程／某一场馆的所有日程的简介
+     */
+    @GetMapping("all_all")
+    public RequestReturnObject getAllSchedules() {
+        logger.debug("INTO /schedule/all_all");
+
+        List<Schedule> allSchedules = scheduleService.getAllSchedules();
         return new RequestReturnObject(RequestReturnObjectState.OK, getBrief(allSchedules));
     }
 
