@@ -1,5 +1,7 @@
 package cn.edu.nju.charlesfeng.model;
 
+import cn.edu.nju.charlesfeng.entity.NotChoseSeats;
+
 /**
  * 场馆中的座位表示
  */
@@ -19,6 +21,15 @@ public class Seat {
      * 此座位价格
      */
     private double price;
+
+    public Seat() {
+    }
+
+    public Seat(SeatId curDispatchedSeatId, NotChoseSeats ncs) {
+        this.id = curDispatchedSeatId.toString();
+        this.seatName = ncs.getSeatName();
+        this.price = ncs.getPrice();
+    }
 
     public String getId() {
         return id;

@@ -150,16 +150,20 @@ public class OrderTask {
                         List<SeatId> dispatchedSeats = getDispatchedSeats(curRemainSeatMap, ncs.getSeatChar(), ncs.getNum());
 
                         // 对分配到的座位预定
-                        List<String> curOrderedSeats = new LinkedList<>();
-                        for (SeatId curDispatchedSeat : dispatchedSeats) {
-                            final int rowIndex = curDispatchedSeat.getRowIndex();
-                            final int colIndex = curDispatchedSeat.getColIndex();
+                        List<Seat> curOrderedSeats = new LinkedList<>();
+                        for (SeatId curDispatchedSeatId : dispatchedSeats) {
+                            final int rowIndex = curDispatchedSeatId.getRowIndex();
+                            final int colIndex = curDispatchedSeatId.getColIndex();
                             curRemainSeatMap.set(rowIndex,
                                     OrderSeatHelper.orderSpecificSeat(curRemainSeatMap.get(rowIndex), colIndex));
-                            curOrderedSeats.add(curDispatchedSeat.toString());
+
+                            // 订单中已预订到的座位信息
+                            curOrderedSeats.add(new Seat(curDispatchedSeatId, ncs));
+
+                            // 计划中已预订到的座位ID
+                            alreadyBookedIds.add(curDispatchedSeatId.toString());
                         }
 
-                        alreadyBookedIds.addAll(curOrderedSeats);
                         curOrder.setOrderedSeatsJson(JSON.toJSONString(curOrderedSeats));
                     } catch (NoSuitableSeatException e) {
                         curOrder.setOrderState(OrderState.DISPATCH_FAIL);
