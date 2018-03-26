@@ -14,9 +14,9 @@ import java.util.List;
 public interface ScheduleService {
 
     /**
-     * @return 所有日程
+     * @return 用户可见的所有日程（即不含已过期的日程计划）
      */
-    List<Schedule> getAllSchedules();
+    List<Schedule> getAllAvailableSchedules();
 
     /**
      * @param spotId 欲获取的相关场馆的场馆Id

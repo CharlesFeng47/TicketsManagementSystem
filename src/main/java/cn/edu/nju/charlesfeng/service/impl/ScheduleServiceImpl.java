@@ -30,14 +30,22 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
-    public List<Schedule> getAllSchedules() {
-        return scheduleDao.getAllSchedules();
+    public List<Schedule> getAllAvailableSchedules() {
+        LocalDateTime now = LocalDateTime.now();
+        List<Schedule> result = new LinkedList<>();
+        List<Schedule> allSchedule = scheduleDao.getAllSchedules();
+        for (Schedule schedule : allSchedule) {
+            if (schedule.getStartDateTime().isAfter(now)) {
+                result.add(schedule);
+            }
+        }
+        return result;
     }
 
     @Override
     public List<Schedule> getSchedulesOfOneSpot(String spotId) {
         List<Schedule> result = new LinkedList<>();
-        List<Schedule> allSchedule = getAllSchedules();
+        List<Schedule> allSchedule = scheduleDao.getAllSchedules();
         for (Schedule schedule : allSchedule) {
             if (schedule.getSpot().getId().equals(spotId)) {
                 result.add(schedule);

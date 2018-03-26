@@ -51,7 +51,7 @@ public class ScheduleController {
         List<Schedule> allSchedules;
         if (spotId == null || spotId.equals("")) {
             logger.debug("INTO /schedule/all");
-            allSchedules = scheduleService.getAllSchedules();
+            allSchedules = scheduleService.getAllAvailableSchedules();
         } else {
             logger.debug("INTO /schedule/all?spotId=" + spotId);
             allSchedules = scheduleService.getSchedulesOfOneSpot(spotId);
