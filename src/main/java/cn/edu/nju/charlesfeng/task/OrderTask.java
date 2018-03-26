@@ -61,29 +61,9 @@ public class OrderTask {
                     curOrder.setOrderState(OrderState.CANCELLED);
 
                     // 对schedule进行处理，预定的座位被释放
-                    if (curOrder.getOrderedSeatsJson() != null) {
-                        // 需要释放座位
-                        List<Seat> curOrderedSeats = JSON.parseArray(curOrder.getOrderedSeatsJson(), Seat.class);
-                        List<String> curOrderedSeatIds = OrderSeatHelper.getSeatListIds(curOrderedSeats);
+                    curOrder = OrderSeatHelper.releaseSeatsInOrder(curOrder);
 
-                        Schedule toUpdateSchedule = curOrder.getSchedule();
-                        List<String> alreadyBookedIds = JSON.parseArray(toUpdateSchedule.getBookedSeatsIdJson(), String.class);
-                        alreadyBookedIds.removeAll(curOrderedSeatIds);
-                        toUpdateSchedule.setBookedSeatsIdJson(JSON.toJSONString(alreadyBookedIds));
-
-                        List<String> curRemainSeatMap = JSON.parseArray(toUpdateSchedule.getRemainSeatsJson(), String.class);
-                        for (String id : curOrderedSeatIds) {
-                            String[] idParts = id.split("_");
-                            int rowIndex = Integer.parseInt(idParts[0]) - 1;
-                            int colIndex = Integer.parseInt(idParts[1]) - 1;
-
-                            curRemainSeatMap.set(rowIndex,
-                                    OrderSeatHelper.releaseSpecificSeat(curRemainSeatMap.get(rowIndex), colIndex));
-                        }
-                        toUpdateSchedule.setRemainSeatsJson(JSON.toJSONString(curRemainSeatMap));
-                    }
-
-                    // 更新订单，级联更新座位
+                    // 更新订单，级联更新计划中的座位
                     orderDao.updateOrder(curOrder);
                 }
             }
@@ -112,7 +92,7 @@ public class OrderTask {
     /**
      * 每5分钟，对已支付但没有配票的订单进行配票
      */
-    @Scheduled(cron = "0 0/5 * * * ?")
+    @Scheduled(cron = "0 0/3 * * * ?")
     public void distributeTicket() {
         logger.info("DistributeTicket Task 开始工作");
         LocalDateTime start = LocalDateTime.now();
@@ -175,11 +155,12 @@ public class OrderTask {
             toDispatchSchedule.setRemainSeatsJson(JSON.toJSONString(curRemainSeatMap));
             toDispatchSchedule.setBookedSeatsIdJson(JSON.toJSONString(alreadyBookedIds));
             scheduleDao.updateSchedule(toDispatchSchedule);
+            logger.info("DistributeTicket Task update schedule：" + toDispatchSchedule.getId());
         }
 
         // 对计划
         LocalDateTime end = LocalDateTime.now();
-        System.out.println("DistributeTicket Task 耗时：" + ChronoUnit.SECONDS.between(start, end));
+        logger.info("DistributeTicket Task 耗时：" + ChronoUnit.SECONDS.between(start, end));
     }
 
     /**

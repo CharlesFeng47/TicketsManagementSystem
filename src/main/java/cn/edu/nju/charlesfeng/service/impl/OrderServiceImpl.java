@@ -185,8 +185,15 @@ public class OrderServiceImpl implements OrderService {
         if (!toUnsubscribe.getMember().getId().equals(member.getId())) throw new InteriorWrongException();
 
         final LocalDateTime now = LocalDateTime.now();
-        if (toUnsubscribe.getOrderState() != OrderState.PAYED) throw new OrderNotRefundableException();
-        if (now.isAfter(toUnsubscribe.getSchedule().getStartDateTime())) throw new OrderNotRefundableException();
+        // 只有已支付和配票失败的订单可以退票
+        final OrderState curOrderState = toUnsubscribe.getOrderState();
+        if (curOrderState == OrderState.PAYED || curOrderState == OrderState.DISPATCH_FAIL) {
+            // 已支付的订单只能在开始前退票
+            if (curOrderState == OrderState.PAYED && now.isAfter(toUnsubscribe.getSchedule().getStartDateTime()))
+                throw new OrderNotRefundableException();
+        } else {
+            throw new OrderNotRefundableException();
+        }
 
         // 可以退款
         toUnsubscribe.setOrderState(OrderState.REFUND);
@@ -197,14 +204,14 @@ public class OrderServiceImpl implements OrderService {
         // 会员款项增加
         final double unsubscribeMoney = toUnsubscribe.getTotalPrice() * getRefundPercent(now, toUnsubscribe.getSchedule().getStartDateTime());
         buyerAE.setBalance(buyerAE.getBalance() + unsubscribeMoney);
-
-        // 场馆款项减少
-        AlipayEntity spotAE = alipayDao.getAlipayEntity(toUnsubscribe.getSchedule().getSpot().getAlipayId());
-        spotAE.setBalance(spotAE.getBalance() - unsubscribeMoney);
-
         alipayDao.update(buyerAE);
-        alipayDao.update(spotAE);
 
+        // 场馆未结算部分余额减少，级联更新
+        Schedule curSchedule = toUnsubscribe.getSchedule();
+        curSchedule.setBalance(curSchedule.getBalance() - unsubscribeMoney);
+
+        // 对schedule进行处理，预定的座位被释放
+        toUnsubscribe = OrderSeatHelper.releaseSeatsInOrder(toUnsubscribe);
         return orderDao.updateOrder(toUnsubscribe);
     }
 
