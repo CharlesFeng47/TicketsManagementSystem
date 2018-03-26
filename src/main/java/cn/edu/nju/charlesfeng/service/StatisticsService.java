@@ -1,7 +1,9 @@
 package cn.edu.nju.charlesfeng.service;
 
-import cn.edu.nju.charlesfeng.model.MemberStatistics;
-import cn.edu.nju.charlesfeng.model.SpotStatistics;
+import cn.edu.nju.charlesfeng.entity.Consumption;
+import cn.edu.nju.charlesfeng.model.User;
+
+import java.util.List;
 
 /**
  * 为系统提供统计服务
@@ -9,14 +11,8 @@ import cn.edu.nju.charlesfeng.model.SpotStatistics;
 public interface StatisticsService {
 
     /**
-     * @param oid 要查看的会员
-     * @return 会员本人的统计信息（预定、退订、消费等）
+     * @param user 要查看的会员／场馆
+     * @return 会员本人的消费记录
      */
-    MemberStatistics checkMyMemberStatistics(String oid);
-
-    /**
-     * @param sid 要查看的场馆ID
-     * @return 本场馆的统计信息（预订、退订、财务等）
-     */
-    SpotStatistics checkMySpotStatistics(String sid);
+    List<Consumption> checkConsumption(User user);
 }

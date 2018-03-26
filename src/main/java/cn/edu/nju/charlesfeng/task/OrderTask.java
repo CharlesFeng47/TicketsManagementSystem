@@ -79,7 +79,7 @@ public class OrderTask {
     /**
      * 每小时检查一次，未检票的订单自动过期
      */
-    @Scheduled(cron = "0 0/5 * * * ?")
+    @Scheduled(cron = "0 0 * * * ?")
     public void uncheckedOrderAutoExpire() {
         logger.info("uncheckedOrderAutoExpire Task 开始工作");
 

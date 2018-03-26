@@ -1,18 +1,12 @@
 package cn.edu.nju.charlesfeng.service.impl;
 
-import cn.edu.nju.charlesfeng.dao.AlipayDao;
-import cn.edu.nju.charlesfeng.dao.OrderDao;
-import cn.edu.nju.charlesfeng.dao.ScheduleDao;
-import cn.edu.nju.charlesfeng.dao.UserDao;
+import cn.edu.nju.charlesfeng.dao.*;
 import cn.edu.nju.charlesfeng.entity.*;
 import cn.edu.nju.charlesfeng.model.Seat;
 import cn.edu.nju.charlesfeng.model.User;
 import cn.edu.nju.charlesfeng.service.OrderService;
 import cn.edu.nju.charlesfeng.util.OrderSeatHelper;
-import cn.edu.nju.charlesfeng.util.enums.OrderState;
-import cn.edu.nju.charlesfeng.util.enums.OrderType;
-import cn.edu.nju.charlesfeng.util.enums.OrderWay;
-import cn.edu.nju.charlesfeng.util.enums.UserType;
+import cn.edu.nju.charlesfeng.util.enums.*;
 import cn.edu.nju.charlesfeng.util.exceptions.*;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
@@ -36,12 +30,15 @@ public class OrderServiceImpl implements OrderService {
 
     private final AlipayDao alipayDao;
 
+    private final ConsumptionDao consumptionDao;
+
     @Autowired
-    public OrderServiceImpl(OrderDao orderDao, ScheduleDao scheduleDao, UserDao userDao, AlipayDao alipayDao) {
+    public OrderServiceImpl(OrderDao orderDao, ScheduleDao scheduleDao, UserDao userDao, AlipayDao alipayDao, ConsumptionDao consumptionDao) {
         this.orderDao = orderDao;
         this.scheduleDao = scheduleDao;
         this.userDao = userDao;
         this.alipayDao = alipayDao;
+        this.consumptionDao = consumptionDao;
     }
 
     @Override
@@ -132,15 +129,19 @@ public class OrderServiceImpl implements OrderService {
                 throw new AlipayBalanceNotAdequateException();
             }
 
-            // 支付宝减少余额
+            // 会员支付宝减少余额
             alipayEntity.setBalance(remainBalance);
             alipayDao.update(alipayEntity);
-
-            // 订单状态改变
-            toPay.setOrderState(OrderState.PAYED);
             // 场馆未结算部分余额增加，级联更新
             Schedule curSchedule = toPay.getSchedule();
             curSchedule.setBalance(curSchedule.getBalance() + payMoney);
+
+            // 增加一条消费记录
+            consumptionDao.saveConsumption(new Consumption
+                    (ConsumptionType.SUBSCRIBE, toPay.getMember().getId(), toPay.getSchedule().getSpot(), toPay.getTotalPrice()));
+
+            // 订单状态改变
+            toPay.setOrderState(OrderState.PAYED);
             return orderDao.updateOrder(toPay);
         } else {
             throw new AlipayWrongPwdException();
@@ -163,8 +164,7 @@ public class OrderServiceImpl implements OrderService {
             curMember.setCreditTotal(curMember.getCreditTotal() + addedCredit);
             curMember.setCreditRemain(curMember.getCreditRemain() + addedCredit);
             userDao.updateUser(curMember, UserType.MEMBER);
-        }
-        else if (curState == OrderState.CHECKED) throw new TicketHasBeenCheckedException();
+        } else if (curState == OrderState.CHECKED) throw new TicketHasBeenCheckedException();
         else throw new TicketStateWrongException();
         return orderDao.updateOrder(toCheck);
     }
@@ -212,10 +212,14 @@ public class OrderServiceImpl implements OrderService {
         final double unsubscribeMoney = toUnsubscribe.getTotalPrice() * getRefundPercent(now, toUnsubscribe.getSchedule().getStartDateTime());
         buyerAE.setBalance(buyerAE.getBalance() + unsubscribeMoney);
         alipayDao.update(buyerAE);
-
         // 场馆未结算部分余额减少，级联更新
         Schedule curSchedule = toUnsubscribe.getSchedule();
         curSchedule.setBalance(curSchedule.getBalance() - unsubscribeMoney);
+
+        // 增加一条消费记录
+        consumptionDao.saveConsumption(new Consumption
+                (ConsumptionType.UNSUBSCRIBE, toUnsubscribe.getMember().getId(), toUnsubscribe.getSchedule().getSpot(), toUnsubscribe.getTotalPrice()));
+
 
         // 对schedule进行处理，预定的座位被释放
         toUnsubscribe = OrderSeatHelper.releaseSeatsInOrder(toUnsubscribe);
