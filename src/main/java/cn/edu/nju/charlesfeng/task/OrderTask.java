@@ -2,6 +2,8 @@ package cn.edu.nju.charlesfeng.task;
 
 import cn.edu.nju.charlesfeng.dao.OrderDao;
 import cn.edu.nju.charlesfeng.dao.ScheduleDao;
+import cn.edu.nju.charlesfeng.dao.UserDao;
+import cn.edu.nju.charlesfeng.entity.Member;
 import cn.edu.nju.charlesfeng.entity.NotChoseSeats;
 import cn.edu.nju.charlesfeng.entity.Order;
 import cn.edu.nju.charlesfeng.entity.Schedule;
@@ -10,6 +12,7 @@ import cn.edu.nju.charlesfeng.model.SeatId;
 import cn.edu.nju.charlesfeng.util.OrderSeatHelper;
 import cn.edu.nju.charlesfeng.util.enums.OrderState;
 import cn.edu.nju.charlesfeng.util.enums.OrderType;
+import cn.edu.nju.charlesfeng.util.enums.UserType;
 import cn.edu.nju.charlesfeng.util.exceptions.NoSuitableSeatException;
 import com.alibaba.fastjson.JSON;
 import org.apache.log4j.Logger;
@@ -36,10 +39,13 @@ public class OrderTask {
 
     private final ScheduleDao scheduleDao;
 
+    private final UserDao userDao;
+
     @Autowired
-    public OrderTask(OrderDao orderDao, ScheduleDao scheduleDao) {
+    public OrderTask(OrderDao orderDao, ScheduleDao scheduleDao, UserDao userDao) {
         this.orderDao = orderDao;
         this.scheduleDao = scheduleDao;
+        this.userDao = userDao;
     }
 
     /**
@@ -71,11 +77,11 @@ public class OrderTask {
     }
 
     /**
-     * 未检票的订单自动过期
+     * 每小时检查一次，未检票的订单自动过期
      */
-    @Scheduled(cron = "0 0 * * * ?")
-    public void unpcheckedOrderAutoExpire() {
-        logger.info("unpcheckedOrderAutoExpire Task 开始工作");
+    @Scheduled(cron = "0 0/5 * * * ?")
+    public void uncheckedOrderAutoExpire() {
+        logger.info("uncheckedOrderAutoExpire Task 开始工作");
 
         final LocalDateTime curTime = LocalDateTime.now();
         List<Order> orders = orderDao.getAllOrders();
@@ -84,6 +90,13 @@ public class OrderTask {
                 if (curTime.isAfter(curOrder.getSchedule().getStartDateTime())) {
                     curOrder.setOrderState(OrderState.EXPIRED);
                     orderDao.updateOrder(curOrder);
+
+                    // 积分增加
+                    Member curMember = curOrder.getMember();
+                    final double addedCredit = curOrder.getTotalPrice();
+                    curMember.setCreditTotal(curMember.getCreditTotal() + addedCredit);
+                    curMember.setCreditRemain(curMember.getCreditRemain() + addedCredit);
+                    userDao.updateUser(curMember, UserType.MEMBER);
                 }
             }
         }

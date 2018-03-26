@@ -119,7 +119,6 @@ public class OrderServiceImpl implements OrderService {
         return orderDao.saveOrder(order);
     }
 
-    // TODO 付款后积分增加
     @Override
     public boolean payOrder(Member member, int oid, String paymentId, String paymentPwd) throws AlipayWrongPwdException, AlipayBalanceNotAdequateException {
         AlipayEntity alipayEntity = alipayDao.getAlipayEntity(paymentId);
@@ -155,7 +154,16 @@ public class OrderServiceImpl implements OrderService {
 
         final OrderState curState = toCheck.getOrderState();
 
-        if (curState == OrderState.PAYED) toCheck.setOrderState(OrderState.CHECKED);
+        if (curState == OrderState.PAYED) {
+            toCheck.setOrderState(OrderState.CHECKED);
+
+            // 积分增加
+            Member curMember = toCheck.getMember();
+            final double addedCredit = toCheck.getTotalPrice();
+            curMember.setCreditTotal(curMember.getCreditTotal() + addedCredit);
+            curMember.setCreditRemain(curMember.getCreditRemain() + addedCredit);
+            userDao.updateUser(curMember, UserType.MEMBER);
+        }
         else if (curState == OrderState.CHECKED) throw new TicketHasBeenCheckedException();
         else throw new TicketStateWrongException();
         return orderDao.updateOrder(toCheck);
@@ -178,7 +186,6 @@ public class OrderServiceImpl implements OrderService {
         return orderDao.getOrder(oid);
     }
 
-    // TODO 退款后积分减少
     @Override
     public boolean unsubscribe(Member member, int oid, String paymentId) throws InteriorWrongException, OrderNotRefundableException, AlipayEntityNotExistException {
         Order toUnsubscribe = orderDao.getOrder(oid);
