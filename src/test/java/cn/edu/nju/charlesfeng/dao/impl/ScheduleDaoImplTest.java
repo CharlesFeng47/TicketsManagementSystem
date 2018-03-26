@@ -104,6 +104,18 @@ public class ScheduleDaoImplTest {
     }
 
     /**
+     * 测试schedule中的order改变，级联更新
+     */
+    @Test
+    public void testUpdateOrderOfSchedule() {
+        Schedule schedule = scheduleDao.getSchedule("201832613416");
+        Order order = schedule.getOrders().get(0);
+        System.out.println(order.getId());
+        order.setOrderTime(LocalDateTime.now());
+        scheduleDao.updateSchedule(schedule);
+    }
+
+    /**
      * Method: deleteSchedule(Schedule schedule)
      */
     @Test

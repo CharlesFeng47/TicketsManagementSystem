@@ -25,6 +25,12 @@ public class SeatInfo {
     private String seatName;
 
     /**
+     * 此座位的字母表示
+     */
+    @Column(name = "seat_char", nullable = false)
+    private char seatChar;
+
+    /**
      * 此座位的个数
      */
     @Column(name = "seat_num", nullable = false)
@@ -53,6 +59,14 @@ public class SeatInfo {
 
     public void setSeatName(String seatName) {
         this.seatName = seatName;
+    }
+
+    public char getSeatChar() {
+        return seatChar;
+    }
+
+    public void setSeatChar(char seatChar) {
+        this.seatChar = seatChar;
     }
 
     public int getNum() {

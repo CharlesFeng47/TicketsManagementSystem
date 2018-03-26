@@ -15,12 +15,15 @@ import cn.edu.nju.charlesfeng.util.enums.OrderWay;
 import cn.edu.nju.charlesfeng.util.enums.UserType;
 import cn.edu.nju.charlesfeng.util.exceptions.*;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -75,13 +78,24 @@ public class OrderServiceImpl implements OrderService {
                 int rowIndex = Integer.parseInt(idParts[0]) - 1;
                 int colIndex = Integer.parseInt(idParts[1]) - 1;
 
-                curRemainSeatMap.set(rowIndex, uppercaseSpecificChar(curRemainSeatMap.get(rowIndex), colIndex));
+                curRemainSeatMap.set(rowIndex,
+                        OrderSeatHelper.orderSpecificSeat(curRemainSeatMap.get(rowIndex), colIndex));
             }
             toOrderSchedule.setRemainSeatsJson(JSON.toJSONString(curRemainSeatMap));
             // 因为此时此order还未被存储，所以不受级联更新
             scheduleDao.updateSchedule(toOrderSchedule);
 
         } else if (orderType == OrderType.NOT_CHOOSE_SEATS) {
+            // 对此非选座购票处理，找到此座位的表示字符
+            Map<SeatInfo, Double> priceMap = JSON.parseObject(toOrderSchedule.getSeatInfoPricesJson(), new TypeReference<HashMap<SeatInfo, Double>>() {
+            });
+            for (SeatInfo tempSeatInfo : priceMap.keySet()) {
+                if (tempSeatInfo.getSeatName().equals(notChoseSeats.getSeatName())) {
+                    notChoseSeats.setSeatChar(tempSeatInfo.getSeatChar());
+                    break;
+                }
+            }
+
             order.setNotChoseSeats(notChoseSeats);
             notChoseSeats.setOrder(order);
         }
@@ -192,17 +206,6 @@ public class OrderServiceImpl implements OrderService {
         alipayDao.update(spotAE);
 
         return orderDao.updateOrder(toUnsubscribe);
-    }
-
-    /**
-     * 替换指定位置的座位为大写
-     */
-    private String uppercaseSpecificChar(String str, int pos) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(str.substring(0, pos));
-        sb.append((char) (str.charAt(pos) - 0x20));
-        if (pos < str.length() - 1) sb.append(str.substring(pos + 1));
-        return sb.toString();
     }
 
     /**

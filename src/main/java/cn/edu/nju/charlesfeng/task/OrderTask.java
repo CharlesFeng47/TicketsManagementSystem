@@ -1,12 +1,16 @@
 package cn.edu.nju.charlesfeng.task;
 
 import cn.edu.nju.charlesfeng.dao.OrderDao;
+import cn.edu.nju.charlesfeng.dao.ScheduleDao;
+import cn.edu.nju.charlesfeng.entity.NotChoseSeats;
 import cn.edu.nju.charlesfeng.entity.Order;
 import cn.edu.nju.charlesfeng.entity.Schedule;
 import cn.edu.nju.charlesfeng.model.Seat;
+import cn.edu.nju.charlesfeng.model.SeatId;
 import cn.edu.nju.charlesfeng.util.OrderSeatHelper;
 import cn.edu.nju.charlesfeng.util.enums.OrderState;
 import cn.edu.nju.charlesfeng.util.enums.OrderType;
+import cn.edu.nju.charlesfeng.util.exceptions.NoSuitableSeatException;
 import com.alibaba.fastjson.JSON;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +19,10 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 订单相关的操作
@@ -27,9 +34,12 @@ public class OrderTask {
 
     private final OrderDao orderDao;
 
+    private final ScheduleDao scheduleDao;
+
     @Autowired
-    public OrderTask(OrderDao orderDao) {
+    public OrderTask(OrderDao orderDao, ScheduleDao scheduleDao) {
         this.orderDao = orderDao;
+        this.scheduleDao = scheduleDao;
     }
 
     /**
@@ -67,7 +77,8 @@ public class OrderTask {
                             int rowIndex = Integer.parseInt(idParts[0]) - 1;
                             int colIndex = Integer.parseInt(idParts[1]) - 1;
 
-                            curRemainSeatMap.set(rowIndex, lowercaseSpecificChar(curRemainSeatMap.get(rowIndex), colIndex));
+                            curRemainSeatMap.set(rowIndex,
+                                    OrderSeatHelper.releaseSpecificSeat(curRemainSeatMap.get(rowIndex), colIndex));
                         }
                         toUpdateSchedule.setRemainSeatsJson(JSON.toJSONString(curRemainSeatMap));
                     }
@@ -104,25 +115,90 @@ public class OrderTask {
     @Scheduled(cron = "0 0/5 * * * ?")
     public void distributeTicket() {
         logger.info("DistributeTicket Task 开始工作");
+        LocalDateTime start = LocalDateTime.now();
 
-        List<Order> orders = orderDao.getAllOrders();
-        for (Order curOrder : orders) {
-            if (curOrder.getOrderState() == OrderState.PAYED && curOrder.getOrderType() == OrderType.NOT_CHOOSE_SEATS
-                    && curOrder.getOrderedSeatsJson() == null) {
-                // TODO 配票
+        // 订单开始自动配票的时限
+        long autoDistributedTicketDays = 14;
+
+        // 对订单按计划分类
+        Map<Schedule, List<Order>> neededDispatchScheduleMap = new HashMap<>();
+        for (Order curOrder : orderDao.getAllOrders()) {
+            final Schedule curSchedule = curOrder.getSchedule();
+            // 时限之内的才进行配票
+            if (ChronoUnit.DAYS.between(start, curSchedule.getStartDateTime()) < autoDistributedTicketDays) {
+                List<Order> curOrdersOfSchedule = neededDispatchScheduleMap.get(curSchedule);
+                if (curOrdersOfSchedule == null) curOrdersOfSchedule = new LinkedList<>();
+
+                curOrdersOfSchedule.add(curOrder);
+                neededDispatchScheduleMap.put(curSchedule, curOrdersOfSchedule);
             }
         }
+
+        // 对计划配票
+        for (Map.Entry<Schedule, List<Order>> entry : neededDispatchScheduleMap.entrySet()) {
+            Schedule toDispatchSchedule = entry.getKey();
+            // 剩余座位图
+            List<String> curRemainSeatMap = JSON.parseArray(toDispatchSchedule.getRemainSeatsJson(), String.class);
+            // 已经预定的座位ID
+            List<String> alreadyBookedIds = JSON.parseArray(toDispatchSchedule.getBookedSeatsIdJson(), String.class);
+
+            for (Order curOrder : entry.getValue()) {
+                if (curOrder.getOrderState() == OrderState.PAYED && curOrder.getOrderType() == OrderType.NOT_CHOOSE_SEATS
+                        && curOrder.getOrderedSeatsJson() == null) {
+                    NotChoseSeats ncs = curOrder.getNotChoseSeats();
+                    try {
+                        List<SeatId> dispatchedSeats = getDispatchedSeats(curRemainSeatMap, ncs.getSeatChar(), ncs.getNum());
+
+                        // 对分配到的座位预定
+                        List<String> curOrderedSeats = new LinkedList<>();
+                        for (SeatId curDispatchedSeat : dispatchedSeats) {
+                            final int rowIndex = curDispatchedSeat.getRowIndex();
+                            final int colIndex = curDispatchedSeat.getColIndex();
+                            curRemainSeatMap.set(rowIndex,
+                                    OrderSeatHelper.orderSpecificSeat(curRemainSeatMap.get(rowIndex), colIndex));
+                            curOrderedSeats.add(curDispatchedSeat.toString());
+                        }
+
+                        alreadyBookedIds.addAll(curOrderedSeats);
+                        curOrder.setOrderedSeatsJson(JSON.toJSONString(curOrderedSeats));
+                    } catch (NoSuitableSeatException e) {
+                        curOrder.setOrderState(OrderState.DISPATCH_FAIL);
+                    }
+                }
+            }
+
+            // 此计划配票完毕，级联更新所有订单
+            toDispatchSchedule.setRemainSeatsJson(JSON.toJSONString(curRemainSeatMap));
+            toDispatchSchedule.setBookedSeatsIdJson(JSON.toJSONString(alreadyBookedIds));
+            scheduleDao.updateSchedule(toDispatchSchedule);
+        }
+
+        // 对计划
+        LocalDateTime end = LocalDateTime.now();
+        System.out.println("DistributeTicket Task 耗时：" + ChronoUnit.SECONDS.between(start, end));
     }
 
     /**
-     * 替换指定位置的座位为小写
+     * 根据不选座的情况得到指定数目指定类型的座位
      */
-    private String lowercaseSpecificChar(String str, int pos) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(str.substring(0, pos));
-        sb.append((char) (str.charAt(pos) + 0x20));
-        if (pos < str.length() - 1) sb.append(str.substring(pos + 1));
-        return sb.toString();
+    private List<SeatId> getDispatchedSeats(List<String> seatMap, char bookedSeatChar, int bookedSeatNum) throws NoSuitableSeatException {
+        List<SeatId> result = new LinkedList<>();
+
+        final int rowSize = seatMap.size();
+        final int colSize = seatMap.get(0).length();
+        for (int i = 0; i < rowSize; i++) {
+            final String curRow = seatMap.get(i);
+            for (int j = 0; j < colSize; j++) {
+                if (curRow.charAt(j) == bookedSeatChar) {
+                    result.add(new SeatId(i, j));
+                    bookedSeatNum--;
+
+                    // 找完了就返回
+                    if (bookedSeatNum == 0) return result;
+                }
+            }
+        }
+        throw new NoSuitableSeatException();
     }
 
 }

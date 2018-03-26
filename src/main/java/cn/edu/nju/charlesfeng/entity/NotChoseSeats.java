@@ -10,7 +10,7 @@ import javax.persistence.*;
 public class NotChoseSeats {
 
     /**
-     * 此座位情况的标志符
+     * 此不选座购买座位情况的标志符
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,6 +21,12 @@ public class NotChoseSeats {
      */
     @Column(name = "name", nullable = false)
     private String seatName;
+
+    /**
+     * 此座位情况所在的座位类型表示字符
+     */
+    @Column(name = "seat_char", nullable = false)
+    private char seatChar;
 
     /**
      * 此座位情况的购买数量
@@ -54,6 +60,14 @@ public class NotChoseSeats {
 
     public void setSeatName(String seatName) {
         this.seatName = seatName;
+    }
+
+    public char getSeatChar() {
+        return seatChar;
+    }
+
+    public void setSeatChar(char seatChar) {
+        this.seatChar = seatChar;
     }
 
     public int getNum() {
