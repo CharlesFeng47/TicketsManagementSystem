@@ -1,8 +1,11 @@
 package cn.edu.nju.charlesfeng.service;
 
 import cn.edu.nju.charlesfeng.entity.Consumption;
-import cn.edu.nju.charlesfeng.model.SingleOrderNumOfOneState;
+import cn.edu.nju.charlesfeng.model.IncomeOfOneSpot;
+import cn.edu.nju.charlesfeng.model.NumOfOneMemberLevel;
+import cn.edu.nju.charlesfeng.model.OrderNumOfOneState;
 import cn.edu.nju.charlesfeng.model.User;
+import cn.edu.nju.charlesfeng.util.exceptions.UserNotExistException;
 
 import java.util.List;
 
@@ -21,5 +24,20 @@ public interface StatisticsService {
      * @param user 要查看的会员／场馆
      * @return 会员本人的订单数量对比／场馆的订单数量对比
      */
-    List<SingleOrderNumOfOneState> checkOrders(User user);
+    List<OrderNumOfOneState> checkOrders(User user);
+
+    /**
+     * @return 【经理】各会员等级与其数量对比
+     */
+    List<NumOfOneMemberLevel> checkMemberLevels() throws UserNotExistException;
+
+    /**
+     * @return 【经理】所有订单类型的数量对比
+     */
+    List<OrderNumOfOneState> checkMemberOrders();
+
+    /**
+     * @return 【经理】所有场馆的收入情况
+     */
+    List<IncomeOfOneSpot> checkSpotsIncome() throws UserNotExistException;
 }

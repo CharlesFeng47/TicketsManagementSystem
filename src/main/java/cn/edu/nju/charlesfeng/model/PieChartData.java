@@ -1,14 +1,12 @@
 package cn.edu.nju.charlesfeng.model;
 
-import cn.edu.nju.charlesfeng.util.enums.OrderState;
-
 /**
- * 一种订单类型的订单数量
+ * 前端使用的PieChart的data
  */
-public class SingleOrderNumOfOneState {
+public class PieChartData {
 
     /**
-     * 类型名称
+     * 名称
      */
     private String name;
 
@@ -17,12 +15,12 @@ public class SingleOrderNumOfOneState {
      */
     private int value;
 
-    public SingleOrderNumOfOneState(OrderState orderState, int num) {
-        this.name = orderState.toString();
-        this.value = num;
+    public PieChartData() {
     }
 
-    public SingleOrderNumOfOneState() {
+    PieChartData(String name, int value) {
+        this.name = name;
+        this.value = value;
     }
 
     public String getName() {

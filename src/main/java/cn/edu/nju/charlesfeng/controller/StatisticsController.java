@@ -1,12 +1,11 @@
 package cn.edu.nju.charlesfeng.controller;
 
 import cn.edu.nju.charlesfeng.entity.Consumption;
-import cn.edu.nju.charlesfeng.model.ContentConsumption;
-import cn.edu.nju.charlesfeng.model.RequestReturnObject;
-import cn.edu.nju.charlesfeng.model.SingleOrderNumOfOneState;
-import cn.edu.nju.charlesfeng.model.User;
+import cn.edu.nju.charlesfeng.entity.Manager;
+import cn.edu.nju.charlesfeng.model.*;
 import cn.edu.nju.charlesfeng.service.StatisticsService;
 import cn.edu.nju.charlesfeng.util.enums.RequestReturnObjectState;
+import cn.edu.nju.charlesfeng.util.exceptions.UserNotExistException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,6 +34,9 @@ public class StatisticsController {
         this.statisticsService = statisticsService;
     }
 
+    /**
+     * 统计消费情况
+     */
     @PostMapping("consumption")
     public RequestReturnObject getConsumption(@RequestParam("token") String token, HttpServletRequest request) {
         logger.debug("INTO /statistics/consumption");
@@ -46,16 +48,73 @@ public class StatisticsController {
         return new RequestReturnObject(RequestReturnObjectState.OK, convertToContentConsumption(result));
     }
 
+    /**
+     * 统计订单情况
+     */
     @PostMapping("orders")
-    public RequestReturnObject getOrderStatistics(@RequestParam("token") String token, HttpServletRequest request) {
+    public RequestReturnObject getOrdersStatistics(@RequestParam("token") String token, HttpServletRequest request) {
         logger.debug("INTO /statistics/orders");
 
         HttpSession session = request.getSession();
         User curUser = (User) session.getAttribute(token);
 
-        List<SingleOrderNumOfOneState> result = statisticsService.checkOrders(curUser);
+        List<OrderNumOfOneState> result = statisticsService.checkOrders(curUser);
         return new RequestReturnObject(RequestReturnObjectState.OK, result);
     }
+
+    /**
+     * 经理统计场馆情况
+     */
+    @PostMapping("spots")
+    public RequestReturnObject getSpotsStatistics(@RequestParam("token") String token, HttpServletRequest request) {
+        logger.debug("INTO /statistics/spots");
+
+        HttpSession session = request.getSession();
+        Object curUser = session.getAttribute(token);
+        assert curUser != null && curUser instanceof Manager;
+
+        try {
+            List<IncomeOfOneSpot> result = statisticsService.checkSpotsIncome();
+            return new RequestReturnObject(RequestReturnObjectState.OK, result);
+        } catch (UserNotExistException e) {
+            return new RequestReturnObject(RequestReturnObjectState.INTERIOR_WRONG);
+        }
+    }
+
+    /**
+     * 经理统计会员等级情况
+     */
+    @PostMapping("member_level")
+    public RequestReturnObject getMemberLevelStatistics(@RequestParam("token") String token, HttpServletRequest request) {
+        logger.debug("INTO /statistics/members_level");
+
+        HttpSession session = request.getSession();
+        Object curUser = session.getAttribute(token);
+        assert curUser != null && curUser instanceof Manager;
+
+        try {
+            List<NumOfOneMemberLevel> result = statisticsService.checkMemberLevels();
+            return new RequestReturnObject(RequestReturnObjectState.OK, result);
+        } catch (UserNotExistException e) {
+            return new RequestReturnObject(RequestReturnObjectState.INTERIOR_WRONG);
+        }
+    }
+
+    /**
+     * 经理统计会员订单情况
+     */
+    @PostMapping("member_order")
+    public RequestReturnObject getMemberOrderStatistics(@RequestParam("token") String token, HttpServletRequest request) {
+        logger.debug("INTO /statistics/members_level");
+
+        HttpSession session = request.getSession();
+        Object curUser = session.getAttribute(token);
+        assert curUser != null && curUser instanceof Manager;
+
+        List<OrderNumOfOneState> result = statisticsService.checkMemberOrders();
+        return new RequestReturnObject(RequestReturnObjectState.OK, result);
+    }
+
 
     private List<ContentConsumption> convertToContentConsumption(List<Consumption> consumptions) {
         List<ContentConsumption> result = new LinkedList<>();
