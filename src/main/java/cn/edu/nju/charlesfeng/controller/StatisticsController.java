@@ -3,6 +3,7 @@ package cn.edu.nju.charlesfeng.controller;
 import cn.edu.nju.charlesfeng.entity.Consumption;
 import cn.edu.nju.charlesfeng.model.ContentConsumption;
 import cn.edu.nju.charlesfeng.model.RequestReturnObject;
+import cn.edu.nju.charlesfeng.model.SingleOrderNumOfOneState;
 import cn.edu.nju.charlesfeng.model.User;
 import cn.edu.nju.charlesfeng.service.StatisticsService;
 import cn.edu.nju.charlesfeng.util.enums.RequestReturnObjectState;
@@ -43,6 +44,17 @@ public class StatisticsController {
 
         List<Consumption> result = statisticsService.checkConsumption(curUser);
         return new RequestReturnObject(RequestReturnObjectState.OK, convertToContentConsumption(result));
+    }
+
+    @PostMapping("orders")
+    public RequestReturnObject getOrderStatistics(@RequestParam("token") String token, HttpServletRequest request) {
+        logger.debug("INTO /statistics/orders");
+
+        HttpSession session = request.getSession();
+        User curUser = (User) session.getAttribute(token);
+
+        List<SingleOrderNumOfOneState> result = statisticsService.checkOrders(curUser);
+        return new RequestReturnObject(RequestReturnObjectState.OK, result);
     }
 
     private List<ContentConsumption> convertToContentConsumption(List<Consumption> consumptions) {
