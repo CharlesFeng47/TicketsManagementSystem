@@ -26,9 +26,9 @@ public class ScheduleTask {
     }
 
     /**
-     * 到达开始时间的计划自动置为已完成
+     * 每小时检查一次，到达开始时间的计划自动置为已完成
      */
-    @Scheduled(cron = "0 25 17 * * ?")
+    @Scheduled(cron = "0 35 * * * ?")
     public void ScheduleAutoComplete() {
         logger.info("ScheduleAutoComplete Task 开始工作");
 
