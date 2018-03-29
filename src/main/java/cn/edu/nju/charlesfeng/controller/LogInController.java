@@ -129,7 +129,11 @@ public class LogInController {
     public RequestReturnObject getToken(@RequestParam("token") String token, HttpServletRequest request) {
         logger.debug("INTO /login/info: " + token);
         HttpSession session = request.getSession();
-        User curUser = (User) session.getAttribute(token);
+//        User curUser = (User) session.getAttribute(token);
+
+        Object o = session.getAttribute(token);
+        assert o != null && o instanceof User;
+        User curUser = (User) o;
 
         UserType curUserType = UserType.valueOf(token.split(":")[0]);
         ContentUser contentUser = new ContentUser(curUser, curUserType);

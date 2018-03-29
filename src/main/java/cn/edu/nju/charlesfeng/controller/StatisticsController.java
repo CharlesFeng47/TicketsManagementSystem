@@ -42,7 +42,11 @@ public class StatisticsController {
         logger.debug("INTO /statistics/consumption");
 
         HttpSession session = request.getSession();
-        User curUser = (User) session.getAttribute(token);
+//        User curUser = (User) session.getAttribute(token);
+        Object o = session.getAttribute(token);
+        assert o != null && o instanceof User;
+        User curUser = (User) o;
+
 
         List<Consumption> result = statisticsService.checkConsumption(curUser);
         return new RequestReturnObject(RequestReturnObjectState.OK, convertToContentConsumption(result));
@@ -56,7 +60,10 @@ public class StatisticsController {
         logger.debug("INTO /statistics/orders");
 
         HttpSession session = request.getSession();
-        User curUser = (User) session.getAttribute(token);
+//        User curUser = (User) session.getAttribute(token);
+        Object o = session.getAttribute(token);
+        assert o != null && o instanceof User;
+        User curUser = (User) o;
 
         List<OrderNumOfOneState> result = statisticsService.checkOrders(curUser);
         return new RequestReturnObject(RequestReturnObjectState.OK, result);

@@ -48,7 +48,11 @@ public class UserController {
     public RequestReturnObject getToken(@RequestParam("token") String token, HttpServletRequest request) {
         logger.debug("INTO /user: " + token);
         HttpSession session = request.getSession();
-        User curUser = (User) session.getAttribute(token);
+//        User curUser = (User) session.getAttribute(token);
+        Object o = session.getAttribute(token);
+        assert o != null && o instanceof User;
+        User curUser = (User) o;
+
         return new RequestReturnObject(RequestReturnObjectState.OK, curUser);
     }
 
@@ -63,8 +67,10 @@ public class UserController {
         logger.debug("INTO /user/member_modify");
 
         HttpSession session = request.getSession();
-        Member curMember = (Member) session.getAttribute(token);
-        assert curMember != null;
+//        Member curMember = (Member) session.getAttribute(token);
+        Object o = session.getAttribute(token);
+        assert o != null && o instanceof Member;
+        Member curMember = (Member) o;
 
         try {
             boolean result = userService.modifyMember(curMember, pwd);
@@ -92,8 +98,11 @@ public class UserController {
                                           HttpServletRequest request) {
         logger.debug("INTO /user/spot_modify");
         HttpSession session = request.getSession();
-        Spot curSpot = (Spot) session.getAttribute(token);
-        assert curSpot != null;
+//        Spot curSpot = (Spot) session.getAttribute(token);
+        Object o = session.getAttribute(token);
+        assert o != null && o instanceof Spot;
+        Spot curSpot = (Spot) o;
+
 
         List<SeatInfo> seatInfos = JSON.parseArray(seatInfosJson, SeatInfo.class);
         try {
@@ -121,13 +130,13 @@ public class UserController {
                                              @RequestParam("offPrice") double offPrice, @RequestParam("neededCredit") double neededCredit,
                                              HttpServletRequest request) {
         logger.debug("INTO /user/coupon_convert");
-        System.out.println(token);
-        System.out.println(description);
-        System.out.println(offPrice);
-        System.out.println(neededCredit);
 
         HttpSession session = request.getSession();
-        Member curMember = (Member) session.getAttribute(token);
+//        Member curMember = (Member) session.getAttribute(token);
+        Object o = session.getAttribute(token);
+        assert o != null && o instanceof Member;
+        Member curMember = (Member) o;
+
         try {
             Member convertedMember = userService.memberConvertCoupon(curMember, new Coupon(offPrice, neededCredit, description));
             // 更新session中的会员实体
@@ -144,7 +153,6 @@ public class UserController {
     @PostMapping("spot_get_member_info")
     public RequestReturnObject spotGetMemberInfo(@RequestParam("mid") String mid, HttpServletRequest request) {
         logger.debug("INTO /user/spot_get_member_info");
-        System.out.println(mid);
 
         try {
             ContentMemberOfSpot result = userService.getMemberOfSpot(mid);
@@ -162,7 +170,10 @@ public class UserController {
         logger.debug("INTO /user/member_invalidate");
 
         HttpSession session = request.getSession();
-        Member curMember = (Member) session.getAttribute(token);
+//        Member curMember = (Member) session.getAttribute(token);
+        Object o = session.getAttribute(token);
+        assert o != null && o instanceof Member;
+        Member curMember = (Member) o;
 
         boolean result = userService.invalidate(curMember);
         if (result) {
@@ -183,8 +194,9 @@ public class UserController {
         logger.debug("INTO /user/unexamined_spots");
 
         HttpSession session = request.getSession();
-        Manager curManager = (Manager) session.getAttribute(token);
-        assert curManager != null;
+//        Manager curManager = (Manager) session.getAttribute(token);
+        Object o = session.getAttribute(token);
+        assert o != null && o instanceof Manager;
 
         try {
             List<UnexaminedSpot> result = userService.getAllUnexaminedSpots();
@@ -203,8 +215,9 @@ public class UserController {
         logger.debug("INTO /user/spot");
 
         HttpSession session = request.getSession();
-        Manager curManager = (Manager) session.getAttribute(token);
-        assert curManager != null;
+//        Manager curManager = (Manager) session.getAttribute(token);
+        Object o = session.getAttribute(token);
+        assert o != null && o instanceof Manager;
 
         try {
             Spot curSpot = (Spot) userService.getUser(spotId, UserType.SPOT);
@@ -223,8 +236,9 @@ public class UserController {
         logger.debug("INTO /user/examine");
 
         HttpSession session = request.getSession();
-        Manager curManager = (Manager) session.getAttribute(token);
-        assert curManager != null;
+//        Manager curManager = (Manager) session.getAttribute(token);
+        Object o = session.getAttribute(token);
+        assert o != null && o instanceof Manager;
 
         try {
             userService.examineSpot(spotId);

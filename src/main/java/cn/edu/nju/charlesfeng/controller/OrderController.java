@@ -59,8 +59,10 @@ public class OrderController {
                                      HttpServletRequest request) {
         logger.debug("INTO /order/save");
         HttpSession session = request.getSession();
-        User curUser = (User) session.getAttribute(token);
-
+//        User curUser = (User) session.getAttribute(token);
+        Object o = session.getAttribute(token);
+        assert o != null && o instanceof User;
+        User curUser = (User) o;
         try {
             int orderId = orderService.subscribe(curUser, scheduleId, orderType, notChoseSeats, choseSeatListJson,
                     orderWay, onSpotIsMember, onSpotMemberId, didUseCoupon, usedCoupon, calProcess, totalPrice);
@@ -104,7 +106,11 @@ public class OrderController {
                                         HttpServletRequest request) {
         logger.debug("INTO /order/pay");
         HttpSession session = request.getSession();
-        Member curMember = (Member) session.getAttribute(token);
+//        Member curMember = (Member) session.getAttribute(token);
+        Object o = session.getAttribute(token);
+        assert o != null && o instanceof Member;
+        Member curMember = (Member) o;
+
         try {
             orderService.payOrder(curMember, oid, id, pwd);
             return new RequestReturnObject(RequestReturnObjectState.OK);
@@ -123,7 +129,11 @@ public class OrderController {
                                                 @RequestParam("payment_id") String id, HttpServletRequest request) {
         logger.debug("INTO /order/unsubscribe");
         HttpSession session = request.getSession();
-        Member curMember = (Member) session.getAttribute(token);
+//        Member curMember = (Member) session.getAttribute(token);
+        Object o = session.getAttribute(token);
+        assert o != null && o instanceof Member;
+        Member curMember = (Member) o;
+
         try {
             orderService.unsubscribe(curMember, oid, id);
             return new RequestReturnObject(RequestReturnObjectState.OK);
@@ -148,8 +158,9 @@ public class OrderController {
         System.out.println(oid);
 
         HttpSession session = request.getSession();
-        Spot curSpot = (Spot) session.getAttribute(token);
-        assert curSpot != null;
+//        Spot curSpot = (Spot) session.getAttribute(token);
+        Object o = session.getAttribute(token);
+        assert o != null && o instanceof Spot;
 
         try {
             orderService.checkTicket(getOidInteger(oid));

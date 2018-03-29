@@ -102,8 +102,9 @@ public class ScheduleController {
         logger.debug("INTO /schedule/settle: " + scheduleId);
 
         HttpSession session = request.getSession();
-        Manager manager = (Manager) session.getAttribute(token);
-        assert manager != null;
+//        Manager manager = (Manager) session.getAttribute(token);
+        Object o = session.getAttribute(token);
+        assert o != null && o instanceof Manager;
 
         try {
             boolean result = scheduleService.settleOneSchedule(scheduleId);
@@ -125,7 +126,10 @@ public class ScheduleController {
                                                HttpServletRequest request) throws SpotSeatDisorderException {
         logger.debug("INTO /schedule/save");
         HttpSession session = request.getSession();
-        Spot curSpot = (Spot) session.getAttribute(token);
+//        Spot curSpot = (Spot) session.getAttribute(token);
+        Object o = session.getAttribute(token);
+        assert o != null && o instanceof Spot;
+        Spot curSpot = (Spot) o;
 
         // 时间相关的处理
         LocalDateTime dateTime = convertDateTime(dateString, timeString);
@@ -147,7 +151,10 @@ public class ScheduleController {
                                                  @RequestParam("priceListStr") String priceListJson, HttpServletRequest request) throws SpotSeatDisorderException {
         logger.debug("INTO /schedule/modify");
         HttpSession session = request.getSession();
-        Spot curSpot = (Spot) session.getAttribute(token);
+//        Spot curSpot = (Spot) session.getAttribute(token);
+        Object o = session.getAttribute(token);
+        assert o != null && o instanceof Spot;
+        Spot curSpot = (Spot) o;
 
         // 时间相关的处理
         LocalDateTime dateTime = convertDateTime(dateString, timeString);
