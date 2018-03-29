@@ -161,9 +161,10 @@ public class OrderController {
 //        Spot curSpot = (Spot) session.getAttribute(token);
         Object o = session.getAttribute(token);
         assert o != null && o instanceof Spot;
+        Spot curSpot = (Spot) o;
 
         try {
-            orderService.checkTicket(getOidInteger(oid));
+            orderService.checkTicket(curSpot, getOidInteger(oid));
             return new RequestReturnObject(RequestReturnObjectState.OK);
         } catch (TicketHasBeenCheckedException e) {
             return new RequestReturnObject(RequestReturnObjectState.TICKET_HAS_BEEN_CHECKED);
@@ -171,6 +172,8 @@ public class OrderController {
             return new RequestReturnObject(RequestReturnObjectState.TICKET_STATE_WRONG);
         } catch (OrderNotExistException e) {
             return new RequestReturnObject(RequestReturnObjectState.TICKET_NOT_EXIST);
+        } catch (TicketCheckerWrongException e) {
+            return new RequestReturnObject(RequestReturnObjectState.TICKET_CHECKER_WRONG);
         }
     }
 

@@ -149,9 +149,10 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public boolean checkTicket(int oid) throws TicketHasBeenCheckedException, TicketStateWrongException, OrderNotExistException {
+    public boolean checkTicket(Spot spot, int oid) throws TicketHasBeenCheckedException, TicketStateWrongException, OrderNotExistException, TicketCheckerWrongException {
         Order toCheck = orderDao.getOrder(oid);
         if (toCheck == null) throw new OrderNotExistException();
+        if (!toCheck.getSchedule().getSpot().getId().equals(spot.getId())) throw new TicketCheckerWrongException();
 
         final OrderState curState = toCheck.getOrderState();
 

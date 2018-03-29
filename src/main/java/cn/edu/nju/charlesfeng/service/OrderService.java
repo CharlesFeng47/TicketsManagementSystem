@@ -1,9 +1,6 @@
 package cn.edu.nju.charlesfeng.service;
 
-import cn.edu.nju.charlesfeng.entity.Coupon;
-import cn.edu.nju.charlesfeng.entity.Member;
-import cn.edu.nju.charlesfeng.entity.NotChoseSeats;
-import cn.edu.nju.charlesfeng.entity.Order;
+import cn.edu.nju.charlesfeng.entity.*;
 import cn.edu.nju.charlesfeng.model.User;
 import cn.edu.nju.charlesfeng.util.enums.OrderType;
 import cn.edu.nju.charlesfeng.util.enums.OrderWay;
@@ -47,10 +44,11 @@ public interface OrderService {
     boolean payOrder(Member member, int oid, String paymentId, String paymentPwd) throws AlipayWrongPwdException, AlipayBalanceNotAdequateException;
 
     /**
+     * @param spot 检票登记的主动方场馆
      * @param oid 检票登记的订单号
      * @return 检票结果，成功则true
      */
-    boolean checkTicket(int oid) throws TicketHasBeenCheckedException, TicketStateWrongException, OrderNotExistException;
+    boolean checkTicket(Spot spot, int oid) throws TicketHasBeenCheckedException, TicketStateWrongException, OrderNotExistException, TicketCheckerWrongException;
 
     /**
      * @param mid 查看订单的会员
