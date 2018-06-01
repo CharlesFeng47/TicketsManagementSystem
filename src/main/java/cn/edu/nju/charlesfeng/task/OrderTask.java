@@ -103,7 +103,7 @@ public class OrderTask {
     }
 
     /**
-     * 每5分钟，对已支付但没有配票的订单进行配票
+     * 每3分钟，对已支付但没有配票的订单进行配票
      */
     @Scheduled(cron = "0 0/3 * * * ?")
     public void distributeTicket() {

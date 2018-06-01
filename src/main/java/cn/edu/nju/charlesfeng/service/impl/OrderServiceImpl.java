@@ -109,6 +109,9 @@ public class OrderServiceImpl implements OrderService {
                 order.setMember(buyer);
                 order = updateCouponOfBuyer(didUseCoupon, buyer, usedCoupon, order);
             }
+
+            // 现场购买不需要网上付款，直接已支付
+            order.setOrderState(OrderState.PAYED);
         } else {
             throw new InteriorWrongException();
         }
