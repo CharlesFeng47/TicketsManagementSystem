@@ -1,10 +1,10 @@
 package cn.edu.nju.charlesfeng.service;
 
-import cn.edu.nju.charlesfeng.entity.Consumption;
-import cn.edu.nju.charlesfeng.model.IncomeOfOneSpot;
-import cn.edu.nju.charlesfeng.model.NumOfOneMemberLevel;
-import cn.edu.nju.charlesfeng.model.OrderNumOfOneState;
-import cn.edu.nju.charlesfeng.model.User;
+import cn.edu.nju.charlesfeng.model.Consumption;
+import cn.edu.nju.charlesfeng.filter.IncomeOfOneSpot;
+import cn.edu.nju.charlesfeng.filter.NumOfOneMemberLevel;
+import cn.edu.nju.charlesfeng.filter.OrderNumOfOneState;
+import cn.edu.nju.charlesfeng.filter.User;
 import cn.edu.nju.charlesfeng.util.exceptions.UserNotExistException;
 
 import java.util.List;

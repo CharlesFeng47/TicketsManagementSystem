@@ -1,6 +1,6 @@
 package cn.edu.nju.charlesfeng.dao;
 
-import cn.edu.nju.charlesfeng.entity.Schedule;
+import cn.edu.nju.charlesfeng.model.Schedule;
 
 import java.util.List;
 

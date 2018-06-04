@@ -1,4 +1,4 @@
-package cn.edu.nju.charlesfeng.model;
+package cn.edu.nju.charlesfeng.filter;
 
 /**
  * 前端使用的PieChart的data

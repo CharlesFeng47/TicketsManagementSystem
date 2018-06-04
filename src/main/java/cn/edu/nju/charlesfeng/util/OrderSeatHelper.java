@@ -1,8 +1,8 @@
 package cn.edu.nju.charlesfeng.util;
 
-import cn.edu.nju.charlesfeng.entity.Order;
-import cn.edu.nju.charlesfeng.entity.Schedule;
-import cn.edu.nju.charlesfeng.model.Seat;
+import cn.edu.nju.charlesfeng.model.Order;
+import cn.edu.nju.charlesfeng.model.Schedule;
+import cn.edu.nju.charlesfeng.filter.Seat;
 import com.alibaba.fastjson.JSON;
 
 import java.util.LinkedList;

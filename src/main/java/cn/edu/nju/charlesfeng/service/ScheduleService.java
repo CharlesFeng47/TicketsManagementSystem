@@ -1,7 +1,7 @@
 package cn.edu.nju.charlesfeng.service;
 
-import cn.edu.nju.charlesfeng.entity.Schedule;
-import cn.edu.nju.charlesfeng.entity.Spot;
+import cn.edu.nju.charlesfeng.model.Schedule;
+import cn.edu.nju.charlesfeng.model.Spot;
 import cn.edu.nju.charlesfeng.util.enums.ScheduleItemType;
 import cn.edu.nju.charlesfeng.util.exceptions.ScheduleNotSettlableException;
 

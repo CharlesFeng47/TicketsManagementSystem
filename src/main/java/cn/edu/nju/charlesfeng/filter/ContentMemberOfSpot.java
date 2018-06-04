@@ -1,7 +1,7 @@
-package cn.edu.nju.charlesfeng.model;
+package cn.edu.nju.charlesfeng.filter;
 
-import cn.edu.nju.charlesfeng.entity.Coupon;
-import cn.edu.nju.charlesfeng.entity.Member;
+import cn.edu.nju.charlesfeng.model.Coupon;
+import cn.edu.nju.charlesfeng.model.Member;
 
 import java.util.List;
 

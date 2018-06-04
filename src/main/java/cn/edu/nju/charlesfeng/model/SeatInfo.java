@@ -1,4 +1,4 @@
-package cn.edu.nju.charlesfeng.entity;
+package cn.edu.nju.charlesfeng.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

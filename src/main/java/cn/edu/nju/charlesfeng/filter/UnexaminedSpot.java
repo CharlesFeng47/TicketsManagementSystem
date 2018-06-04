@@ -1,6 +1,6 @@
-package cn.edu.nju.charlesfeng.model;
+package cn.edu.nju.charlesfeng.filter;
 
-import cn.edu.nju.charlesfeng.entity.Spot;
+import cn.edu.nju.charlesfeng.model.Spot;
 
 /**
  * 未经审批的场馆申请

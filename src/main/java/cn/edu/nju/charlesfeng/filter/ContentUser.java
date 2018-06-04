@@ -1,7 +1,7 @@
-package cn.edu.nju.charlesfeng.model;
+package cn.edu.nju.charlesfeng.filter;
 
-import cn.edu.nju.charlesfeng.entity.Member;
-import cn.edu.nju.charlesfeng.entity.Spot;
+import cn.edu.nju.charlesfeng.model.Member;
+import cn.edu.nju.charlesfeng.model.Spot;
 import cn.edu.nju.charlesfeng.util.enums.UserType;
 
 /**

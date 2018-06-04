@@ -1,6 +1,6 @@
-package cn.edu.nju.charlesfeng.entity;
+package cn.edu.nju.charlesfeng.model;
 
-import cn.edu.nju.charlesfeng.model.User;
+import cn.edu.nju.charlesfeng.filter.User;
 
 import javax.persistence.*;
 import java.io.Serializable;

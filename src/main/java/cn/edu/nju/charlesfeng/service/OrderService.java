@@ -1,7 +1,7 @@
 package cn.edu.nju.charlesfeng.service;
 
-import cn.edu.nju.charlesfeng.entity.*;
-import cn.edu.nju.charlesfeng.model.User;
+import cn.edu.nju.charlesfeng.model.*;
+import cn.edu.nju.charlesfeng.filter.User;
 import cn.edu.nju.charlesfeng.util.enums.OrderType;
 import cn.edu.nju.charlesfeng.util.enums.OrderWay;
 import cn.edu.nju.charlesfeng.util.exceptions.*;

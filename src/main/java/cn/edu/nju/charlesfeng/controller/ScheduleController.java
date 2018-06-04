@@ -1,12 +1,12 @@
 package cn.edu.nju.charlesfeng.controller;
 
-import cn.edu.nju.charlesfeng.entity.Manager;
-import cn.edu.nju.charlesfeng.entity.Schedule;
-import cn.edu.nju.charlesfeng.entity.SeatInfo;
-import cn.edu.nju.charlesfeng.entity.Spot;
-import cn.edu.nju.charlesfeng.model.ContentSchedule;
-import cn.edu.nju.charlesfeng.model.ContentScheduleBrief;
-import cn.edu.nju.charlesfeng.model.RequestReturnObject;
+import cn.edu.nju.charlesfeng.model.Manager;
+import cn.edu.nju.charlesfeng.model.Schedule;
+import cn.edu.nju.charlesfeng.model.SeatInfo;
+import cn.edu.nju.charlesfeng.model.Spot;
+import cn.edu.nju.charlesfeng.filter.ContentSchedule;
+import cn.edu.nju.charlesfeng.filter.ContentScheduleBrief;
+import cn.edu.nju.charlesfeng.filter.RequestReturnObject;
 import cn.edu.nju.charlesfeng.service.ScheduleService;
 import cn.edu.nju.charlesfeng.util.enums.RequestReturnObjectState;
 import cn.edu.nju.charlesfeng.util.enums.ScheduleItemType;

@@ -1,6 +1,6 @@
-package cn.edu.nju.charlesfeng.model;
+package cn.edu.nju.charlesfeng.filter;
 
-import cn.edu.nju.charlesfeng.entity.Consumption;
+import cn.edu.nju.charlesfeng.model.Consumption;
 
 /**
  * 前端展示的消费记录

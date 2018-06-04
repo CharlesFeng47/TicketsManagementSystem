@@ -1,6 +1,6 @@
 package cn.edu.nju.charlesfeng.service.impl;
 
-import cn.edu.nju.charlesfeng.entity.Member;
+import cn.edu.nju.charlesfeng.model.Member;
 import cn.edu.nju.charlesfeng.service.MailService;
 import io.github.biezhi.ome.OhMyEmail;
 import org.springframework.stereotype.Service;

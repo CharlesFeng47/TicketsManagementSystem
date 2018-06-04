@@ -2,9 +2,9 @@ package cn.edu.nju.charlesfeng.service.impl;
 
 import cn.edu.nju.charlesfeng.dao.AlipayDao;
 import cn.edu.nju.charlesfeng.dao.ScheduleDao;
-import cn.edu.nju.charlesfeng.entity.AlipayEntity;
-import cn.edu.nju.charlesfeng.entity.Schedule;
-import cn.edu.nju.charlesfeng.entity.Spot;
+import cn.edu.nju.charlesfeng.model.AlipayAccount;
+import cn.edu.nju.charlesfeng.model.Schedule;
+import cn.edu.nju.charlesfeng.model.Spot;
 import cn.edu.nju.charlesfeng.service.ScheduleService;
 import cn.edu.nju.charlesfeng.util.enums.ScheduleItemType;
 import cn.edu.nju.charlesfeng.util.enums.ScheduleState;
@@ -121,9 +121,9 @@ public class ScheduleServiceImpl implements ScheduleService {
 
             // 计划中会员支付的金额被结算
             Spot settledSpot = toSettle.getSpot();
-            AlipayEntity alipayEntity = alipayDao.getAlipayEntity(settledSpot.getAlipayId());
-            alipayEntity.setBalance(alipayEntity.getBalance() + toSettle.getBalance() * settlePercent);
-            alipayDao.update(alipayEntity);
+            AlipayAccount alipayAccount = alipayDao.getAlipayEntity(settledSpot.getAlipayId());
+            alipayAccount.setBalance(alipayAccount.getBalance() + toSettle.getBalance() * settlePercent);
+            alipayDao.update(alipayAccount);
         } else throw new ScheduleNotSettlableException();
         return scheduleDao.updateSchedule(toSettle);
     }

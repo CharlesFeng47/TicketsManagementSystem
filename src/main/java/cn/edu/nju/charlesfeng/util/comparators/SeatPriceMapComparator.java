@@ -1,6 +1,6 @@
 package cn.edu.nju.charlesfeng.util.comparators;
 
-import cn.edu.nju.charlesfeng.entity.SeatInfo;
+import cn.edu.nju.charlesfeng.model.SeatInfo;
 
 import java.util.Comparator;
 import java.util.Map;

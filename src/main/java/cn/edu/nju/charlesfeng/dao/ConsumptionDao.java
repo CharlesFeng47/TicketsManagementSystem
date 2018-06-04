@@ -1,6 +1,6 @@
 package cn.edu.nju.charlesfeng.dao;
 
-import cn.edu.nju.charlesfeng.entity.Consumption;
+import cn.edu.nju.charlesfeng.model.Consumption;
 
 import java.util.List;
 

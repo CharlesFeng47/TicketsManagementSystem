@@ -1,4 +1,4 @@
-package cn.edu.nju.charlesfeng.entity;
+package cn.edu.nju.charlesfeng.model;
 
 import cn.edu.nju.charlesfeng.util.enums.ScheduleItemType;
 import cn.edu.nju.charlesfeng.util.enums.ScheduleState;

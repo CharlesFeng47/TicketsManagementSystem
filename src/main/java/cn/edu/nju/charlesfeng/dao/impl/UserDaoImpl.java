@@ -2,10 +2,10 @@ package cn.edu.nju.charlesfeng.dao.impl;
 
 import cn.edu.nju.charlesfeng.dao.BaseDao;
 import cn.edu.nju.charlesfeng.dao.UserDao;
-import cn.edu.nju.charlesfeng.entity.Manager;
-import cn.edu.nju.charlesfeng.entity.Member;
-import cn.edu.nju.charlesfeng.entity.Spot;
-import cn.edu.nju.charlesfeng.model.User;
+import cn.edu.nju.charlesfeng.model.Manager;
+import cn.edu.nju.charlesfeng.model.Member;
+import cn.edu.nju.charlesfeng.model.Spot;
+import cn.edu.nju.charlesfeng.filter.User;
 import cn.edu.nju.charlesfeng.util.enums.UserType;
 import cn.edu.nju.charlesfeng.util.exceptions.UserNotExistException;
 import org.springframework.beans.factory.annotation.Autowired;

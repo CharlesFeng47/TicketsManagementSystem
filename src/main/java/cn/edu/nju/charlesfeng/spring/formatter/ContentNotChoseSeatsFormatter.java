@@ -1,6 +1,6 @@
 package cn.edu.nju.charlesfeng.spring.formatter;
 
-import cn.edu.nju.charlesfeng.entity.NotChoseSeats;
+import cn.edu.nju.charlesfeng.model.NotChoseSeats;
 import com.alibaba.fastjson.JSON;
 import org.springframework.format.Formatter;
 

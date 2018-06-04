@@ -1,6 +1,6 @@
-package cn.edu.nju.charlesfeng.model;
+package cn.edu.nju.charlesfeng.filter;
 
-import cn.edu.nju.charlesfeng.entity.NotChoseSeats;
+import cn.edu.nju.charlesfeng.model.NotChoseSeats;
 
 /**
  * 不选座购票时的座位类型信息，供前端使用。（移除Order，避免JSON转换）

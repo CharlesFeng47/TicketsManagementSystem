@@ -1,4 +1,4 @@
-package cn.edu.nju.charlesfeng.model;
+package cn.edu.nju.charlesfeng.filter;
 
 /**
  * 单个场馆的收入统计

@@ -1,6 +1,6 @@
 package cn.edu.nju.charlesfeng.spring.formatter;
 
-import cn.edu.nju.charlesfeng.entity.Coupon;
+import cn.edu.nju.charlesfeng.model.Coupon;
 import com.alibaba.fastjson.JSON;
 import org.springframework.format.Formatter;
 

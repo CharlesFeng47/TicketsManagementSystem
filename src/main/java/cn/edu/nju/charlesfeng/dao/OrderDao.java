@@ -1,6 +1,6 @@
 package cn.edu.nju.charlesfeng.dao;
 
-import cn.edu.nju.charlesfeng.entity.Order;
+import cn.edu.nju.charlesfeng.model.Order;
 
 import java.util.List;
 

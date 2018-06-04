@@ -1,7 +1,7 @@
-package cn.edu.nju.charlesfeng.model;
+package cn.edu.nju.charlesfeng.filter;
 
-import cn.edu.nju.charlesfeng.entity.Schedule;
-import cn.edu.nju.charlesfeng.entity.SeatInfo;
+import cn.edu.nju.charlesfeng.model.Schedule;
+import cn.edu.nju.charlesfeng.model.SeatInfo;
 import cn.edu.nju.charlesfeng.util.comparators.SeatPriceMapComparator;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;

@@ -1,9 +1,9 @@
 package cn.edu.nju.charlesfeng.service.impl;
 
 import cn.edu.nju.charlesfeng.dao.*;
-import cn.edu.nju.charlesfeng.entity.*;
-import cn.edu.nju.charlesfeng.model.Seat;
-import cn.edu.nju.charlesfeng.model.User;
+import cn.edu.nju.charlesfeng.model.*;
+import cn.edu.nju.charlesfeng.filter.Seat;
+import cn.edu.nju.charlesfeng.filter.User;
 import cn.edu.nju.charlesfeng.service.OrderService;
 import cn.edu.nju.charlesfeng.util.OrderSeatHelper;
 import cn.edu.nju.charlesfeng.util.enums.*;
@@ -121,20 +121,20 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public boolean payOrder(Member member, int oid, String paymentId, String paymentPwd) throws AlipayWrongPwdException, AlipayBalanceNotAdequateException {
-        AlipayEntity alipayEntity = alipayDao.getAlipayEntity(paymentId);
-        if (alipayEntity != null && alipayEntity.getPwd().equals(paymentPwd)) {
+        AlipayAccount alipayAccount = alipayDao.getAlipayEntity(paymentId);
+        if (alipayAccount != null && alipayAccount.getPwd().equals(paymentPwd)) {
             Order toPay = orderDao.getOrder(oid);
             final double payMoney = toPay.getTotalPrice();
 
             // 检查支付宝余额是否充足
-            final double remainBalance = alipayEntity.getBalance() - payMoney;
+            final double remainBalance = alipayAccount.getBalance() - payMoney;
             if (remainBalance < 0) {
                 throw new AlipayBalanceNotAdequateException();
             }
 
             // 会员支付宝减少余额
-            alipayEntity.setBalance(remainBalance);
-            alipayDao.update(alipayEntity);
+            alipayAccount.setBalance(remainBalance);
+            alipayDao.update(alipayAccount);
             // 场馆未结算部分余额增加，级联更新
             Schedule curSchedule = toPay.getSchedule();
             curSchedule.setBalance(curSchedule.getBalance() + payMoney);
@@ -209,7 +209,7 @@ public class OrderServiceImpl implements OrderService {
         // 可以退款
         toUnsubscribe.setOrderState(OrderState.REFUND);
 
-        AlipayEntity buyerAE = alipayDao.getAlipayEntity(paymentId);
+        AlipayAccount buyerAE = alipayDao.getAlipayEntity(paymentId);
         if (buyerAE == null) throw new AlipayEntityNotExistException();
 
         // 会员款项增加

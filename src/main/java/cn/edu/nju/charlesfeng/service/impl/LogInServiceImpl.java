@@ -2,11 +2,11 @@ package cn.edu.nju.charlesfeng.service.impl;
 
 import cn.edu.nju.charlesfeng.dao.AlipayDao;
 import cn.edu.nju.charlesfeng.dao.UserDao;
-import cn.edu.nju.charlesfeng.entity.AlipayEntity;
-import cn.edu.nju.charlesfeng.entity.Member;
-import cn.edu.nju.charlesfeng.entity.SeatInfo;
-import cn.edu.nju.charlesfeng.entity.Spot;
-import cn.edu.nju.charlesfeng.model.User;
+import cn.edu.nju.charlesfeng.model.AlipayAccount;
+import cn.edu.nju.charlesfeng.model.Member;
+import cn.edu.nju.charlesfeng.model.SeatInfo;
+import cn.edu.nju.charlesfeng.model.Spot;
+import cn.edu.nju.charlesfeng.filter.User;
 import cn.edu.nju.charlesfeng.service.LogInService;
 import cn.edu.nju.charlesfeng.service.MailService;
 import cn.edu.nju.charlesfeng.util.IdGenerator;
@@ -59,8 +59,8 @@ public class LogInServiceImpl implements LogInService {
     @Override
     public Spot registerSpot(String pwd, String spotName, String site, String alipayId,
                              List<SeatInfo> seatInfos, String seatsMapJson, int curSeatTypeCount) throws UserNotExistException, AlipayEntityNotExistException {
-        AlipayEntity alipayEntity = alipayDao.getAlipayEntity(alipayId);
-        if (alipayEntity == null) throw new AlipayEntityNotExistException();
+        AlipayAccount alipayAccount = alipayDao.getAlipayEntity(alipayId);
+        if (alipayAccount == null) throw new AlipayEntityNotExistException();
 
         String sidBase = IdGenerator.generateSeatId();
         for (int i = 0; i < seatInfos.size(); i++) {

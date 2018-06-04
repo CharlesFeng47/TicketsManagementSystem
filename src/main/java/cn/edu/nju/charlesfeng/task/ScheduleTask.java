@@ -1,7 +1,7 @@
 package cn.edu.nju.charlesfeng.task;
 
 import cn.edu.nju.charlesfeng.dao.ScheduleDao;
-import cn.edu.nju.charlesfeng.entity.Schedule;
+import cn.edu.nju.charlesfeng.model.Schedule;
 import cn.edu.nju.charlesfeng.util.enums.ScheduleState;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;

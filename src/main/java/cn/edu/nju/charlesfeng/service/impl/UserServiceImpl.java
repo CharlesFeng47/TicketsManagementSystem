@@ -2,10 +2,10 @@ package cn.edu.nju.charlesfeng.service.impl;
 
 import cn.edu.nju.charlesfeng.dao.AlipayDao;
 import cn.edu.nju.charlesfeng.dao.UserDao;
-import cn.edu.nju.charlesfeng.entity.*;
-import cn.edu.nju.charlesfeng.model.ContentMemberOfSpot;
-import cn.edu.nju.charlesfeng.model.UnexaminedSpot;
-import cn.edu.nju.charlesfeng.model.User;
+import cn.edu.nju.charlesfeng.model.*;
+import cn.edu.nju.charlesfeng.filter.ContentMemberOfSpot;
+import cn.edu.nju.charlesfeng.filter.UnexaminedSpot;
+import cn.edu.nju.charlesfeng.filter.User;
 import cn.edu.nju.charlesfeng.service.UserService;
 import cn.edu.nju.charlesfeng.util.enums.UserType;
 import cn.edu.nju.charlesfeng.util.exceptions.AlipayEntityNotExistException;
@@ -57,8 +57,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean modifySpot(Spot curSpot, String pwd, String spotName, String site, String alipayId,
                               List<SeatInfo> seatInfos, String seatsMapJson, int curSeatTypeCount) throws AlipayEntityNotExistException {
-        AlipayEntity alipayEntity = alipayDao.getAlipayEntity(alipayId);
-        if (alipayEntity == null) throw new AlipayEntityNotExistException();
+        AlipayAccount alipayAccount = alipayDao.getAlipayEntity(alipayId);
+        if (alipayAccount == null) throw new AlipayEntityNotExistException();
 
         // 修改场馆信息后之后需要经理审批
         curSpot.setExamined(false);

@@ -1,12 +1,12 @@
 package cn.edu.nju.charlesfeng.service;
 
-import cn.edu.nju.charlesfeng.entity.Coupon;
-import cn.edu.nju.charlesfeng.entity.Member;
-import cn.edu.nju.charlesfeng.entity.SeatInfo;
-import cn.edu.nju.charlesfeng.entity.Spot;
-import cn.edu.nju.charlesfeng.model.ContentMemberOfSpot;
-import cn.edu.nju.charlesfeng.model.UnexaminedSpot;
-import cn.edu.nju.charlesfeng.model.User;
+import cn.edu.nju.charlesfeng.model.Coupon;
+import cn.edu.nju.charlesfeng.model.Member;
+import cn.edu.nju.charlesfeng.model.SeatInfo;
+import cn.edu.nju.charlesfeng.model.Spot;
+import cn.edu.nju.charlesfeng.filter.ContentMemberOfSpot;
+import cn.edu.nju.charlesfeng.filter.UnexaminedSpot;
+import cn.edu.nju.charlesfeng.filter.User;
 import cn.edu.nju.charlesfeng.util.enums.UserType;
 import cn.edu.nju.charlesfeng.util.exceptions.AlipayEntityNotExistException;
 import cn.edu.nju.charlesfeng.util.exceptions.MemberActiveUrlExpiredException;

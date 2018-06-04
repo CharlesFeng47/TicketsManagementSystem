@@ -1,4 +1,4 @@
-package cn.edu.nju.charlesfeng.model;
+package cn.edu.nju.charlesfeng.filter;
 
 /**
  * 座位的标志符

@@ -2,7 +2,7 @@ package cn.edu.nju.charlesfeng.dao.impl;
 
 import cn.edu.nju.charlesfeng.dao.BaseDao;
 import cn.edu.nju.charlesfeng.dao.ConsumptionDao;
-import cn.edu.nju.charlesfeng.entity.Consumption;
+import cn.edu.nju.charlesfeng.model.Consumption;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 

@@ -1,48 +1,83 @@
 package cn.edu.nju.charlesfeng.model;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
+import org.hibernate.annotations.GenericGenerator;
 
-/**
- * 系统中的所有合法用户实体的抽象父类
- */
-@MappedSuperclass
-public abstract class User {
+import javax.persistence.*;
+import java.io.Serializable;
+
+@Entity
+@Table(name = "user")
+public class User implements Serializable {
 
     /**
-     * 用户ID
+     *  用户ID，邮箱
      */
     @Id
-    private String id;
+    @GenericGenerator(name = "myGenerator", strategy = "assigned")
+    @GeneratedValue(generator = "myGenerator")
+    private String email;
 
     /**
-     * 用户密码
+     * 用户登录密码
      */
     @Column(name = "pwd", nullable = false)
-    private String pwd;
+    private String password;
 
-    public User(String id, String pwd) {
-        this.id = id;
-        this.pwd = pwd;
+    /**
+     * 用户名
+     */
+    @Column(nullable = false)
+    private String name;
+
+    /**
+     * 头像
+     */
+    @Column(nullable = false)
+    private String portrait;
+
+    /**
+     * 是否激活
+     */
+    @Column(nullable = false, columnDefinition = "bit default 0")
+    private boolean activated;
+
+    public String getEmail() {
+        return email;
     }
 
-    protected User() {
+    public void setEmail(String email) {
+        this.email = email;
     }
 
-    public String getId() {
-        return id;
+    public String getPassword() {
+        return password;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
-    public String getPwd() {
-        return pwd;
+    public String getName() {
+        return name;
     }
 
-    public void setPwd(String pwd) {
-        this.pwd = pwd;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getPortrait() {
+        return portrait;
+    }
+
+    public void setPortrait(String portrait) {
+        this.portrait = portrait;
+    }
+
+    public boolean isActivated() {
+        return activated;
+    }
+
+    public void setActivated(boolean activated) {
+        this.activated = activated;
     }
 }

@@ -1,6 +1,6 @@
 package cn.edu.nju.charlesfeng.service;
 
-import cn.edu.nju.charlesfeng.entity.Member;
+import cn.edu.nju.charlesfeng.model.Member;
 
 import javax.mail.MessagingException;
 import java.io.IOException;

@@ -1,6 +1,6 @@
 package cn.edu.nju.charlesfeng.dao;
 
-import cn.edu.nju.charlesfeng.model.User;
+import cn.edu.nju.charlesfeng.filter.User;
 import cn.edu.nju.charlesfeng.util.enums.UserType;
 import cn.edu.nju.charlesfeng.util.exceptions.UserNotExistException;
 

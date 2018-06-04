@@ -2,7 +2,7 @@ package cn.edu.nju.charlesfeng.dao.impl;
 
 import cn.edu.nju.charlesfeng.dao.AlipayDao;
 import cn.edu.nju.charlesfeng.dao.BaseDao;
-import cn.edu.nju.charlesfeng.entity.AlipayEntity;
+import cn.edu.nju.charlesfeng.model.AlipayAccount;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -17,12 +17,12 @@ public class AlipayDaoImpl implements AlipayDao {
     }
 
     @Override
-    public AlipayEntity getAlipayEntity(String aliId) {
-        return (AlipayEntity) baseDao.get(AlipayEntity.class, aliId);
+    public AlipayAccount getAlipayEntity(String aliId) {
+        return (AlipayAccount) baseDao.get(AlipayAccount.class, aliId);
     }
 
     @Override
-    public boolean update(AlipayEntity alipayEntity) {
-        return baseDao.update(alipayEntity);
+    public boolean update(AlipayAccount alipayAccount) {
+        return baseDao.update(alipayAccount);
     }
 }

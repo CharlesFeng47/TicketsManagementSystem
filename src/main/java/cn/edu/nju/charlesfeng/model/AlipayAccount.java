@@ -1,21 +1,23 @@
-package cn.edu.nju.charlesfeng.entity;
+package cn.edu.nju.charlesfeng.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import org.hibernate.annotations.GenericGenerator;
+
+import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * 对支付宝的模拟
  */
 @Entity
 @Table(name = "alipay_mock")
-public class AlipayEntity {
+public class AlipayAccount implements Serializable {
 
     /**
      * 账户ID
      */
     @Id
+    @GenericGenerator(name = "myGenerator", strategy = "assigned")
+    @GeneratedValue(generator = "myGenerator")
     private String id;
 
     /**
