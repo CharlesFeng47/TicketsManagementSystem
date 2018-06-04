@@ -80,3 +80,4 @@ fabric.properties
 
 # Editor-based Rest Client
 .idea/httpRequests
+/src/main/resources/my_mail_config.properties
