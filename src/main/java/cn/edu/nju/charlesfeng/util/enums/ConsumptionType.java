@@ -14,15 +14,15 @@ public enum ConsumptionType {
         this.val = val;
     }
 
-    @Override
-    public String toString() {
-        return this.val;
-    }
-
     public static ConsumptionType getEnum(String val) {
         for (ConsumptionType curType : ConsumptionType.values()) {
             if (curType.val.equals(val)) return curType;
         }
         return null;
+    }
+
+    @Override
+    public String toString() {
+        return this.val;
     }
 }

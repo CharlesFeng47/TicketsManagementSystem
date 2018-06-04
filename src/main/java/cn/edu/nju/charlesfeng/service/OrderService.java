@@ -45,7 +45,7 @@ public interface OrderService {
 
     /**
      * @param spot 检票登记的主动方场馆
-     * @param oid 检票登记的订单号
+     * @param oid  检票登记的订单号
      * @return 检票结果，成功则true
      */
     boolean checkTicket(Spot spot, int oid) throws TicketHasBeenCheckedException, TicketStateWrongException, OrderNotExistException, TicketCheckerWrongException;

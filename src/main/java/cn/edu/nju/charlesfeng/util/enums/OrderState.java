@@ -19,16 +19,16 @@ public enum OrderState {
         this.val = val;
     }
 
-    @Override
-    public String toString() {
-        return this.val;
-    }
-
     public static OrderState getEnum(String val) {
         for (OrderState curType : OrderState.values()) {
             if (curType.val.equals(val)) return curType;
         }
         return null;
+    }
+
+    @Override
+    public String toString() {
+        return this.val;
     }
 
 }

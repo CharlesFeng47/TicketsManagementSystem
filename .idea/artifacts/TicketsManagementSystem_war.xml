@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="war" name="TicketsManagementSystem:war">
-    <output-path>$PROJECT_DIR$/target</output-path>
-    <root id="archive" name="charlesfeng.war">
-      <element id="artifact" artifact-name="TicketsManagementSystem:war exploded" />
-    </root>
-  </artifact>
-</component>

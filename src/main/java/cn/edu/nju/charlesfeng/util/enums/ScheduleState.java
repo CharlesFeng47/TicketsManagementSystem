@@ -16,16 +16,16 @@ public enum ScheduleState {
         this.val = val;
     }
 
-    @Override
-    public String toString() {
-        return this.val;
-    }
-
     public static ScheduleState getEnum(String val) {
         for (ScheduleState curType : ScheduleState.values()) {
             if (curType.val.equals(val)) return curType;
         }
         return null;
+    }
+
+    @Override
+    public String toString() {
+        return this.val;
     }
 
 }

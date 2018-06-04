@@ -138,16 +138,16 @@ public class ContentOrder {
         return totalPrice;
     }
 
+    public void setTotalPrice(double totalPrice) {
+        this.totalPrice = totalPrice;
+    }
+
     public Coupon getUsedCoupon() {
         return usedCoupon;
     }
 
     public void setUsedCoupon(Coupon usedCoupon) {
         this.usedCoupon = usedCoupon;
-    }
-
-    public void setTotalPrice(double totalPrice) {
-        this.totalPrice = totalPrice;
     }
 
     public ContentNotChoseSeats getNotChoseSeats() {

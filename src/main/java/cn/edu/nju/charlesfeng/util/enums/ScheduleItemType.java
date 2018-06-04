@@ -20,15 +20,15 @@ public enum ScheduleItemType {
         this.val = val;
     }
 
-    @Override
-    public String toString() {
-        return this.val;
-    }
-
     public static ScheduleItemType getEnum(String val) {
         for (ScheduleItemType curType : ScheduleItemType.values()) {
             if (curType.val.equals(val)) return curType;
         }
         return null;
+    }
+
+    @Override
+    public String toString() {
+        return this.val;
     }
 }
