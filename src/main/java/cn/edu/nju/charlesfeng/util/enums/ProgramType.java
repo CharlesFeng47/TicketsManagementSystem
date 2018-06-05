@@ -7,21 +7,25 @@ package cn.edu.nju.charlesfeng.util.enums;
  * /src/views/schedule/oneSchedule.vue:144,
  * /src/views/schedule/newSchedule/step1.vue:25）
  */
-public enum ScheduleItemType {
+public enum ProgramType {
 
+    VOCALCONCERT("演唱会"),
+    DRAMA("话剧歌剧"),
+    SPORT("体育赛事"),
     CONCERT("音乐会"),
-    DANCE("舞蹈"),
-    DRAMA("话剧"),
-    SPORT("体育赛事");
+    PARENTCHILD("儿童亲子"),
+    DANCE("舞蹈芭蕾"),
+    EXHIBITION("展览休闲"),
+    QUYITALK("曲艺杂谈");
 
     private String val;
 
-    ScheduleItemType(String val) {
+    ProgramType(String val) {
         this.val = val;
     }
 
-    public static ScheduleItemType getEnum(String val) {
-        for (ScheduleItemType curType : ScheduleItemType.values()) {
+    public static ProgramType getEnum(String val) {
+        for (ProgramType curType : ProgramType.values()) {
             if (curType.val.equals(val)) return curType;
         }
         return null;

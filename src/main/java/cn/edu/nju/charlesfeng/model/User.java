@@ -5,6 +5,9 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import java.io.Serializable;
 
+/**
+ * 系统的用户实体
+ */
 @Entity
 @Table(name = "user")
 public class User implements Serializable {

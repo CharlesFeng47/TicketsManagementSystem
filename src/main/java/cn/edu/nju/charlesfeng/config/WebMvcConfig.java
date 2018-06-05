@@ -55,8 +55,8 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
         registry.addFormatter(new UserTypeFormatter());
         registry.addFormatter(new ScheduleItemTypeFormatter());
         registry.addFormatter(new OrderTypeFormatter());
-        registry.addFormatter(new ContentNotChoseSeatsFormatter());
-        registry.addFormatter(new CouponFormatter());
+//        registry.addFormatter(new ContentNotChoseSeatsFormatter());
+//        registry.addFormatter(new CouponFormatter());
         registry.addFormatter(new OrderWayFormatter());
     }
 }

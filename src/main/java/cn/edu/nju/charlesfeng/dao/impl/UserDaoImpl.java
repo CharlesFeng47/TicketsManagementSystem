@@ -2,9 +2,6 @@ package cn.edu.nju.charlesfeng.dao.impl;
 
 import cn.edu.nju.charlesfeng.dao.BaseDao;
 import cn.edu.nju.charlesfeng.dao.UserDao;
-import cn.edu.nju.charlesfeng.model.Manager;
-import cn.edu.nju.charlesfeng.model.Member;
-import cn.edu.nju.charlesfeng.model.Spot;
 import cn.edu.nju.charlesfeng.filter.User;
 import cn.edu.nju.charlesfeng.util.enums.UserType;
 import cn.edu.nju.charlesfeng.util.exceptions.UserNotExistException;
@@ -25,26 +22,28 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public User getUser(String id, UserType type) throws UserNotExistException {
-        User result;
-
-        if (type == UserType.MEMBER) result = (User) baseDao.get(Member.class, id);
-        else if (type == UserType.SPOT) result = (User) baseDao.get(Spot.class, id);
-        else result = (User) baseDao.get(Manager.class, id);
-
-        if (result == null) throw new UserNotExistException();
-        return result;
+//        User result;
+//
+//        if (type == UserType.MEMBER) result = (User) baseDao.get(Member.class, id);
+//        else if (type == UserType.SPOT) result = (User) baseDao.get(Spot.class, id);
+//        else result = (User) baseDao.get(Manager.class, id);
+//
+//        if (result == null) throw new UserNotExistException();
+//        return result;
+        return null;
     }
 
     @Override
     public List<User> getAllUser(UserType type) throws UserNotExistException {
-        List<User> result;
-
-        if (type == UserType.MEMBER) result = baseDao.getAllList(Member.class);
-        else if (type == UserType.SPOT) result = baseDao.getAllList(Spot.class);
-        else result = baseDao.getAllList(Manager.class);
-
-        if (result == null) throw new UserNotExistException();
-        return result;
+//        List<User> result;
+//
+//        if (type == UserType.MEMBER) result = baseDao.getAllList(Member.class);
+//        else if (type == UserType.SPOT) result = baseDao.getAllList(Spot.class);
+//        else result = baseDao.getAllList(Manager.class);
+//
+//        if (result == null) throw new UserNotExistException();
+//        return result;
+        return null;
     }
 
     @Override
