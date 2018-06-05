@@ -17,8 +17,7 @@ public class Venue implements Serializable {
      * 场馆的ID
      */
     @Id
-    @GenericGenerator(name = "myGenerator", strategy = "assigned")
-    @GeneratedValue(generator = "myGenerator")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "vid")
     private int venueID;
 
