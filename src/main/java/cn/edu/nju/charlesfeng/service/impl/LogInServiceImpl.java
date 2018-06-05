@@ -1,7 +1,7 @@
 //package cn.edu.nju.charlesfeng.service.impl;
 //
-//import cn.edu.nju.charlesfeng.dao.AlipayDao;
-//import cn.edu.nju.charlesfeng.dao.UserDao;
+//import cn.edu.nju.charlesfeng.dao.AlipayRepository;
+//import cn.edu.nju.charlesfeng.dao.UserRepository;
 //import cn.edu.nju.charlesfeng.model.AlipayAccount;
 //import cn.edu.nju.charlesfeng.model.Member;
 //import cn.edu.nju.charlesfeng.model.SeatInfo;
@@ -25,12 +25,12 @@
 //
 //    private final MailService mailService;
 //
-//    private final UserDao userDao;
+//    private final UserRepository userDao;
 //
-//    private final AlipayDao alipayDao;
+//    private final AlipayRepository alipayDao;
 //
 //    @Autowired
-//    public LogInServiceImpl(MailService mailService, UserDao dao, AlipayDao alipayDao) {
+//    public LogInServiceImpl(MailService mailService, UserRepository dao, AlipayRepository alipayDao) {
 //        this.mailService = mailService;
 //        this.userDao = dao;
 //        this.alipayDao = alipayDao;

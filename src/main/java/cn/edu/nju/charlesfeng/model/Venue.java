@@ -5,6 +5,7 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 场馆实体
@@ -35,13 +36,13 @@ public class Venue implements Serializable {
      * 场馆下的所有节目(1->N)
      */
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "venue", fetch = FetchType.EAGER)
-    private List<Program> programs;
+    private Set<Program> programs;
 
     /**
      * 场馆下的所有座位(1->N)
      */
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "venue", fetch = FetchType.EAGER)
-    private List<Seat> seats;
+    private Set<Seat> seats;
 
     public int getVenueID() {
         return venueID;
@@ -67,19 +68,19 @@ public class Venue implements Serializable {
         this.address = address;
     }
 
-    public List<Program> getPrograms() {
+    public Set<Program> getPrograms() {
         return programs;
     }
 
-    public void setPrograms(List<Program> programs) {
+    public void setPrograms(Set<Program> programs) {
         this.programs = programs;
     }
 
-    public List<Seat> getSeats() {
+    public Set<Seat> getSeats() {
         return seats;
     }
 
-    public void setSeats(List<Seat> seats) {
+    public void setSeats(Set<Seat> seats) {
         this.seats = seats;
     }
 }

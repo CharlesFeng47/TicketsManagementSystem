@@ -1,7 +1,7 @@
 //package cn.edu.nju.charlesfeng.service.impl;
 //
-//import cn.edu.nju.charlesfeng.dao.AlipayDao;
-//import cn.edu.nju.charlesfeng.dao.UserDao;
+//import cn.edu.nju.charlesfeng.dao.AlipayRepository;
+//import cn.edu.nju.charlesfeng.dao.UserRepository;
 //import cn.edu.nju.charlesfeng.model.*;
 //import cn.edu.nju.charlesfeng.filter.ContentMemberOfSpot;
 //import cn.edu.nju.charlesfeng.filter.UnexaminedSpot;
@@ -21,12 +21,12 @@
 //@Service
 //public class UserServiceImpl implements UserService {
 //
-//    private final UserDao userDao;
+//    private final UserRepository userDao;
 //
-//    private final AlipayDao alipayDao;
+//    private final AlipayRepository alipayDao;
 //
 //    @Autowired
-//    public UserServiceImpl(UserDao userDao, AlipayDao alipayDao) {
+//    public UserServiceImpl(UserRepository userDao, AlipayRepository alipayDao) {
 //        this.userDao = userDao;
 //        this.alipayDao = alipayDao;
 //    }

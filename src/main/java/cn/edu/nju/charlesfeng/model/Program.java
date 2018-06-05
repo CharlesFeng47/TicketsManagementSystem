@@ -7,6 +7,7 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 节目实体（也可以理解是计划）
@@ -69,19 +70,19 @@ public class Program implements Serializable {
      * 节目下的所有票面(1->N)
      */
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "program", fetch = FetchType.EAGER)
-    private List<Par> pars;
+    private Set<Par> pars;
 
     /**
      * 节目下的所有票(1->N)
      */
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "program", fetch = FetchType.EAGER)
-    private List<Ticket> tickets;
+    private Set<Ticket> tickets;
 
     /**
      * 节目下的所有的订单(1->N)
      */
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "program", fetch = FetchType.EAGER)
-    private List<Order> orders;
+    private Set<Order> orders;
 
     public ProgramID getProgramID() {
         return programID;
@@ -147,27 +148,27 @@ public class Program implements Serializable {
         this.venue = venue;
     }
 
-    public List<Par> getPars() {
+    public Set<Par> getPars() {
         return pars;
     }
 
-    public void setPars(List<Par> pars) {
+    public void setPars(Set<Par> pars) {
         this.pars = pars;
     }
 
-    public List<Ticket> getTickets() {
+    public Set<Ticket> getTickets() {
         return tickets;
     }
 
-    public void setTickets(List<Ticket> tickets) {
+    public void setTickets(Set<Ticket> tickets) {
         this.tickets = tickets;
     }
 
-    public List<Order> getOrders() {
+    public Set<Order> getOrders() {
         return orders;
     }
 
-    public void setOrders(List<Order> orders) {
+    public void setOrders(Set<Order> orders) {
         this.orders = orders;
     }
 }

@@ -1,9 +1,9 @@
 //package cn.edu.nju.charlesfeng.service.impl;
 //
 //import cn.edu.nju.charlesfeng.dao.ConsumptionDao;
-//import cn.edu.nju.charlesfeng.dao.OrderDao;
+//import cn.edu.nju.charlesfeng.dao.OrderRepository;
 //import cn.edu.nju.charlesfeng.dao.ScheduleDao;
-//import cn.edu.nju.charlesfeng.dao.UserDao;
+//import cn.edu.nju.charlesfeng.dao.UserRepository;
 //import cn.edu.nju.charlesfeng.model.*;
 //import cn.edu.nju.charlesfeng.filter.IncomeOfOneSpot;
 //import cn.edu.nju.charlesfeng.filter.NumOfOneMemberLevel;
@@ -26,14 +26,14 @@
 //
 //    private final ConsumptionDao consumptionDao;
 //
-//    private final OrderDao orderDao;
+//    private final OrderRepository orderDao;
 //
-//    private final UserDao userDao;
+//    private final UserRepository userDao;
 //
 //    private final ScheduleDao scheduleDao;
 //
 //    @Autowired
-//    public StatisticsServiceImpl(ConsumptionDao consumptionDao, OrderDao orderDao, UserDao userDao, ScheduleDao scheduleDao) {
+//    public StatisticsServiceImpl(ConsumptionDao consumptionDao, OrderRepository orderDao, UserRepository userDao, ScheduleDao scheduleDao) {
 //        this.consumptionDao = consumptionDao;
 //        this.orderDao = orderDao;
 //        this.userDao = userDao;

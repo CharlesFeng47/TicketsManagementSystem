@@ -1,6 +1,6 @@
 //package cn.edu.nju.charlesfeng.service.impl;
 //
-//import cn.edu.nju.charlesfeng.dao.AlipayDao;
+//import cn.edu.nju.charlesfeng.dao.AlipayRepository;
 //import cn.edu.nju.charlesfeng.dao.ScheduleDao;
 //import cn.edu.nju.charlesfeng.model.AlipayAccount;
 //import cn.edu.nju.charlesfeng.model.Schedule;
@@ -21,10 +21,10 @@
 //
 //    private final ScheduleDao scheduleDao;
 //
-//    private final AlipayDao alipayDao;
+//    private final AlipayRepository alipayDao;
 //
 //    @Autowired
-//    public ScheduleServiceImpl(ScheduleDao scheduleDao, AlipayDao alipayDao) {
+//    public ScheduleServiceImpl(ScheduleDao scheduleDao, AlipayRepository alipayDao) {
 //        this.scheduleDao = scheduleDao;
 //        this.alipayDao = alipayDao;
 //    }

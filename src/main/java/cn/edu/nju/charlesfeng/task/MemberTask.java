@@ -1,6 +1,6 @@
 //package cn.edu.nju.charlesfeng.task;
 //
-//import cn.edu.nju.charlesfeng.dao.UserDao;
+//import cn.edu.nju.charlesfeng.dao.UserRepository;
 //import cn.edu.nju.charlesfeng.model.Member;
 //import cn.edu.nju.charlesfeng.filter.User;
 //import cn.edu.nju.charlesfeng.util.enums.UserType;
@@ -18,10 +18,10 @@
 //
 //    private final static Logger logger = Logger.getLogger(ScheduleTask.class);
 //
-//    private final UserDao userDao;
+//    private final UserRepository userDao;
 //
 //    @Autowired
-//    public MemberTask(UserDao userDao) {
+//    public MemberTask(UserRepository userDao) {
 //        this.userDao = userDao;
 //    }
 //

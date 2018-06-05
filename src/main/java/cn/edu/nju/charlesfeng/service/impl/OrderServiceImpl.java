@@ -22,18 +22,18 @@
 //@Service
 //public class OrderServiceImpl implements OrderService {
 //
-//    private final OrderDao orderDao;
+//    private final OrderRepository orderDao;
 //
 //    private final ScheduleDao scheduleDao;
 //
-//    private final UserDao userDao;
+//    private final UserRepository userDao;
 //
-//    private final AlipayDao alipayDao;
+//    private final AlipayRepository alipayDao;
 //
 //    private final ConsumptionDao consumptionDao;
 //
 //    @Autowired
-//    public OrderServiceImpl(OrderDao orderDao, ScheduleDao scheduleDao, UserDao userDao, AlipayDao alipayDao, ConsumptionDao consumptionDao) {
+//    public OrderServiceImpl(OrderRepository orderDao, ScheduleDao scheduleDao, UserRepository userDao, AlipayRepository alipayDao, ConsumptionDao consumptionDao) {
 //        this.orderDao = orderDao;
 //        this.scheduleDao = scheduleDao;
 //        this.userDao = userDao;

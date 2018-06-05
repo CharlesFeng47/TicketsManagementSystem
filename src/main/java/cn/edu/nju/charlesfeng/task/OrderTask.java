@@ -1,8 +1,8 @@
 //package cn.edu.nju.charlesfeng.task;
 //
-//import cn.edu.nju.charlesfeng.dao.OrderDao;
+//import cn.edu.nju.charlesfeng.dao.OrderRepository;
 //import cn.edu.nju.charlesfeng.dao.ScheduleDao;
-//import cn.edu.nju.charlesfeng.dao.UserDao;
+//import cn.edu.nju.charlesfeng.dao.UserRepository;
 //import cn.edu.nju.charlesfeng.model.Member;
 //import cn.edu.nju.charlesfeng.model.NotChoseSeats;
 //import cn.edu.nju.charlesfeng.model.Order;
@@ -35,14 +35,14 @@
 //
 //    private final static Logger logger = Logger.getLogger(OrderTask.class);
 //
-//    private final OrderDao orderDao;
+//    private final OrderRepository orderDao;
 //
 //    private final ScheduleDao scheduleDao;
 //
-//    private final UserDao userDao;
+//    private final UserRepository userDao;
 //
 //    @Autowired
-//    public OrderTask(OrderDao orderDao, ScheduleDao scheduleDao, UserDao userDao) {
+//    public OrderTask(OrderRepository orderDao, ScheduleDao scheduleDao, UserRepository userDao) {
 //        this.orderDao = orderDao;
 //        this.scheduleDao = scheduleDao;
 //        this.userDao = userDao;
