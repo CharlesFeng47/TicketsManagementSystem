@@ -23,6 +23,12 @@ public class Venue implements Serializable {
     private int venueID;
 
     /**
+     * 场馆名
+     */
+    @Column(name = "name", nullable = false)
+    private String venueName;
+
+    /**
      * 该场馆的支付宝账户ID
      */
     private String alipayId;
@@ -50,6 +56,14 @@ public class Venue implements Serializable {
 
     public void setVenueID(int venueID) {
         this.venueID = venueID;
+    }
+
+    public String getVenueName() {
+        return venueName;
+    }
+
+    public void setVenueName(String venueName) {
+        this.venueName = venueName;
     }
 
     public String getAlipayId() {

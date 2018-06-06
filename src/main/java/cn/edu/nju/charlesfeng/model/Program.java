@@ -27,7 +27,7 @@ public class Program implements Serializable {
     /**
      * 节目名称
      */
-    @Column(nullable = false)
+    @Column(name = "`name`", nullable = false)
     private String name;
 
     /**
@@ -56,14 +56,14 @@ public class Program implements Serializable {
     /**
      * 节目喜爱量
      */
-    @Column(name = "like", columnDefinition = "int default 0", nullable = false)
+    @Column(name = "`like`", columnDefinition = "int default 0", nullable = false)
     private int likeVolume;
 
     /**
      * 节目所属的场馆实体(N->1)
      */
     @ManyToOne(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
-    @JoinColumn(name = "vid", insertable=false, updatable=false)
+    @JoinColumn(name = "vid", insertable = false, updatable = false)
     private Venue venue;
 
     /**

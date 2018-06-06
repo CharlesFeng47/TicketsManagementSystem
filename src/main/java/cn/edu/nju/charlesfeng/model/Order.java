@@ -6,7 +6,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.List;
+import java.util.Set;
 
 /**
  * 订单实体
@@ -52,7 +52,7 @@ public class Order implements Serializable {
      * 订单下的所有票(1->N)
      */
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "order", fetch = FetchType.EAGER)
-    private List<Ticket> tickets;
+    private Set<Ticket> tickets;
 
     public OrderID getOrderID() {
         return orderID;
@@ -78,11 +78,11 @@ public class Order implements Serializable {
         this.totalPrice = totalPrice;
     }
 
-    public List<Ticket> getTickets() {
+    public Set<Ticket> getTickets() {
         return tickets;
     }
 
-    public void setTickets(List<Ticket> tickets) {
+    public void setTickets(Set<Ticket> tickets) {
         this.tickets = tickets;
     }
 
