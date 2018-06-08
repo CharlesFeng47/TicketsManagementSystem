@@ -62,26 +62,26 @@ public class Program implements Serializable {
     /**
      * 节目所属的场馆实体(N->1)
      */
-    @ManyToOne(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+    @ManyToOne(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
     @JoinColumn(name = "vid", insertable = false, updatable = false)
     private Venue venue;
 
     /**
      * 节目下的所有票面(1->N)
      */
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "program", fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "program", fetch = FetchType.LAZY)
     private Set<Par> pars;
 
     /**
      * 节目下的所有票(1->N)
      */
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "program", fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "program", fetch = FetchType.LAZY)
     private Set<Ticket> tickets;
 
     /**
      * 节目下的所有的订单(1->N)
      */
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "program", fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "program", fetch = FetchType.LAZY)
     private Set<Order> orders;
 
     public ProgramID getProgramID() {

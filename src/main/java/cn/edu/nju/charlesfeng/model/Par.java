@@ -35,7 +35,7 @@ public class Par implements Serializable {
     /**
      * 该票面属于的节目实体(N->1)
      */
-    @ManyToOne(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+    @ManyToOne(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
     @JoinColumns({
             @JoinColumn(name = "vid", referencedColumnName = "vid", insertable = false, updatable = false),
             @JoinColumn(name = "start_time", referencedColumnName = "start_time", insertable = false, updatable = false),

@@ -41,13 +41,13 @@ public class Venue implements Serializable {
     /**
      * 场馆下的所有节目(1->N)
      */
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "venue", fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "venue", fetch = FetchType.LAZY)
     private Set<Program> programs;
 
     /**
      * 场馆下的所有座位(1->N)
      */
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "venue", fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "venue", fetch = FetchType.LAZY)
     private Set<Seat> seats;
 
     public int getVenueID() {

@@ -7,11 +7,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 @RunWith(SpringRunner.class)
@@ -26,6 +28,9 @@ public class TicketRepositoryTest {
 
     @Autowired
     private ProgramRepository programRepository;
+
+    @Autowired
+    private ParRepository parRepository;
 
     @Test
     public void testAdd() {
@@ -67,12 +72,46 @@ public class TicketRepositoryTest {
     @Test
     public void testGet() {
 
-
-
     }
 
     @Test
     public void testDelete() {
+    }
+
+    @Test
+    //@Rollback
+    public void testAddAll() {
+        List<Program> programs = programRepository.findAll();
+        for (Program program : programs) {
+            System.out.println("----------------------------------------");
+            System.out.println("开始生成节目票："+program.getName());
+            Venue venue = program.getVenue();
+            Set<Seat> seats = venue.getSeats();
+            if(seats.isEmpty()){
+                System.out.println(venue.getVenueID()+"--"+venue.getVenueName());
+                System.out.println("该节目为空");
+            }
+            Iterable<Ticket> tickets = new HashSet<>();
+            for (Seat seat : seats) {
+                Ticket ticket = new Ticket();
+                TicketID ticketID = new TicketID();
+                ticketID.setProgramID(program.getProgramID());
+                ticketID.setRow(seat.getSeatID().getRow());
+                ticketID.setCol(seat.getSeatID().getCol());
+                ticket.setLock(false);
+                ticket.setTicketID(ticketID);
+                ticket.setProgram(program);
+                ticket.setPrice(parRepository.findPrice(program.getProgramID().getVenueID(), program.getProgramID().getStartTime(), seat.getType()));
+                ((HashSet<Ticket>) tickets).add(ticket);
+                System.out.println(ticket.getTicketID().getRow()+"--"+ticket.getTicketID().getCol()+"--"+ticket.getPrice());
+            }
+
+            //seats.clear();
+            ticketRepository.saveAll(tickets);
+            program.setTickets((Set<Ticket>) tickets);
+            programRepository.save(program);
+        }
+
     }
 
 }

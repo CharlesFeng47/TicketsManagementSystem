@@ -39,7 +39,7 @@ public class Order implements Serializable {
     /**
      * 订单所属的节目实体(N->1)
      */
-    @ManyToOne(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+    @ManyToOne(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
     @JoinTable(name = "program_order",
             joinColumns = {@JoinColumn(name = "order_email",referencedColumnName = "email"),
                     @JoinColumn(name = "order_time",referencedColumnName = "time")},
@@ -51,7 +51,7 @@ public class Order implements Serializable {
     /**
      * 订单下的所有票(1->N)
      */
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "order", fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "order", fetch = FetchType.LAZY)
     private Set<Ticket> tickets;
 
     public OrderID getOrderID() {

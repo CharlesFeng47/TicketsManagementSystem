@@ -36,7 +36,7 @@ public class Ticket implements Serializable {
     /**
      * 票所属的节目(N->1)
      */
-    @ManyToOne(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+    @ManyToOne(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
     @JoinColumns({
             @JoinColumn(name = "vid", referencedColumnName = "vid", insertable = false, updatable = false),
             @JoinColumn(name = "start_time", referencedColumnName = "start_time", insertable = false, updatable = false),
@@ -46,7 +46,7 @@ public class Ticket implements Serializable {
     /**
      * 票所属的订单(N->1)
      */
-    @ManyToOne(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+    @ManyToOne(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
     @JoinTable(name = "order_ticket",
     joinColumns = {@JoinColumn(name = "ticket_vid",referencedColumnName = "vid"),
             @JoinColumn(name = "ticket_start_time",referencedColumnName = "start_time"),

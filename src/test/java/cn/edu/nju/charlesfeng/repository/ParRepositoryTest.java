@@ -2,12 +2,15 @@ package cn.edu.nju.charlesfeng.repository;
 
 import cn.edu.nju.charlesfeng.model.Par;
 import cn.edu.nju.charlesfeng.model.Program;
+import cn.edu.nju.charlesfeng.model.Venue;
 import cn.edu.nju.charlesfeng.model.id.ParID;
 import cn.edu.nju.charlesfeng.model.id.ProgramID;
+import org.hibernate.Hibernate;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.*;
@@ -23,6 +26,9 @@ public class ParRepositoryTest {
 
     @Autowired
     private ParRepository parRepository;
+
+    @Autowired
+    private SeatRepository seatRepository;
 
     @Test
     public void testAdd() {
@@ -74,13 +80,159 @@ public class ParRepositoryTest {
     public void testDelete() {
     }
 
+
+    @Test
+    //@Rollback
+    public void testOtherType() {
+        List<Program> programs = programRepository.findAll();
+        for (Program program : programs) {
+            System.out.println("----------------------------------------------------------");
+            System.out.println("当前更新节目：" + program.getName());
+            Venue venue = program.getVenue();
+            List<String> types = seatRepository.getType(venue.getVenueID());
+            Set<Par> pars = program.getPars();
+            if (pars.size() > types.size()) {
+                //票面种类多于座位
+                System.out.println("票面种类多于座位");
+                Set<Par> newPars = new HashSet<>();
+                //Set<Par> deletePars = new HashSet<>();
+                int counter = 0;
+                for (Par par : pars) {
+                    if (counter == types.size()) {
+                        //deletePars.add(par);
+                        par.setProgram(null);
+                        parRepository.save(par);
+                        parRepository.delete(par);
+                        System.out.println("delete:" + par.getParID().getProgramID().getVenueID() + "--" + par.getParID().getBasePrice() + "--" + par.getSeatType());
+                    } else {
+                        par.setSeatType(types.get(counter));
+                        newPars.add(par);
+                        counter = counter + 1;
+                        System.out.println("modify:" + par.getParID().getProgramID().getVenueID() + "--" + par.getParID().getBasePrice() + "--" + par.getSeatType());
+                    }
+                }
+
+//                program.setPars(newPars);
+//                programRepository.save(program);
+                parRepository.saveAll(newPars);
+                pars.clear();
+                //parRepository.deleteAll(deletePars);
+            }
+        }
+    }
+
+    @Test
+    //@Rollback
+    public void testType() {
+        List<Program> programs = programRepository.findAll();
+        List<Program> no_venue = new ArrayList<>();
+        Set<Par> need_delete = new HashSet<>();
+        for (Program program : programs) {
+            System.out.println("----------------------------------------------------------");
+            System.out.println("当前更新节目：" + program.getName());
+            Venue venue = program.getVenue();
+            if (venue == null) {
+                no_venue.add(program);
+                System.out.println("该节目未绑定场馆");
+                continue;
+            }
+            List<String> types = seatRepository.getType(venue.getVenueID());
+            Set<Par> pars = program.getPars();
+            if (pars.isEmpty()) {
+                //该节目没有成功添加票面，需要根据所谓类型添加
+                System.out.println("该节目没有成功添加票面，需要根据所谓类型添加");
+                double basePrice = 100.99;
+                for (String type : types) {
+                    ParID parID = new ParID();
+                    parID.setProgramID(program.getProgramID());
+                    parID.setBasePrice(basePrice + (types.indexOf(type) * 100));
+                    parID.setComments("优惠多多");
+                    Par par = new Par();
+                    par.setParID(parID);
+                    par.setProgram(program);
+                    par.setDiscount(1);
+                    par.setSeatType(type);
+                    pars.add(par);
+                    System.out.println("add:" + par.getParID().getProgramID().getVenueID() + "--" + par.getParID().getBasePrice() + "--" + par.getSeatType());
+                }
+                parRepository.saveAll(pars);
+                program.setPars(pars);
+                programRepository.save(program);
+            } else if (pars.size() > types.size()) {
+                //票面种类多于座位
+                System.out.println("票面种类多于座位--暂时不做");
+//                Set<Par> newPars = new HashSet<>();
+//                Set<Par> deletePars = new HashSet<>();
+//                int counter = 0;
+//                for (Par par : pars) {
+//                    if (counter == types.size()) {
+//                        deletePars.add(par);
+//                        System.out.println("delete:" + par.getParID().getProgramID().getVenueID() + "--" + par.getParID().getBasePrice() + "--" + par.getSeatType());
+//                    } else {
+//                        par.setSeatType(types.get(counter));
+//                        newPars.add(par);
+//                        counter = counter + 1;
+//                        System.out.println("modify:" + par.getParID().getProgramID().getVenueID() + "--" + par.getParID().getBasePrice() + "--" + par.getSeatType());
+//                    }
+//                }
+//
+//                program.setPars(newPars);
+//                programRepository.save(program);
+//                parRepository.saveAll(newPars);
+//                parRepository.deleteAll(deletePars);
+
+            } else if (types.size() > pars.size()) {
+                //座位种类多于票面
+                System.out.println("座位种类多于票面");
+                int counter = 0;
+                for (Par par : pars) {
+                    par.setSeatType(types.get(counter));
+                    counter = counter + 1;
+                    System.out.println("modify:" + par.getParID().getProgramID().getVenueID() + "--" + par.getParID().getBasePrice() + "--" + par.getSeatType());
+                }
+
+                double basePrice = 100.99;
+                for (int i = counter; i < types.size(); i++) {
+                    ParID parID = new ParID();
+                    parID.setProgramID(program.getProgramID());
+                    parID.setBasePrice(basePrice + (i * 100));
+                    parID.setComments("优惠多多");
+                    Par par = new Par();
+                    par.setParID(parID);
+                    par.setProgram(program);
+                    par.setDiscount(1);
+                    par.setSeatType(types.get(i));
+                    pars.add(par);
+                    System.out.println("add:" + par.getParID().getProgramID().getVenueID() + "--" + par.getParID().getBasePrice() + "--" + par.getSeatType());
+                }
+
+                parRepository.saveAll(pars);
+                program.setPars(pars);
+                programRepository.save(program);
+            } else {
+                //两个种类数相同
+                System.out.println("两个种类数相同");
+                int counter = 0;
+                for (Par par : pars) {
+                    par.setSeatType(types.get(counter));
+                    counter++;
+                    System.out.println("modify:" + par.getParID().getProgramID().getVenueID() + "--" + par.getParID().getBasePrice() + "--" + par.getSeatType());
+                }
+                parRepository.saveAll(pars);
+                program.setPars(pars);
+                programRepository.save(program);
+            }
+        }
+        writerPassed(no_venue);
+    }
+
     @Test
     public void testAddAll() {
         List<String> passed = new ArrayList<>();
         Map<String, List<Map<String, String>>> pars = readPar();
         for (String key : pars.keySet()) {
             System.out.println("------------------------------------------------");
-            System.out.println("key:"+key);
+            System.out.println("key:" + key);
             if (passed.contains(key)) {
                 continue;
             }
@@ -184,12 +336,12 @@ public class ParRepositoryTest {
         return result;
     }
 
-    private void writerPassed(List<String> list) {
+    private void writerPassed(List<Program> list) {
         File file = new File("C:\\Users\\Byron Dong\\Desktop\\1.txt");
         try {
             BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8"));
-            for (String info : list) {
-                bufferedWriter.write(info);
+            for (Program info : list) {
+                bufferedWriter.write(info.getProgramID().getVenueID() + "--" + info.getProgramID().getStartTime().toString());
                 bufferedWriter.newLine();
             }
             bufferedWriter.close();

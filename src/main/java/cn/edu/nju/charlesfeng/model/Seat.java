@@ -29,7 +29,7 @@ public class Seat implements Serializable {
     /**
      * 座位属于的场馆(N->1)
      */
-    @ManyToOne(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+    @ManyToOne(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
     @JoinColumn(name = "vid", insertable=false, updatable = false)
     private Venue venue;
 
