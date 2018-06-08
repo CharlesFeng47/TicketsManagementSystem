@@ -27,11 +27,6 @@ public class Par implements Serializable {
     private double discount;
 
     /**
-     * 该种票面的提示
-     */
-    private String comments;
-
-    /**
      * 该种票面对应的座位类型
      */
     @Column(name = "seat_type",nullable = false)
@@ -61,14 +56,6 @@ public class Par implements Serializable {
 
     public void setDiscount(double discount) {
         this.discount = discount;
-    }
-
-    public String getComments() {
-        return comments;
-    }
-
-    public void setComments(String comments) {
-        this.comments = comments;
     }
 
     public String getSeatType() {

@@ -19,6 +19,11 @@ public class ParID implements Serializable {
     @Column(name = "base_price", columnDefinition = "double default 0")
     private double basePrice;
 
+    /**
+     * 该种票面的提示
+     */
+    private String comments;
+
     public ProgramID getProgramID() {
         return programID;
     }
@@ -35,17 +40,27 @@ public class ParID implements Serializable {
         this.basePrice = basePrice;
     }
 
+    public String getComments() {
+        return comments;
+    }
+
+    public void setComments(String comments) {
+        this.comments = comments;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ParID parID = (ParID) o;
         return Double.compare(parID.basePrice, basePrice) == 0 &&
-                Objects.equals(programID, parID.programID);
+                Objects.equals(programID, parID.programID) &&
+                Objects.equals(comments, parID.comments);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(programID, basePrice);
+
+        return Objects.hash(programID, basePrice, comments);
     }
 }

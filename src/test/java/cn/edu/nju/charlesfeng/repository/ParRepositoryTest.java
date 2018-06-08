@@ -9,13 +9,10 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
 
 import java.io.*;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -43,7 +40,7 @@ public class ParRepositoryTest {
         par1.setProgram(program);
         par1.setSeatType("看台");
         par1.setDiscount(0.9);
-        par1.setComments("优惠");
+//        par1.setComments("优惠");
         parRepository.save(par1);
         pars.add(par1);
 
@@ -55,7 +52,7 @@ public class ParRepositoryTest {
         par2.setProgram(program);
         par2.setSeatType("后台");
         par2.setDiscount(0.9);
-        par2.setComments("优惠");
+//        par2.setComments("优惠");
         parRepository.save(par2);
         pars.add(par2);
 
@@ -77,49 +74,127 @@ public class ParRepositoryTest {
     public void testDelete() {
     }
 
-    private void createImg(String img) {
-        if (img == null) //图像数据为空
-            return;
+    @Test
+    public void testAddAll() {
+        List<String> passed = new ArrayList<>();
+        Map<String, List<Map<String, String>>> pars = readPar();
+        for (String key : pars.keySet()) {
+            System.out.println("------------------------------------------------");
+            System.out.println("key:"+key);
+            if (passed.contains(key)) {
+                continue;
+            }
 
-        BASE64Decoder decoder = new BASE64Decoder();
-        try {
-            //Base64解码
-            byte[] b = decoder.decodeBuffer(img);
-            for (int i = 0; i < b.length; ++i) {
-                if (b[i] < 0) {//调整异常数据
-                    b[i] += 256;
+            List<Program> programs = programRepository.findByName(key);
+            if (programs == null || programs.isEmpty()) {
+                continue;
+            }
+
+            Program program = null;
+            if (programs.size() > 1) {
+                for (Program program1 : programs) {
+                    if (program1.getPars() == null || program1.getPars().isEmpty()) {
+                        program = program1;
+                    }
+                }
+            } else {
+                program = programs.get(0);
+            }
+
+            if (program == null) {
+                continue;
+            }
+
+            List<Map<String, String>> list = pars.get(key);
+            Iterable<Par> pars1 = new HashSet<>();
+            for (Map<String, String> item : list) {
+                System.out.println("----element-------");
+                ParID parID = new ParID();
+                parID.setProgramID(program.getProgramID());
+                parID.setBasePrice(Integer.parseInt(item.get("price").replace("元", "")));
+                parID.setComments(item.get("comments"));
+                Par par = new Par();
+                par.setParID(parID);
+                par.setDiscount(Double.parseDouble(item.get("discount")));
+                par.setProgram(program);
+                par.setSeatType("");
+                ((HashSet<Par>) pars1).add(par);
+                System.out.println(par.getParID().getComments() + "  " + par.getDiscount() + " " + par.getProgram().getName());
+                System.out.println("----element end---");
+                try {
+                    parRepository.save(par);
+                } catch (Exception e) {
+                    System.out.println("出现键值重复" + par.getProgram().getName());
                 }
             }
-            //生成jpeg图片
-            String imgFilePath = "F://222.jpg";//新生成的图片
-            OutputStream out = new FileOutputStream(imgFilePath);
-            out.write(b);
-            out.flush();
-            out.close();
-            return;
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+
+            program.setPars((Set<Par>) pars1);
+            programRepository.save(program);
+            System.out.println("------------------------------------------------");
         }
+
+
     }
 
-    private String getBaseImg() {
-        File img = new File("F:\\img.jpg");
-        byte[] data = null;
+    public Map<String, List<Map<String, String>>> readPar() {
+        File file = new File("F:\\crawler\\detail.txt");
+        Map<String, List<Map<String, String>>> result = new HashMap<>();
         try {
-            InputStream in = new FileInputStream(img);
-            data = new byte[in.available()];
-            int result = in.read(data);
-            in.close();
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"));
+            String line = null;
+            while ((line = bufferedReader.readLine()) != null) {
+                List<Map<String, String>> program = new ArrayList<>();
+                String programName = bufferedReader.readLine();
+                line = bufferedReader.readLine(); //just read first line for loop
+                while (!line.startsWith("E----")) {
+                    Map<String, String> element = new HashMap<>();
+                    String comments = line; //comments;
+                    String price = bufferedReader.readLine(); //price
+                    String discount = bufferedReader.readLine(); //discount
+                    line = bufferedReader.readLine(); //may be E---- or comments
+
+                    String prices[] = price.split(":");
+                    if (prices.length == 1 || prices[1].equals("0元")) {
+                        continue;
+                    } else {
+                        element.put(prices[0], prices[1]);
+                    }
+
+                    String comment[] = comments.split(":");
+                    if (comment.length == 1) {
+                        element.put("comments", "");
+                    } else {
+                        element.put(comment[0], comment[1]);
+                    }
+
+                    String discounts[] = discount.split(":");
+                    element.put(discounts[0], discounts[1]);
+                    program.add(element);
+                }
+                result.put(programName, program);
+            }
+            bufferedReader.close();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        BASE64Encoder encoder = new BASE64Encoder();
-        assert data != null;
-        return encoder.encode(data);
+        return result;
     }
 
+    private void writerPassed(List<String> list) {
+        File file = new File("C:\\Users\\Byron Dong\\Desktop\\1.txt");
+        try {
+            BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8"));
+            for (String info : list) {
+                bufferedWriter.write(info);
+                bufferedWriter.newLine();
+            }
+            bufferedWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
