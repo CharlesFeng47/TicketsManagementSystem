@@ -1,24 +1,18 @@
 package cn.edu.nju.charlesfeng.controller;
 
-import cn.edu.nju.charlesfeng.filter.RequestReturnObject;
+import cn.edu.nju.charlesfeng.util.filter.BriefProgram;
+import cn.edu.nju.charlesfeng.util.helper.RequestReturnObject;
 import cn.edu.nju.charlesfeng.model.Program;
 import cn.edu.nju.charlesfeng.service.ProgramService;
 import cn.edu.nju.charlesfeng.util.enums.RequestReturnObjectState;
 import cn.edu.nju.charlesfeng.util.enums.ProgramType;
-import cn.edu.nju.charlesfeng.util.exceptions.ProgramNotSettlableException;
-import cn.edu.nju.charlesfeng.util.exceptions.SpotSeatDisorderException;
-import com.alibaba.fastjson.JSON;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -72,7 +66,16 @@ public class ProgramController {
     public RequestReturnObject getRecommendPrograms(@RequestParam("city") String city) {
         logger.debug("INTO /program/recommend" + city);
         Map<ProgramType, List<Program>> map = programService.recommendPrograms(LocalDateTime.now(), city, 5);
-        return new RequestReturnObject(RequestReturnObjectState.OK, map);
+        Map<ProgramType, List<BriefProgram>> result = new HashMap<>();
+        for (ProgramType key : map.keySet()) {
+            List<Program> programs = map.get(key);
+            List<BriefProgram> briefPrograms = new ArrayList<>();
+            for (Program program : programs) {
+                briefPrograms.add(new BriefProgram(program));
+            }
+            result.put(key, briefPrograms);
+        }
+        return new RequestReturnObject(RequestReturnObjectState.OK, result);
     }
 
 //    /**

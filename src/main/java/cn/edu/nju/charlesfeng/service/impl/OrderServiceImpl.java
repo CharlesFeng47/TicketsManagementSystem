@@ -2,8 +2,8 @@
 //
 //import cn.edu.nju.charlesfeng.dao.*;
 //import cn.edu.nju.charlesfeng.model.*;
-//import cn.edu.nju.charlesfeng.filter.Seat;
-//import cn.edu.nju.charlesfeng.filter.User;
+//import cn.edu.nju.charlesfeng.util.filter.Seat;
+//import cn.edu.nju.charlesfeng.util.filter.User;
 //import cn.edu.nju.charlesfeng.service.OrderService;
 //import cn.edu.nju.charlesfeng.util.OrderSeatHelper;
 //import cn.edu.nju.charlesfeng.util.enums.*;

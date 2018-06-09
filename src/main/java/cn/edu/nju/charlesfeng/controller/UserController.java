@@ -1,10 +1,10 @@
 //package cn.edu.nju.charlesfeng.controller;
 //
 //import cn.edu.nju.charlesfeng.model.*;
-//import cn.edu.nju.charlesfeng.filter.ContentMemberOfSpot;
-//import cn.edu.nju.charlesfeng.filter.RequestReturnObject;
-//import cn.edu.nju.charlesfeng.filter.UnexaminedSpot;
-//import cn.edu.nju.charlesfeng.filter.User;
+//import cn.edu.nju.charlesfeng.util.filter.ContentMemberOfSpot;
+//import cn.edu.nju.charlesfeng.util.helper.RequestReturnObject;
+//import cn.edu.nju.charlesfeng.util.filter.UnexaminedSpot;
+//import cn.edu.nju.charlesfeng.util.filter.User;
 //import cn.edu.nju.charlesfeng.service.UserService;
 //import cn.edu.nju.charlesfeng.util.enums.RequestReturnObjectState;
 //import cn.edu.nju.charlesfeng.util.enums.UserType;

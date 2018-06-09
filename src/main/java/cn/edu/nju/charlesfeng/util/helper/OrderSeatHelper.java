@@ -1,6 +1,6 @@
 //package cn.edu.nju.charlesfeng.util;
 //
-//import cn.edu.nju.charlesfeng.filter.Seat;
+//import cn.edu.nju.charlesfeng.util.filter.Seat;
 //import cn.edu.nju.charlesfeng.model.Order;
 //
 //import java.util.LinkedList;

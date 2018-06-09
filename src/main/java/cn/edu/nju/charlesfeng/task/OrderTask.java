@@ -7,8 +7,8 @@
 //import cn.edu.nju.charlesfeng.model.NotChoseSeats;
 //import cn.edu.nju.charlesfeng.model.Order;
 //import cn.edu.nju.charlesfeng.model.Schedule;
-//import cn.edu.nju.charlesfeng.filter.Seat;
-//import cn.edu.nju.charlesfeng.filter.SeatId;
+//import cn.edu.nju.charlesfeng.util.filter.Seat;
+//import cn.edu.nju.charlesfeng.util.filter.SeatId;
 //import cn.edu.nju.charlesfeng.util.OrderSeatHelper;
 //import cn.edu.nju.charlesfeng.util.enums.OrderState;
 //import cn.edu.nju.charlesfeng.util.enums.OrderType;

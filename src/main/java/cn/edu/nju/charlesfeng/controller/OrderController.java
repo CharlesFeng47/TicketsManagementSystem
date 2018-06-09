@@ -1,10 +1,10 @@
 //package cn.edu.nju.charlesfeng.controller;
 //
 //import cn.edu.nju.charlesfeng.model.*;
-//import cn.edu.nju.charlesfeng.filter.ContentOrder;
-//import cn.edu.nju.charlesfeng.filter.ContentOrderBrief;
-//import cn.edu.nju.charlesfeng.filter.RequestReturnObject;
-//import cn.edu.nju.charlesfeng.filter.User;
+//import cn.edu.nju.charlesfeng.util.filter.ContentOrder;
+//import cn.edu.nju.charlesfeng.util.filter.ContentOrderBrief;
+//import cn.edu.nju.charlesfeng.util.helper.RequestReturnObject;
+//import cn.edu.nju.charlesfeng.util.filter.User;
 //import cn.edu.nju.charlesfeng.service.OrderService;
 //import cn.edu.nju.charlesfeng.util.enums.OrderType;
 //import cn.edu.nju.charlesfeng.util.enums.OrderWay;

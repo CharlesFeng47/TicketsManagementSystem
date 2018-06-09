@@ -3,9 +3,9 @@
 //import cn.edu.nju.charlesfeng.model.Member;
 //import cn.edu.nju.charlesfeng.model.SeatInfo;
 //import cn.edu.nju.charlesfeng.model.Spot;
-//import cn.edu.nju.charlesfeng.filter.ContentUser;
-//import cn.edu.nju.charlesfeng.filter.RequestReturnObject;
-//import cn.edu.nju.charlesfeng.filter.User;
+//import cn.edu.nju.charlesfeng.util.filter.ContentUser;
+//import cn.edu.nju.charlesfeng.util.helper.RequestReturnObject;
+//import cn.edu.nju.charlesfeng.util.filter.User;
 //import cn.edu.nju.charlesfeng.service.LogInService;
 //import cn.edu.nju.charlesfeng.util.enums.RequestReturnObjectState;
 //import cn.edu.nju.charlesfeng.util.enums.UserType;

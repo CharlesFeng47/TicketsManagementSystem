@@ -1,4 +1,4 @@
-package cn.edu.nju.charlesfeng.filter;
+package cn.edu.nju.charlesfeng.util.helper;
 
 import cn.edu.nju.charlesfeng.util.enums.RequestReturnObjectState;
 import com.alibaba.fastjson.JSON;

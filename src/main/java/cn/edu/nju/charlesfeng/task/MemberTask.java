@@ -2,7 +2,7 @@
 //
 //import cn.edu.nju.charlesfeng.dao.UserRepository;
 //import cn.edu.nju.charlesfeng.model.Member;
-//import cn.edu.nju.charlesfeng.filter.User;
+//import cn.edu.nju.charlesfeng.util.filter.User;
 //import cn.edu.nju.charlesfeng.util.enums.UserType;
 //import cn.edu.nju.charlesfeng.util.exceptions.UserNotExistException;
 //import org.apache.log4j.Logger;

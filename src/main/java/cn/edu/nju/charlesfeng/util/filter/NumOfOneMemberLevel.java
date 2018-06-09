@@ -1,4 +1,4 @@
-package cn.edu.nju.charlesfeng.filter;
+package cn.edu.nju.charlesfeng.util.filter;
 
 /**
  * 每一种等级的会员数量
