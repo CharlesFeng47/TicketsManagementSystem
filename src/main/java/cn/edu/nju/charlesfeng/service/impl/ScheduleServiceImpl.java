@@ -8,7 +8,7 @@
 //import cn.edu.nju.charlesfeng.service.ScheduleService;
 //import cn.edu.nju.charlesfeng.util.enums.ProgramType;
 //import cn.edu.nju.charlesfeng.util.enums.ScheduleState;
-//import cn.edu.nju.charlesfeng.util.exceptions.ScheduleNotSettlableException;
+//import cn.edu.nju.charlesfeng.util.exceptions.ProgramNotSettlableException;
 //import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.stereotype.Service;
 //
@@ -108,7 +108,7 @@
 //    }
 //
 //    @Override
-//    public boolean settleOneSchedule(String scheduleId) throws ScheduleNotSettlableException {
+//    public boolean settleOneSchedule(String scheduleId) throws ProgramNotSettlableException {
 //        // 结算的比例
 //        final double settlePercent = 0.8;
 //
@@ -124,7 +124,7 @@
 //            AlipayAccount alipayAccount = alipayDao.getAlipayEntity(settledSpot.getAlipayId());
 //            alipayAccount.setBalance(alipayAccount.getBalance() + toSettle.getBalance() * settlePercent);
 //            alipayDao.update(alipayAccount);
-//        } else throw new ScheduleNotSettlableException();
+//        } else throw new ProgramNotSettlableException();
 //        return scheduleDao.updateSchedule(toSettle);
 //    }
 //

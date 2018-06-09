@@ -9,7 +9,7 @@
 //import cn.edu.nju.charlesfeng.util.enums.RequestReturnObjectState;
 //import cn.edu.nju.charlesfeng.util.enums.UserType;
 //import cn.edu.nju.charlesfeng.util.exceptions.AlipayEntityNotExistException;
-//import cn.edu.nju.charlesfeng.util.exceptions.MemberActiveUrlExpiredException;
+//import cn.edu.nju.charlesfeng.util.exceptions.UserActiveUrlExpiredException;
 //import cn.edu.nju.charlesfeng.util.exceptions.MemberConvertCouponCreditNotEnoughException;
 //import cn.edu.nju.charlesfeng.util.exceptions.UserNotExistException;
 //import com.alibaba.fastjson.JSON;
@@ -251,7 +251,7 @@
 //    /**
 //     * @return 会员邮箱链接验证
 //     */
-//    @PostMapping("member_active")
+//    @PostMapping("user_active")
 //    public RequestReturnObject examineSpot(@RequestParam("activeUrl") String activeUrl, HttpServletRequest request) {
 //        logger.debug("INTO /user/member_active");
 //
@@ -263,7 +263,7 @@
 //            return new RequestReturnObject(RequestReturnObjectState.INTERIOR_WRONG);
 //        } catch (UserNotExistException e) {
 //            return new RequestReturnObject(RequestReturnObjectState.MEMBER_ACTIVATE_URL_WRONG);
-//        } catch (MemberActiveUrlExpiredException e) {
+//        } catch (UserActiveUrlExpiredException e) {
 //            return new RequestReturnObject(RequestReturnObjectState.MEMBER_ACTIVATE_URL_EXPIRE);
 //        }
 //    }

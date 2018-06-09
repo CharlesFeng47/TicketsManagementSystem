@@ -16,7 +16,8 @@ public enum ProgramType {
     PARENTCHILD("儿童亲子"),
     DANCE("舞蹈芭蕾"),
     EXHIBITION("展览休闲"),
-    QUYITALK("曲艺杂谈");
+    QUYITALK("曲艺杂谈"),
+    ALL("首页");
 
     private String val;
 

@@ -1,138 +1,132 @@
-//package cn.edu.nju.charlesfeng.service.impl;
-//
-//import cn.edu.nju.charlesfeng.dao.AlipayRepository;
-//import cn.edu.nju.charlesfeng.dao.UserRepository;
-//import cn.edu.nju.charlesfeng.model.*;
-//import cn.edu.nju.charlesfeng.filter.ContentMemberOfSpot;
-//import cn.edu.nju.charlesfeng.filter.UnexaminedSpot;
-//import cn.edu.nju.charlesfeng.filter.User;
-//import cn.edu.nju.charlesfeng.service.UserService;
-//import cn.edu.nju.charlesfeng.util.enums.UserType;
-//import cn.edu.nju.charlesfeng.util.exceptions.AlipayEntityNotExistException;
-//import cn.edu.nju.charlesfeng.util.exceptions.MemberActiveUrlExpiredException;
-//import cn.edu.nju.charlesfeng.util.exceptions.MemberConvertCouponCreditNotEnoughException;
-//import cn.edu.nju.charlesfeng.util.exceptions.UserNotExistException;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.stereotype.Service;
-//
-//import java.io.UnsupportedEncodingException;
-//import java.util.*;
-//
-//@Service
-//public class UserServiceImpl implements UserService {
-//
-//    private final UserRepository userDao;
-//
-//    private final AlipayRepository alipayDao;
-//
-//    @Autowired
-//    public UserServiceImpl(UserRepository userDao, AlipayRepository alipayDao) {
-//        this.userDao = userDao;
-//        this.alipayDao = alipayDao;
-//    }
-//
-//    @Override
-//    public boolean activateByMail(String activeUrl) throws UnsupportedEncodingException, UserNotExistException, MemberActiveUrlExpiredException {
-//        byte[] base64decodedBytes = Base64.getUrlDecoder().decode(activeUrl);
-//        String toActivateMemberId = new String(base64decodedBytes, "utf-8");
-//
-//        Member toActivate = (Member) userDao.getUser(toActivateMemberId, UserType.MEMBER);
-//        if (toActivate.isActivated()) throw new MemberActiveUrlExpiredException();
-//        toActivate.setActivated(true);
-//        return userDao.updateUser(toActivate, UserType.MEMBER);
-//    }
-//
-//    @Override
-//    public boolean invalidate(Member member) {
-//        member.setInvalidated(true);
-//        return userDao.updateUser(member, UserType.MEMBER);
-//    }
-//
-//    @Override
-//    public boolean modifyMember(Member curMember, String pwd) {
-//        curMember.setPwd(pwd);
-//        return userDao.updateUser(curMember, UserType.MEMBER);
-//    }
-//
-//    @Override
-//    public boolean modifySpot(Spot curSpot, String pwd, String spotName, String site, String alipayId,
-//                              List<SeatInfo> seatInfos, String seatsMapJson, int curSeatTypeCount) throws AlipayEntityNotExistException {
-//        AlipayAccount alipayAccount = alipayDao.getAlipayEntity(alipayId);
-//        if (alipayAccount == null) throw new AlipayEntityNotExistException();
-//
-//        // 修改场馆信息后之后需要经理审批
-//        curSpot.setExamined(false);
-//
-//        curSpot.setPwd(pwd);
-//        curSpot.setSpotName(spotName);
-//        curSpot.setSite(site);
-//        curSpot.setAlipayId(alipayId);
-//        curSpot.setAllSeatsJson(seatsMapJson);
-//        curSpot.setCurSeatTypeCount(curSeatTypeCount);
-//
-//        // 保留原来的座位信息ID，以不至于原座位数据成为废数据
-//        String sidBase = curSpot.getSeatInfos().get(0).getId().split("/")[0];
-//        for (int i = 0; i < seatInfos.size(); i++) {
-//            SeatInfo curSeatInfo = seatInfos.get(i);
-//            curSeatInfo.setId(sidBase + "/" + i);
-//        }
-//        curSpot.setSeatInfos(seatInfos);
-//
-//        return userDao.updateUser(curSpot, UserType.SPOT);
-//    }
-//
-//    @Override
-//    public User getUser(String id, UserType type) throws UserNotExistException {
-//        return userDao.getUser(id, type);
-//    }
-//
-//    @Override
-//    public Map<String, Spot> getAllSpotIdMap() throws UserNotExistException {
-//        Map<String, Spot> result = new HashMap<>();
-//        for (User user : userDao.getAllUser(UserType.SPOT)) {
-//            result.put(user.getId(), (Spot) user);
-//        }
-//        return result;
-//    }
-//
-//    @Override
-//    public Member memberConvertCoupon(Member member, Coupon coupon) throws MemberConvertCouponCreditNotEnoughException {
-//        // 检验会员剩余积分是否充足
-//        if (member.getCreditRemain() > coupon.getNeededCredit()) {
-//            List<Coupon> memberCoupons = member.getCoupons();
-//            memberCoupons.add(coupon);
-//            member.setCreditRemain(member.getCreditRemain() - coupon.getNeededCredit());
-//
-//            boolean convertResult = userDao.updateUser(member, UserType.MEMBER);
-//            assert convertResult;
-//            return member;
-//        } else {
-//            throw new MemberConvertCouponCreditNotEnoughException();
-//        }
-//    }
-//
-//    @Override
-//    public ContentMemberOfSpot getMemberOfSpot(String mid) throws UserNotExistException {
-//        Member result = (Member) userDao.getUser(mid, UserType.MEMBER);
-//        return new ContentMemberOfSpot(result);
-//    }
-//
-//    @Override
-//    public List<UnexaminedSpot> getAllUnexaminedSpots() throws UserNotExistException {
-//        List<UnexaminedSpot> result = new LinkedList<>();
-//        for (User curUser : userDao.getAllUser(UserType.SPOT)) {
-//            final Spot curSpot = (Spot) curUser;
-//            if (!curSpot.isExamined()) {
-//                result.add(new UnexaminedSpot(curSpot));
-//            }
-//        }
-//        return result;
-//    }
-//
-//    @Override
-//    public boolean examineSpot(String sid) throws UserNotExistException {
-//        Spot toExamine = (Spot) userDao.getUser(sid, UserType.SPOT);
-//        toExamine.setExamined(true);
-//        return userDao.updateUser(toExamine, UserType.SPOT);
-//    }
-//}
+package cn.edu.nju.charlesfeng.service.impl;
+
+import cn.edu.nju.charlesfeng.model.User;
+import cn.edu.nju.charlesfeng.repository.UserRepository;
+import cn.edu.nju.charlesfeng.service.UserService;
+import cn.edu.nju.charlesfeng.task.MailTask;
+import cn.edu.nju.charlesfeng.util.exceptions.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import javax.mail.MessagingException;
+import javax.persistence.EntityNotFoundException;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.Base64;
+
+@Service
+public class UserServiceImpl implements UserService {
+
+    private final UserRepository userRepository;
+
+    @Autowired
+    public UserServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    /**
+     * @param user 欲注册用户实体
+     * @return 是否成功注册，成功则返回此会员实体
+     */
+    @Override
+    public User register(User user) throws UserHasBeenSignUpException, InteriorWrongException {
+
+        try {
+            User verifyUser = userRepository.getOne(user.getEmail());
+            throw new UserHasBeenSignUpException();
+        } catch (EntityNotFoundException e) {
+            //未找到该实体才是正常流程
+            userRepository.save(user);
+
+            // 注册成功后发送邮箱链接
+            MailTask mailTask = new MailTask();
+            try {
+                mailTask.sendMail(user);
+            } catch (IOException | MessagingException e1) {
+                e1.printStackTrace();
+                throw new InteriorWrongException();
+            }
+            return user;
+        }
+    }
+
+    /**
+     * 【所有用户】的登录
+     *
+     * @param id  欲登录的用户ID
+     * @param pwd 欲登录的用户密码
+     * @return 登录结果，成功则返回此用户实体
+     */
+    @Override
+    public boolean logIn(String id, String pwd) throws UserNotExistException, WrongPwdException, UserNotActivatedException {
+        User user = null;
+        try {
+            user = userRepository.getOne(id);
+        } catch (EntityNotFoundException e) {
+            throw new UserNotExistException();
+        }
+
+        if (!user.getPassword().equals(pwd)) {
+            throw new WrongPwdException();
+        }
+
+        if (!user.isActivated()) {
+            throw new UserNotActivatedException();
+        }
+        return true;
+    }
+
+    /**
+     * 【用户】通过邮箱验证用户，验证后才可登录
+     *
+     * @param activeUrl 验证的连接参数
+     * @return 邮箱验证结果
+     */
+    @Override
+    public boolean activateByMail(String activeUrl) throws UnsupportedEncodingException, UserNotExistException, UserActiveUrlExpiredException {
+        byte[] base64decodedBytes = Base64.getUrlDecoder().decode(activeUrl);
+        String toActivateUserId = new String(base64decodedBytes, "utf-8");
+        User toActivate = null;
+        try {
+            toActivate = userRepository.getOne(toActivateUserId);
+        } catch (EntityNotFoundException e) {
+            throw new UserNotExistException();
+        }
+
+        if (toActivate.isActivated()) {
+            throw new UserActiveUrlExpiredException();
+        }
+
+        toActivate.setActivated(true);
+        userRepository.save(toActivate);
+        return true;
+    }
+
+    /**
+     * @param user 欲修改用户的实体
+     * @return 修改结果，成果则true
+     */
+    @Override
+    public boolean modifyUser(User user) throws UserNotExistException {
+        try {
+            User verifyUser = userRepository.getOne(user.getEmail());
+            userRepository.save(user);
+            return true;
+        } catch (EntityNotFoundException e) {
+            throw new UserNotExistException();
+        }
+    }
+
+    /**
+     * @param id 要查看的用户ID
+     * @return 用户详情
+     */
+    @Override
+    public User getUser(String id) throws UserNotExistException {
+        try {
+            return userRepository.getOne(id);
+        } catch (EntityNotFoundException e) {
+            throw new UserNotExistException();
+        }
+    }
+}

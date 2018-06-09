@@ -1,48 +1,43 @@
-//package cn.edu.nju.charlesfeng.controller;
-//
-//import cn.edu.nju.charlesfeng.model.Manager;
-//import cn.edu.nju.charlesfeng.model.Schedule;
-//import cn.edu.nju.charlesfeng.model.SeatInfo;
-//import cn.edu.nju.charlesfeng.model.Spot;
-//import cn.edu.nju.charlesfeng.filter.ContentSchedule;
-//import cn.edu.nju.charlesfeng.filter.ContentScheduleBrief;
-//import cn.edu.nju.charlesfeng.filter.RequestReturnObject;
-//import cn.edu.nju.charlesfeng.service.ScheduleService;
-//import cn.edu.nju.charlesfeng.util.enums.RequestReturnObjectState;
-//import cn.edu.nju.charlesfeng.util.enums.ProgramType;
-//import cn.edu.nju.charlesfeng.util.exceptions.ScheduleNotSettlableException;
-//import cn.edu.nju.charlesfeng.util.exceptions.SpotSeatDisorderException;
-//import com.alibaba.fastjson.JSON;
-//import org.apache.log4j.Logger;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.web.bind.annotation.*;
-//
-//import javax.servlet.http.HttpServletRequest;
-//import javax.servlet.http.HttpSession;
-//import java.time.LocalDate;
-//import java.time.LocalDateTime;
-//import java.time.LocalTime;
-//import java.util.LinkedHashMap;
-//import java.util.LinkedList;
-//import java.util.List;
-//import java.util.Map;
-//
-///**
-// * 有关计划／日程的前端控制器
-// */
-//@RestController
-//@RequestMapping("/schedule")
-//public class ScheduleController {
-//
-//    private static final Logger logger = Logger.getLogger(ScheduleController.class);
-//
-//    private final ScheduleService scheduleService;
-//
-//    @Autowired
-//    public ScheduleController(ScheduleService scheduleService) {
-//        this.scheduleService = scheduleService;
-//    }
-//
+package cn.edu.nju.charlesfeng.controller;
+
+import cn.edu.nju.charlesfeng.filter.RequestReturnObject;
+import cn.edu.nju.charlesfeng.model.Program;
+import cn.edu.nju.charlesfeng.service.ProgramService;
+import cn.edu.nju.charlesfeng.util.enums.RequestReturnObjectState;
+import cn.edu.nju.charlesfeng.util.enums.ProgramType;
+import cn.edu.nju.charlesfeng.util.exceptions.ProgramNotSettlableException;
+import cn.edu.nju.charlesfeng.util.exceptions.SpotSeatDisorderException;
+import com.alibaba.fastjson.JSON;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * 有关计划／日程的前端控制器
+ */
+@RestController
+@RequestMapping("/program")
+public class ProgramController {
+
+    private static final Logger logger = Logger.getLogger(ProgramController.class);
+
+    private final ProgramService programService;
+
+    @Autowired
+    public ProgramController(ProgramService programService) {
+        this.programService = programService;
+    }
+
 //    /**
 //     * @return 所有用户可见的日程／某一场馆的所有日程的简介
 //     */
@@ -58,7 +53,7 @@
 //        }
 //        return new RequestReturnObject(RequestReturnObjectState.OK, getBrief(allSchedules));
 //    }
-//
+
 //    /**
 //     * @return 所有用户可见的日程／某一场馆的所有日程的简介
 //     */
@@ -69,7 +64,17 @@
 //        List<Schedule> allSchedules = scheduleService.getAllSchedules();
 //        return new RequestReturnObject(RequestReturnObjectState.OK, getBrief(allSchedules));
 //    }
-//
+
+    /**
+     * @return 首页的节目推荐
+     */
+    @GetMapping("/recommend")
+    public RequestReturnObject getRecommendPrograms(@RequestParam("city") String city) {
+        logger.debug("INTO /program/recommend" + city);
+        Map<ProgramType, List<Program>> map = programService.recommendPrograms(LocalDateTime.now(), city, 5);
+        return new RequestReturnObject(RequestReturnObjectState.OK, map);
+    }
+
 //    /**
 //     * @return 某一条日程的详情
 //     */
@@ -79,7 +84,7 @@
 //        Schedule resultSchedule = scheduleService.getOneSchedule(id);
 //        return new RequestReturnObject(RequestReturnObjectState.OK, new ContentSchedule(resultSchedule));
 //    }
-//
+
 //    /**
 //     * 删除单条计划
 //     */
@@ -110,7 +115,7 @@
 //            boolean result = scheduleService.settleOneSchedule(scheduleId);
 //            if (result) return new RequestReturnObject(RequestReturnObjectState.OK);
 //            else return new RequestReturnObject(RequestReturnObjectState.SCHEDULE_NOT_SEETLABLE);
-//        } catch (ScheduleNotSettlableException e) {
+//        } catch (ProgramNotSettlableException e) {
 //            return new RequestReturnObject(RequestReturnObjectState.SCHEDULE_NOT_SEETLABLE);
 //        }
 //    }
@@ -207,4 +212,4 @@
 //        }
 //        return JSON.toJSONString(priceMap);
 //    }
-//}
+}

@@ -2,9 +2,14 @@ package cn.edu.nju.charlesfeng.repository;
 
 import cn.edu.nju.charlesfeng.model.Program;
 import cn.edu.nju.charlesfeng.model.id.ProgramID;
+import cn.edu.nju.charlesfeng.util.enums.ProgramType;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -13,4 +18,12 @@ import java.util.List;
 public interface ProgramRepository extends JpaRepository<Program, ProgramID> {
 
     List<Program> findByName(String name);
+
+    @Query("select p from Program p where p.programID.venueID=:venueID")
+    List<Program> findByVenueID(int venueID);
+
+    @Query(value = "select p from Program p where p.programType=:programType and p.programID.startTime>=:today and p.venue.address.city=:city")
+    Page<Program> getAvailablePrograms(@Param("today") LocalDateTime today, @Param("programType") ProgramType programType, @Param("city") String city, Pageable pageable);
+
+
 }

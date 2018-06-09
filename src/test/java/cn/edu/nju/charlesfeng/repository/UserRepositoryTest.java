@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
+import javax.persistence.EntityNotFoundException;
 import java.io.*;
 
 import static org.junit.Assert.*;
@@ -40,13 +41,19 @@ public class UserRepositoryTest {
 
     @Test
     public void testModify() {
+
     }
 
     @Test
     public void testGet() {
-        User user = userRepository.getOne("1234567890@qq.com");
-        Assert.assertEquals("byron", user.getName());
-        createImg(user.getPortrait());
+        try {
+            User user = userRepository.getOne("1234567890@qq.com");
+            Assert.assertEquals("byron", user.getName());
+        } catch (EntityNotFoundException e) {
+            e.printStackTrace();
+            System.out.println("未找到实体");
+        }
+        //createImg(user.getPortrait());
     }
 
     @Test

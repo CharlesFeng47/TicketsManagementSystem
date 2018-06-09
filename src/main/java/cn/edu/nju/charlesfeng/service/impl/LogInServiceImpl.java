@@ -1,15 +1,5 @@
 //package cn.edu.nju.charlesfeng.service.impl;
 //
-//import cn.edu.nju.charlesfeng.dao.AlipayRepository;
-//import cn.edu.nju.charlesfeng.dao.UserRepository;
-//import cn.edu.nju.charlesfeng.model.AlipayAccount;
-//import cn.edu.nju.charlesfeng.model.Member;
-//import cn.edu.nju.charlesfeng.model.SeatInfo;
-//import cn.edu.nju.charlesfeng.model.Spot;
-//import cn.edu.nju.charlesfeng.filter.User;
-//import cn.edu.nju.charlesfeng.service.LogInService;
-//import cn.edu.nju.charlesfeng.service.MailService;
-//import cn.edu.nju.charlesfeng.util.IdGenerator;
 //import cn.edu.nju.charlesfeng.util.enums.UserType;
 //import cn.edu.nju.charlesfeng.util.exceptions.*;
 //import org.springframework.beans.factory.annotation.Autowired;
@@ -54,41 +44,6 @@
 //
 //            return curMember;
 //        }
-//    }
-//
-//    @Override
-//    public Spot registerSpot(String pwd, String spotName, String site, String alipayId,
-//                             List<SeatInfo> seatInfos, String seatsMapJson, int curSeatTypeCount) throws UserNotExistException, AlipayEntityNotExistException {
-//        AlipayAccount alipayAccount = alipayDao.getAlipayEntity(alipayId);
-//        if (alipayAccount == null) throw new AlipayEntityNotExistException();
-//
-//        String sidBase = IdGenerator.generateSeatId();
-//        for (int i = 0; i < seatInfos.size(); i++) {
-//            SeatInfo curSeatInfo = seatInfos.get(i);
-//            curSeatInfo.setId(sidBase + "/" + i);
-//        }
-//
-//        String spotId;
-//        List<String> allSpotIds = getAllIds(userDao.getAllUser(UserType.SPOT));
-//        while (true) {
-//            int curRandom = (int) (Math.random() * 10000000);
-//            spotId = convertToSevenId(curRandom);
-//            if (allSpotIds.indexOf(spotId) < 0) break;
-//        }
-//
-//        Spot newSpot = new Spot();
-//        newSpot.setId(spotId);
-//        newSpot.setPwd(pwd);
-//        newSpot.setSpotName(spotName);
-//        newSpot.setExamined(false);
-//        newSpot.setSite(site);
-//        newSpot.setAlipayId(alipayId);
-//        newSpot.setSeatInfos(seatInfos);
-//        newSpot.setAllSeatsJson(seatsMapJson);
-//        newSpot.setCurSeatTypeCount(curSeatTypeCount);
-//
-//        String curSpotId = userDao.saveUser(newSpot, UserType.SPOT);
-//        return (Spot) userDao.getUser(curSpotId, UserType.SPOT);
 //    }
 //
 //    @Override

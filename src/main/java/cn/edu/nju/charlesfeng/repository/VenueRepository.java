@@ -2,6 +2,7 @@ package cn.edu.nju.charlesfeng.repository;
 
 import cn.edu.nju.charlesfeng.model.Venue;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
@@ -13,5 +14,8 @@ public interface VenueRepository extends JpaRepository<Venue, Integer> {
     List<Venue> findByVenueNameLike(String venueName);
 
     Venue findByVenueName(String venueName);
+
+    @Query("select distinct v.address.city from Venue v")
+    List<String> getAllCity();
 
 }
