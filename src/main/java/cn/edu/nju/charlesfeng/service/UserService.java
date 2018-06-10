@@ -14,7 +14,7 @@ public interface UserService {
      * @param user 欲注册用户实体
      * @return 是否成功注册，成功则返回此会员实体
      */
-    User register(User user) throws UserHasBeenSignUpException, InteriorWrongException;
+    boolean register(User user) throws UserHasBeenSignUpException, InteriorWrongException;
 
     /**
      * 【所有用户】的登录
@@ -23,7 +23,7 @@ public interface UserService {
      * @param pwd 欲登录的用户密码
      * @return 登录结果，成功则返回此用户实体
      */
-    boolean logIn(String id, String pwd) throws UserNotExistException, WrongPwdException, UserNotActivatedException;
+    User logIn(String id, String pwd) throws UserNotExistException, WrongPwdException, UserNotActivatedException;
 
     /**
      * 【用户】通过邮箱验证用户，验证后才可登录

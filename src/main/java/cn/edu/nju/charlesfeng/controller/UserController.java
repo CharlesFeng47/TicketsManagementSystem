@@ -1,61 +1,137 @@
-//package cn.edu.nju.charlesfeng.controller;
-//
-//import cn.edu.nju.charlesfeng.model.*;
-//import cn.edu.nju.charlesfeng.util.filter.ContentMemberOfSpot;
-//import cn.edu.nju.charlesfeng.util.helper.RequestReturnObject;
-//import cn.edu.nju.charlesfeng.util.filter.UnexaminedSpot;
-//import cn.edu.nju.charlesfeng.util.filter.User;
-//import cn.edu.nju.charlesfeng.service.UserService;
-//import cn.edu.nju.charlesfeng.util.enums.RequestReturnObjectState;
-//import cn.edu.nju.charlesfeng.util.enums.UserType;
-//import cn.edu.nju.charlesfeng.util.exceptions.AlipayEntityNotExistException;
-//import cn.edu.nju.charlesfeng.util.exceptions.UserActiveUrlExpiredException;
-//import cn.edu.nju.charlesfeng.util.exceptions.MemberConvertCouponCreditNotEnoughException;
-//import cn.edu.nju.charlesfeng.util.exceptions.UserNotExistException;
-//import com.alibaba.fastjson.JSON;
-//import org.apache.log4j.Logger;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.web.bind.annotation.PostMapping;
-//import org.springframework.web.bind.annotation.RequestMapping;
-//import org.springframework.web.bind.annotation.RequestParam;
-//import org.springframework.web.bind.annotation.RestController;
-//
-//import javax.servlet.http.HttpServletRequest;
-//import javax.servlet.http.HttpSession;
-//import java.io.UnsupportedEncodingException;
-//import java.util.List;
-//
-///**
-// * 对用户信息访问的控制器
-// */
-//@RestController
-//@RequestMapping("/user")
-//public class UserController {
-//
-//    private static final Logger logger = Logger.getLogger(UserController.class);
-//
-//    private final UserService userService;
-//
-//    @Autowired
-//    public UserController(UserService userService) {
-//        this.userService = userService;
-//    }
-//
-//    /**
-//     * 根据Token获取当前用户
-//     */
-//    @PostMapping
-//    public RequestReturnObject getToken(@RequestParam("token") String token, HttpServletRequest request) {
-//        logger.debug("INTO /user: " + token);
-//        HttpSession session = request.getSession();
-////        User curUser = (User) session.getAttribute(token);
-//        Object o = session.getAttribute(token);
-//        assert o != null && o instanceof User;
-//        User curUser = (User) o;
-//
-//        return new RequestReturnObject(RequestReturnObjectState.OK, curUser);
-//    }
-//
+package cn.edu.nju.charlesfeng.controller;
+
+import cn.edu.nju.charlesfeng.model.User;
+import cn.edu.nju.charlesfeng.service.UserService;
+import cn.edu.nju.charlesfeng.util.enums.RequestReturnObjectState;
+import cn.edu.nju.charlesfeng.util.exceptions.*;
+import cn.edu.nju.charlesfeng.util.helper.RequestReturnObject;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.io.UnsupportedEncodingException;
+
+/**
+ * 对用户信息访问的控制器
+ */
+@RestController
+@RequestMapping("/user")
+public class UserController {
+
+    private static final Logger logger = Logger.getLogger(UserController.class);
+
+    private final UserService userService;
+
+    @Autowired
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
+
+    /**
+     * 用户登录
+     *
+     * @return 系统服务状态
+     */
+    @PostMapping("/user_login")
+    public RequestReturnObject login(@RequestParam("email") String email, @RequestParam("password") String pwd, HttpServletRequest request) {
+        logger.debug("INTO /user/login");
+        //TODO 需要考虑用户的重复登录问题
+        try {
+            User user = userService.logIn(email, pwd);
+            String token = "USER:" + ": " + email;
+            HttpSession session = request.getSession();
+            session.setAttribute(token, user);
+            return new RequestReturnObject(RequestReturnObjectState.OK, token);
+        } catch (UserNotExistException e) {
+            e.printStackTrace();
+            return new RequestReturnObject(RequestReturnObjectState.USER_NOT_EXIST);
+        } catch (WrongPwdException e) {
+            e.printStackTrace();
+            return new RequestReturnObject(RequestReturnObjectState.USER_PWD_WRONG);
+        } catch (UserNotActivatedException e) {
+            e.printStackTrace();
+            return new RequestReturnObject(RequestReturnObjectState.USER_INACTIVE);
+        }
+    }
+
+    /**
+     * 用户注册
+     *
+     * @return 该用户对应的token
+     */
+    @PostMapping("/user_sign_up")
+    public RequestReturnObject memberSignUp(@RequestParam("username") String username, @RequestParam("password") String pwd,
+                                            @RequestParam("email") String email, HttpServletRequest request) {
+        logger.debug("INTO /user/user_sign_up");
+        try {
+            User user = new User();
+            user.setEmail(email);
+            user.setActivated(false);
+            user.setPassword(pwd);
+            user.setName(username);
+            //TODO 此处需要添加用户的默认头像
+            userService.register(user);
+            //TODO 注册后邮箱尚未验证，应该不需要把用户的实体置于session中吧
+            String token = "USER: " + user.getEmail();
+            HttpSession session = request.getSession();
+            session.setAttribute(token, user);
+            return new RequestReturnObject(RequestReturnObjectState.OK, token);
+        } catch (UserHasBeenSignUpException e) {
+            return new RequestReturnObject(RequestReturnObjectState.USER_HAS_BEEN_SIGN_UP);
+        } catch (InteriorWrongException e) {
+            return new RequestReturnObject(RequestReturnObjectState.INTERIOR_WRONG);
+        }
+    }
+
+    /**
+     * @return 邮箱链接验证
+     */
+    @PostMapping("/user_active")
+    public RequestReturnObject verifyUserEmail(@RequestParam("activeUrl") String activeUrl, HttpServletRequest request) {
+        logger.debug("INTO /user/user_active");
+        System.out.println(activeUrl);
+        try {
+            userService.activateByMail(activeUrl);
+            return new RequestReturnObject(RequestReturnObjectState.OK);
+        } catch (UnsupportedEncodingException e) {
+            return new RequestReturnObject(RequestReturnObjectState.INTERIOR_WRONG);
+        } catch (UserNotExistException e) {
+            return new RequestReturnObject(RequestReturnObjectState.MEMBER_ACTIVATE_URL_WRONG);
+        } catch (UserActiveUrlExpiredException e) {
+            return new RequestReturnObject(RequestReturnObjectState.MEMBER_ACTIVATE_URL_EXPIRE);
+        }
+    }
+
+    /**
+     * 用户登出
+     */
+    @PostMapping("/logout")
+    public RequestReturnObject logout(@RequestParam("token") String token, HttpServletRequest request) {
+        logger.debug("INTO /user/logout");
+        HttpSession session = request.getSession();
+        session.setAttribute(token, null);
+        return new RequestReturnObject(RequestReturnObjectState.OK);
+    }
+
+    /**
+     * 根据Token获取当前用户
+     */
+    @PostMapping
+    public RequestReturnObject getToken(@RequestParam("token") String token, HttpServletRequest request) {
+        logger.debug("INTO /user: " + token);
+        HttpSession session = request.getSession();
+//        User curUser = (User) session.getAttribute(token);
+        Object o = session.getAttribute(token);
+        assert o instanceof User;
+        User curUser = (User) o;
+        return new RequestReturnObject(RequestReturnObjectState.OK, curUser);
+    }
+
 //    /**
 //     * 会员修改
 //     *
@@ -84,7 +160,7 @@
 //            return new RequestReturnObject(RequestReturnObjectState.INTERIOR_WRONG);
 //        }
 //    }
-//
+
 //    /**
 //     * 场馆修改
 //     *
@@ -119,7 +195,7 @@
 //            return new RequestReturnObject(RequestReturnObjectState.ALIPAY_ENTITY_NOT_EXIST);
 //        }
 //    }
-//
+
 //    /**
 //     * 兑换优惠券
 //     *
@@ -146,7 +222,7 @@
 //            return new RequestReturnObject(RequestReturnObjectState.COUPON_CONVERT_CREDIT_NOT_ENOUGH);
 //        }
 //    }
-//
+
 //    /**
 //     * @return 场馆获取到的会员信息
 //     */
@@ -161,31 +237,7 @@
 //            return new RequestReturnObject(RequestReturnObjectState.USER_NOT_EXIST);
 //        }
 //    }
-//
-//    /**
-//     * @return 会员注销账户
-//     */
-//    @PostMapping("member_invalidate")
-//    public RequestReturnObject memberInvalidate(@RequestParam("token") String token, HttpServletRequest request) {
-//        logger.debug("INTO /user/member_invalidate");
-//
-//        HttpSession session = request.getSession();
-////        Member curMember = (Member) session.getAttribute(token);
-//        Object o = session.getAttribute(token);
-//        assert o != null && o instanceof Member;
-//        Member curMember = (Member) o;
-//
-//        boolean result = userService.invalidate(curMember);
-//        if (result) {
-//            // 将此用户注销
-//            session.setAttribute(token, null);
-//            return new RequestReturnObject(RequestReturnObjectState.OK);
-//        } else {
-//            return new RequestReturnObject(RequestReturnObjectState.INTERIOR_WRONG);
-//        }
-//
-//    }
-//
+
 //    /**
 //     * @return 经理获取未审批的用户
 //     */
@@ -205,7 +257,7 @@
 //            return new RequestReturnObject(RequestReturnObjectState.INTERIOR_WRONG);
 //        }
 //    }
-//
+
 //    /**
 //     * @return 经理获取单个场馆的信息
 //     */
@@ -226,7 +278,7 @@
 //            return new RequestReturnObject(RequestReturnObjectState.INTERIOR_WRONG);
 //        }
 //    }
-//
+
 //    /**
 //     * @return 经理获取未审批的用户
 //     */
@@ -247,25 +299,4 @@
 //            return new RequestReturnObject(RequestReturnObjectState.INTERIOR_WRONG);
 //        }
 //    }
-//
-//    /**
-//     * @return 会员邮箱链接验证
-//     */
-//    @PostMapping("user_active")
-//    public RequestReturnObject examineSpot(@RequestParam("activeUrl") String activeUrl, HttpServletRequest request) {
-//        logger.debug("INTO /user/member_active");
-//
-//        System.out.println(activeUrl);
-//        try {
-//            userService.activateByMail(activeUrl);
-//            return new RequestReturnObject(RequestReturnObjectState.OK);
-//        } catch (UnsupportedEncodingException e) {
-//            return new RequestReturnObject(RequestReturnObjectState.INTERIOR_WRONG);
-//        } catch (UserNotExistException e) {
-//            return new RequestReturnObject(RequestReturnObjectState.MEMBER_ACTIVATE_URL_WRONG);
-//        } catch (UserActiveUrlExpiredException e) {
-//            return new RequestReturnObject(RequestReturnObjectState.MEMBER_ACTIVATE_URL_EXPIRE);
-//        }
-//    }
-//
-//}
+}

@@ -15,7 +15,7 @@ public enum RequestReturnObjectState implements Serializable {
     USER_PWD_WRONG(2),
     // 内部计算错误
     INTERIOR_WRONG(3),
-    // 会员名已被注册
+    // 该邮箱已被注册
     USER_HAS_BEEN_SIGN_UP(4),
     // 参数缺失
     ORDER_MEMBER_ID_MISS(5),
@@ -31,22 +31,20 @@ public enum RequestReturnObjectState implements Serializable {
     TICKET_STATE_WRONG(10),
     // 订单不存在
     TICKET_NOT_EXIST(11),
-    // 会员已注销
-    MEMBER_INVALIDATE(12),
-    // 会员账号未激活
-    MEMBER_INACTIVE(13),
+    // 用户账号未激活
+    USER_INACTIVE(12),
     // 计划不能被结算
-    SCHEDULE_NOT_SEETLABLE(14),
+    SCHEDULE_NOT_SEETLABLE(13),
     // 支付宝账号不存在
-    ALIPAY_ENTITY_NOT_EXIST(15),
+    ALIPAY_ENTITY_NOT_EXIST(14),
     // 订单不可被退款
-    ORDER_NOT_REFUNDABLE(16),
+    ORDER_NOT_REFUNDABLE(15),
     // 用户链接错误
-    MEMBER_ACTIVATE_URL_EXPIRE(17),
+    MEMBER_ACTIVATE_URL_EXPIRE(16),
     // 用户链接错误
-    MEMBER_ACTIVATE_URL_WRONG(18),
+    MEMBER_ACTIVATE_URL_WRONG(17),
     // 订单检票方不是订单中的场馆
-    TICKET_CHECKER_WRONG(19);
+    TICKET_CHECKER_WRONG(18);
 
     private int repre;
 

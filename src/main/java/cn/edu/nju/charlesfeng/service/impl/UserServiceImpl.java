@@ -29,7 +29,7 @@ public class UserServiceImpl implements UserService {
      * @return 是否成功注册，成功则返回此会员实体
      */
     @Override
-    public User register(User user) throws UserHasBeenSignUpException, InteriorWrongException {
+    public boolean register(User user) throws UserHasBeenSignUpException, InteriorWrongException {
 
         try {
             User verifyUser = userRepository.getOne(user.getEmail());
@@ -46,7 +46,7 @@ public class UserServiceImpl implements UserService {
                 e1.printStackTrace();
                 throw new InteriorWrongException();
             }
-            return user;
+            return true;
         }
     }
 
@@ -58,7 +58,7 @@ public class UserServiceImpl implements UserService {
      * @return 登录结果，成功则返回此用户实体
      */
     @Override
-    public boolean logIn(String id, String pwd) throws UserNotExistException, WrongPwdException, UserNotActivatedException {
+    public User logIn(String id, String pwd) throws UserNotExistException, WrongPwdException, UserNotActivatedException {
         User user = null;
         try {
             user = userRepository.getOne(id);
@@ -73,7 +73,7 @@ public class UserServiceImpl implements UserService {
         if (!user.isActivated()) {
             throw new UserNotActivatedException();
         }
-        return true;
+        return user;
     }
 
     /**
