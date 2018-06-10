@@ -21,7 +21,7 @@ public class AddressHelper {
 
     public AddressHelper() {
         distance_s = Arrays.asList("上海", "苏州", "无锡", "昆山");
-        distance_n = Arrays.asList("南京", "宜兴", "常熟", "上海");
+        distance_n = Arrays.asList("南京", "上海", "宜兴", "常熟");
     }
 
     /**
