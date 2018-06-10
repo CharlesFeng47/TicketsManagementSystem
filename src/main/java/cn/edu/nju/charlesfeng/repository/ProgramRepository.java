@@ -24,6 +24,4 @@ public interface ProgramRepository extends JpaRepository<Program, ProgramID> {
 
     @Query(value = "select p from Program p where p.programType=:programType and p.programID.startTime>=:today and p.venue.address.city=:city")
     Page<Program> getAvailablePrograms(@Param("today") LocalDateTime today, @Param("programType") ProgramType programType, @Param("city") String city, Pageable pageable);
-
-
 }
