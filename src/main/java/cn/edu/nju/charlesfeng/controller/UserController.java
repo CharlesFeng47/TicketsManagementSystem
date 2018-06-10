@@ -45,6 +45,7 @@ public class UserController {
             User user = userService.logIn(email, pwd);
             String token = "USER:" + ": " + email;
             HttpSession session = request.getSession();
+            session.setAttribute("user_id", email);
             session.setAttribute(token, user);
             return new RequestReturnObject(RequestReturnObjectState.OK, token);
         } catch (UserNotExistException e) {
@@ -80,6 +81,7 @@ public class UserController {
             //TODO 注册后邮箱尚未验证，应该不需要把用户的实体置于session中吧
             String token = "USER: " + user.getEmail();
             HttpSession session = request.getSession();
+            session.setAttribute("user_id", email);
             session.setAttribute(token, user);
             return new RequestReturnObject(RequestReturnObjectState.OK, token);
         } catch (UserHasBeenSignUpException e) {

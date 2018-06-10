@@ -1,18 +1,54 @@
-//package cn.edu.nju.charlesfeng.service;
-//
-//import cn.edu.nju.charlesfeng.model.*;
-//import cn.edu.nju.charlesfeng.util.filter.User;
-//import cn.edu.nju.charlesfeng.util.enums.OrderType;
-//import cn.edu.nju.charlesfeng.util.enums.OrderWay;
-//import cn.edu.nju.charlesfeng.util.exceptions.*;
-//
-//import java.util.List;
-//
-///**
-// * 系统中订单的服务
-// */
-//public interface OrderService {
-//
+package cn.edu.nju.charlesfeng.service;
+
+import cn.edu.nju.charlesfeng.model.*;
+import cn.edu.nju.charlesfeng.model.id.OrderID;
+import cn.edu.nju.charlesfeng.util.enums.OrderType;
+import cn.edu.nju.charlesfeng.util.enums.OrderWay;
+import cn.edu.nju.charlesfeng.util.exceptions.*;
+
+import java.util.List;
+
+/**
+ * 系统中订单的服务
+ */
+public interface OrderService {
+
+    /**
+     * @param orderID 要查看的订单ID
+     * @return 订单详情
+     */
+    Order checkOrderDetail(OrderID orderID);
+
+//    /**
+//     * @param member     支付的用户
+//     * @param oid        支付的订单编号
+//     * @param paymentId  支付的账号
+//     * @param paymentPwd 支付的密码
+//     * @return 支付结果，成功则true
+//     */
+//    boolean payOrder(Member member, int oid, String paymentId, String paymentPwd) throws AlipayWrongPwdException, AlipayBalanceNotAdequateException;
+
+    /**
+     * @param uid 查看订单的用户
+     * @return 查看某一用户的全部订单
+     */
+    List<Order> getMyOrders(String uid);
+
+//    /**
+//     * @param spot 检票登记的主动方场馆
+//     * @param oid  检票登记的订单号
+//     * @return 检票结果，成功则true
+//     */
+//    boolean checkTicket(Spot spot, int oid) throws TicketHasBeenCheckedException, TicketStateWrongException, OrderNotExistException, TicketCheckerWrongException;
+
+//    /**
+//     * @param member    要退订的用户
+//     * @param oid       要退订的订单ID
+//     * @param paymentId 退款到账账户
+//     * @return 退订结果，成功则true
+//     */
+//    boolean unsubscribe(Member member, int oid, String paymentId) throws InteriorWrongException, OrderNotRefundableException, AlipayEntityNotExistException;
+
 //    /**
 //     * 预定计划
 //     *
@@ -33,40 +69,5 @@
 //    int subscribe(User curUser, String scheduleId, OrderType orderType, NotChoseSeats notChoseSeats,
 //                  String choseSeatsJson, OrderWay orderWay, boolean onSpotIsMember, String onSpotMemberId,
 //                  boolean didUseCoupon, Coupon usedCoupon, String calProcess, double totalPrice) throws UserNotExistException, InteriorWrongException;
-//
-//    /**
-//     * @param member     支付的用户
-//     * @param oid        支付的订单编号
-//     * @param paymentId  支付的账号
-//     * @param paymentPwd 支付的密码
-//     * @return 支付结果，成功则true
-//     */
-//    boolean payOrder(Member member, int oid, String paymentId, String paymentPwd) throws AlipayWrongPwdException, AlipayBalanceNotAdequateException;
-//
-//    /**
-//     * @param spot 检票登记的主动方场馆
-//     * @param oid  检票登记的订单号
-//     * @return 检票结果，成功则true
-//     */
-//    boolean checkTicket(Spot spot, int oid) throws TicketHasBeenCheckedException, TicketStateWrongException, OrderNotExistException, TicketCheckerWrongException;
-//
-//    /**
-//     * @param mid 查看订单的会员
-//     * @return 查看某一会员的全部ing单
-//     */
-//    List<Order> getMyOrders(String mid);
-//
-//    /**
-//     * @param oid 要查看的订单ID
-//     * @return 订单详情
-//     */
-//    Order checkOrderDetail(int oid);
-//
-//    /**
-//     * @param member    要退订的用户
-//     * @param oid       要退订的订单ID
-//     * @param paymentId 退款到账账户
-//     * @return 退订结果，成功则true
-//     */
-//    boolean unsubscribe(Member member, int oid, String paymentId) throws InteriorWrongException, OrderNotRefundableException, AlipayEntityNotExistException;
-//}
+
+}

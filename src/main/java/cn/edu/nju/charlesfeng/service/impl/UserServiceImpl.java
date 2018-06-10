@@ -32,7 +32,7 @@ public class UserServiceImpl implements UserService {
      * @return 是否成功注册，成功则返回此会员实体
      */
     @Override
-    @Transactional
+    //@Transactional
     public boolean register(User user) throws UserHasBeenSignUpException, InteriorWrongException {
         User verifyUser = userRepository.findByEmail(user.getEmail());
         if (verifyUser != null) {
@@ -82,7 +82,7 @@ public class UserServiceImpl implements UserService {
      * @return 邮箱验证结果
      */
     @Override
-    @Transactional
+    //@Transactional
     public boolean activateByMail(String activeUrl) throws UnsupportedEncodingException, UserNotExistException, UserActiveUrlExpiredException {
         byte[] base64decodedBytes = Base64.getUrlDecoder().decode(activeUrl);
         String toActivateUserId = new String(base64decodedBytes, "utf-8");

@@ -35,7 +35,7 @@ public class AlipayServiceImpl implements AlipayService {
      * @throws AlipayBalanceNotAdequateException 余额不足
      */
     @Override
-    @Transactional
+    //@Transactional
     public boolean transferAccounts(String from_account, String password, String to_account, double amount) throws UserNotExistException, WrongPwdException, AlipayBalanceNotAdequateException {
         AlipayAccount from_externalBalance = null;
         try {
