@@ -6,6 +6,7 @@ import cn.edu.nju.charlesfeng.service.UserService;
 import cn.edu.nju.charlesfeng.task.MD5Task;
 import cn.edu.nju.charlesfeng.task.MailTask;
 import cn.edu.nju.charlesfeng.util.exceptions.*;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,22 +34,21 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public boolean register(User user) throws UserHasBeenSignUpException, InteriorWrongException {
-        try {
-            User verifyUser = userRepository.getOne(user.getEmail());
+        User verifyUser = userRepository.findByEmail(user.getEmail());
+        if (verifyUser != null) {
             throw new UserHasBeenSignUpException();
-        } catch (EntityNotFoundException e) {
-            //未找到该实体才是正常流程
-            userRepository.save(user);
-            // 注册成功后发送邮箱链接
-            MailTask mailTask = new MailTask();
-            try {
-                mailTask.sendMail(user);
-            } catch (IOException | MessagingException e1) {
-                e1.printStackTrace();
-                throw new InteriorWrongException();
-            }
-            return true;
         }
+        userRepository.save(user);
+
+        // 注册成功后发送邮箱链接
+        MailTask mailTask = new MailTask();
+        try {
+            mailTask.sendMail(user);
+        } catch (IOException | MessagingException e1) {
+            e1.printStackTrace();
+            throw new InteriorWrongException();
+        }
+        return true;
     }
 
     /**
@@ -60,14 +60,12 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public User logIn(String id, String pwd) throws UserNotExistException, WrongPwdException, UserNotActivatedException {
-        User user = null;
-        try {
-            user = userRepository.getOne(id);
-        } catch (EntityNotFoundException e) {
+        User user = userRepository.findByEmail(id);
+        if (user == null) {
             throw new UserNotExistException();
         }
 
-        if (!pwd.equals(MD5Task.encodeMD5(user.getPassword()))) {
+        if (!user.getPassword().equals(MD5Task.encodeMD5(pwd))) {
             throw new WrongPwdException();
         }
 
@@ -88,10 +86,8 @@ public class UserServiceImpl implements UserService {
     public boolean activateByMail(String activeUrl) throws UnsupportedEncodingException, UserNotExistException, UserActiveUrlExpiredException {
         byte[] base64decodedBytes = Base64.getUrlDecoder().decode(activeUrl);
         String toActivateUserId = new String(base64decodedBytes, "utf-8");
-        User toActivate = null;
-        try {
-            toActivate = userRepository.getOne(toActivateUserId);
-        } catch (EntityNotFoundException e) {
+        User toActivate = userRepository.findByEmail(toActivateUserId);
+        if (toActivate == null) {
             throw new UserNotExistException();
         }
 
@@ -110,13 +106,12 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public boolean modifyUser(User user) throws UserNotExistException {
-        try {
-            User verifyUser = userRepository.getOne(user.getEmail());
-            userRepository.save(user);
-            return true;
-        } catch (EntityNotFoundException e) {
+        User verifyUser = userRepository.findByEmail(user.getEmail());
+        if (verifyUser == null) {
             throw new UserNotExistException();
         }
+        userRepository.save(user);
+        return true;
     }
 
     /**
@@ -124,11 +119,7 @@ public class UserServiceImpl implements UserService {
      * @return 用户详情
      */
     @Override
-    public User getUser(String id) throws UserNotExistException {
-        try {
-            return userRepository.getOne(id);
-        } catch (EntityNotFoundException e) {
-            throw new UserNotExistException();
-        }
+    public User getUser(String id) {
+        return userRepository.findByEmail(id);
     }
 }

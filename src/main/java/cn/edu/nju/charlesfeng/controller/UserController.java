@@ -9,10 +9,7 @@ import cn.edu.nju.charlesfeng.util.helper.ImgHelper;
 import cn.edu.nju.charlesfeng.util.helper.RequestReturnObject;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -70,6 +67,7 @@ public class UserController {
     @PostMapping("/user_sign_up")
     public RequestReturnObject memberSignUp(@RequestParam("username") String username, @RequestParam("password") String pwd,
                                             @RequestParam("email") String email, HttpServletRequest request) {
+
         logger.debug("INTO /user/user_sign_up");
         try {
             User user = new User();

@@ -43,5 +43,5 @@ public interface UserService {
      * @param id 要查看的用户ID
      * @return 用户详情
      */
-    User getUser(String id) throws UserNotExistException;
+    User getUser(String id);
 }
