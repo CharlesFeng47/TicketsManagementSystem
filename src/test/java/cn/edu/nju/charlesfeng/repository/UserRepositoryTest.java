@@ -104,5 +104,4 @@ public class UserRepositoryTest {
         assert data != null;
         return encoder.encode(data);
     }
-
 }

@@ -2,8 +2,10 @@ package cn.edu.nju.charlesfeng.controller;
 
 import cn.edu.nju.charlesfeng.model.User;
 import cn.edu.nju.charlesfeng.service.UserService;
+import cn.edu.nju.charlesfeng.task.MD5Task;
 import cn.edu.nju.charlesfeng.util.enums.RequestReturnObjectState;
 import cn.edu.nju.charlesfeng.util.exceptions.*;
+import cn.edu.nju.charlesfeng.util.helper.ImgHelper;
 import cn.edu.nju.charlesfeng.util.helper.RequestReturnObject;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.UnsupportedEncodingException;
+import java.util.Objects;
 
 /**
  * 对用户信息访问的控制器
@@ -72,9 +75,9 @@ public class UserController {
             User user = new User();
             user.setEmail(email);
             user.setActivated(false);
-            user.setPassword(pwd);
+            user.setPassword(MD5Task.encodeMD5(pwd));
             user.setName(username);
-            //TODO 此处需要添加用户的默认头像
+            user.setPortrait(ImgHelper.getBaseImg(Objects.requireNonNull(this.getClass().getClassLoader().getResource("default.png")).getPath()));
             userService.register(user);
             //TODO 注册后邮箱尚未验证，应该不需要把用户的实体置于session中吧
             String token = "USER: " + user.getEmail();

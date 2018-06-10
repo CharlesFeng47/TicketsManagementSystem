@@ -3,10 +3,12 @@ package cn.edu.nju.charlesfeng.service.impl;
 import cn.edu.nju.charlesfeng.model.User;
 import cn.edu.nju.charlesfeng.repository.UserRepository;
 import cn.edu.nju.charlesfeng.service.UserService;
+import cn.edu.nju.charlesfeng.task.MD5Task;
 import cn.edu.nju.charlesfeng.task.MailTask;
 import cn.edu.nju.charlesfeng.util.exceptions.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.mail.MessagingException;
 import javax.persistence.EntityNotFoundException;
@@ -29,15 +31,14 @@ public class UserServiceImpl implements UserService {
      * @return 是否成功注册，成功则返回此会员实体
      */
     @Override
+    @Transactional
     public boolean register(User user) throws UserHasBeenSignUpException, InteriorWrongException {
-
         try {
             User verifyUser = userRepository.getOne(user.getEmail());
             throw new UserHasBeenSignUpException();
         } catch (EntityNotFoundException e) {
             //未找到该实体才是正常流程
             userRepository.save(user);
-
             // 注册成功后发送邮箱链接
             MailTask mailTask = new MailTask();
             try {
@@ -66,7 +67,7 @@ public class UserServiceImpl implements UserService {
             throw new UserNotExistException();
         }
 
-        if (!user.getPassword().equals(pwd)) {
+        if (!pwd.equals(MD5Task.encodeMD5(user.getPassword()))) {
             throw new WrongPwdException();
         }
 
@@ -83,6 +84,7 @@ public class UserServiceImpl implements UserService {
      * @return 邮箱验证结果
      */
     @Override
+    @Transactional
     public boolean activateByMail(String activeUrl) throws UnsupportedEncodingException, UserNotExistException, UserActiveUrlExpiredException {
         byte[] base64decodedBytes = Base64.getUrlDecoder().decode(activeUrl);
         String toActivateUserId = new String(base64decodedBytes, "utf-8");
