@@ -13,7 +13,7 @@ import java.io.Serializable;
 public class User implements Serializable {
 
     /**
-     *  用户ID，邮箱
+     * 用户ID，邮箱
      */
     @Id
     @GenericGenerator(name = "myGenerator", strategy = "assigned")
@@ -35,7 +35,8 @@ public class User implements Serializable {
     /**
      * 头像
      */
-    @Column(nullable = false)
+    @Lob
+    @Column(columnDefinition = "longblob")
     private String portrait;
 
     /**

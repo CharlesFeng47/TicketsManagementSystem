@@ -21,7 +21,7 @@ import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@Transactional
+//@Transactional
 public class UserRepositoryTest {
 
     @Autowired
@@ -31,12 +31,14 @@ public class UserRepositoryTest {
     @Test
     public void testAdd() {
         User user = new User();
-        user.setEmail("1234567890@qq.com");
+        user.setEmail("123fvg4567890@qq.com");
         user.setPassword("qwertyuiop");
         user.setName("byron");
         user.setActivated(false);
         user.setPortrait(getBaseImg());
-        userRepository.save(user);
+        System.out.println("开始添加");
+        userRepository.saveAndFlush(user);
+        System.out.println("添加结束");
     }
 
     @Test

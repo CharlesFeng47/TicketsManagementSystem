@@ -40,6 +40,8 @@ public class Program implements Serializable {
     /**
      * 节目海报
      */
+    @Lob
+    @Column(columnDefinition = "longblob")
     private String poster;
 
     /**
