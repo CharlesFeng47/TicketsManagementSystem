@@ -32,7 +32,7 @@ public class ImgHelper {
         }
         BASE64Encoder encoder = new BASE64Encoder();
         assert data != null;
-        return encoder.encode(data);
+        return "data:image/jpeg;base64," + encoder.encode(data);
     }
 
     /**
