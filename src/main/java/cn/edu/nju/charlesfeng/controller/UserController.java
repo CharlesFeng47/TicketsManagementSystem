@@ -40,7 +40,6 @@ public class UserController {
     @PostMapping("/user_login")
     public RequestReturnObject login(@RequestParam("email") String email, @RequestParam("password") String pwd, HttpServletRequest request) {
         logger.debug("INTO /user/login");
-        //TODO 需要考虑用户的重复登录问题
         try {
             User user = userService.logIn(email, pwd);
             String token = "USER:" + ": " + email;

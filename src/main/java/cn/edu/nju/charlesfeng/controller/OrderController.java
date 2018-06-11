@@ -1,6 +1,8 @@
 package cn.edu.nju.charlesfeng.controller;
 
 import cn.edu.nju.charlesfeng.model.Order;
+import cn.edu.nju.charlesfeng.model.Program;
+import cn.edu.nju.charlesfeng.model.Venue;
 import cn.edu.nju.charlesfeng.model.id.OrderID;
 import cn.edu.nju.charlesfeng.service.OrderService;
 import cn.edu.nju.charlesfeng.util.enums.RequestReturnObjectState;
@@ -46,7 +48,11 @@ public class OrderController {
      * 获取单个订单（确认订单操作时）TODO 暂时无法测试，底层尚未有订单
      */
     @GetMapping("/getOneOrderForConfirm")
-    @FastJsonView(include = @FastJsonFilter(clazz = Order.class, props = {"orderID", "totalPrice", "program.name", "program.poster", "program.venue.address", "tickets"}))
+    @FastJsonView(include = {
+            @FastJsonFilter(clazz = Order.class, props = {"orderID", "totalPrice", "program", "tickets"}),
+            @FastJsonFilter(clazz = Program.class, props = {"name", "poster", "venue"}),
+            @FastJsonFilter(clazz = Venue.class, props = {"address"})
+    })
     public Order getOneOrderForConfirm(@RequestParam("order_time") LocalDateTime time, @SessionAttribute("user_id") String userID) {
         logger.debug("INTO /order/getOneOrder" + userID + time);
         OrderID orderID = new OrderID();
