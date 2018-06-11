@@ -43,7 +43,7 @@ public class OrderController {
     }
 
     /**
-     * 获取单个订单（确认订单操作时）
+     * 获取单个订单（确认订单操作时）TODO 暂时无法测试，顶层尚未有订单
      */
     @GetMapping("/getOneOrderForConfirm")
     @FastJsonView(include = @FastJsonFilter(clazz = Order.class, props = {"orderID", "totalPrice", "program.name", "program.poster", "program.venue.address", "tickets"}))

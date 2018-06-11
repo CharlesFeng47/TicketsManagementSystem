@@ -3,6 +3,7 @@ package cn.edu.nju.charlesfeng.util.filter;
 import cn.edu.nju.charlesfeng.model.Par;
 import cn.edu.nju.charlesfeng.model.Program;
 import cn.edu.nju.charlesfeng.model.Venue;
+import cn.edu.nju.charlesfeng.util.enums.SaleType;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -48,6 +49,21 @@ public class BriefProgram implements Serializable {
      */
     private LocalDateTime time;
 
+    /**
+     * 浏览量
+     */
+    private int scanVolume;
+
+    /**
+     * 喜爱量
+     */
+    private int favoriteVolume;
+
+    /**
+     * 当前节目的售票状态
+     */
+    private SaleType saleType;
+
     public BriefProgram(Program program) {
         id = String.valueOf(program.getProgramID().getVenueID()) + ";" + program.getProgramID().getStartTime().toString();
         poster = program.getPoster();
@@ -56,6 +72,27 @@ public class BriefProgram implements Serializable {
         Venue venue = program.getVenue();
         city = venue.getAddress().getCity();
         venueName = venue.getVenueName();
+        Iterator<Par> iterator = program.getPars().iterator();
+        lowPrice = iterator.next().getParID().getBasePrice();
+        while (iterator.hasNext()) {
+            Par par = iterator.next();
+            if (Double.doubleToLongBits(par.getParID().getBasePrice()) < Double.doubleToLongBits(lowPrice)) {
+                lowPrice = par.getParID().getBasePrice();
+            }
+        }
+    }
+
+    public BriefProgram(Program program, SaleType type) {
+        id = String.valueOf(program.getProgramID().getVenueID()) + ";" + program.getProgramID().getStartTime().toString();
+        poster = program.getPoster();
+        programName = program.getName();
+        time = program.getProgramID().getStartTime();
+        Venue venue = program.getVenue();
+        city = venue.getAddress().getCity();
+        venueName = venue.getVenueName();
+        scanVolume = program.getScanVolume();
+        favoriteVolume = program.getFavoriteVolume();
+        saleType = type;
         Iterator<Par> iterator = program.getPars().iterator();
         lowPrice = iterator.next().getParID().getBasePrice();
         while (iterator.hasNext()) {
@@ -92,5 +129,17 @@ public class BriefProgram implements Serializable {
 
     public LocalDateTime getTime() {
         return time;
+    }
+
+    public int getScanVolume() {
+        return scanVolume;
+    }
+
+    public int getFavoriteVolume() {
+        return favoriteVolume;
+    }
+
+    public SaleType getSaleType() {
+        return saleType;
     }
 }

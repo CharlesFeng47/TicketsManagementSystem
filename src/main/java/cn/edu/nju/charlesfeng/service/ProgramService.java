@@ -4,6 +4,7 @@ import cn.edu.nju.charlesfeng.model.Program;
 import cn.edu.nju.charlesfeng.model.id.ProgramID;
 import cn.edu.nju.charlesfeng.util.enums.ProgramType;
 import cn.edu.nju.charlesfeng.util.exceptions.ProgramNotSettlableException;
+import cn.edu.nju.charlesfeng.util.filter.BriefProgram;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -17,6 +18,16 @@ public interface ProgramService {
      * @return Map<ProgramType   ,       List   <   Program>>
      */
     Map<ProgramType, List<Program>> recommendPrograms(LocalDateTime localDateTime, String city, int num);
+
+    /**
+     * 按类型获取节目
+     *
+     * @param city 制定城市
+     * @param programType 节目类型
+     * @param localDateTime 指定时间
+     * @return 节目列表
+     */
+    List<BriefProgram> getBriefPrograms(String city, ProgramType programType, LocalDateTime localDateTime);
 
     /**
      * @return 所有日程

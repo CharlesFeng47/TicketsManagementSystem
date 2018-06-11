@@ -3,9 +3,12 @@ package cn.edu.nju.charlesfeng.service.impl;
 import cn.edu.nju.charlesfeng.model.Program;
 import cn.edu.nju.charlesfeng.model.id.ProgramID;
 import cn.edu.nju.charlesfeng.repository.ProgramRepository;
+import cn.edu.nju.charlesfeng.repository.TicketRepository;
 import cn.edu.nju.charlesfeng.service.ProgramService;
 import cn.edu.nju.charlesfeng.util.enums.ProgramType;
+import cn.edu.nju.charlesfeng.util.enums.SaleType;
 import cn.edu.nju.charlesfeng.util.exceptions.ProgramNotSettlableException;
+import cn.edu.nju.charlesfeng.util.filter.BriefProgram;
 import cn.edu.nju.charlesfeng.util.helper.AddressHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -26,9 +29,12 @@ public class ProgramServiceImpl implements ProgramService {
 
     private final ProgramRepository programRepository;
 
+    private final TicketRepository ticketRepository;
+
     @Autowired
-    public ProgramServiceImpl(ProgramRepository programRepository) {
+    public ProgramServiceImpl(ProgramRepository programRepository, TicketRepository ticketRepository) {
         this.programRepository = programRepository;
+        this.ticketRepository = ticketRepository;
     }
 
     /**
@@ -72,6 +78,30 @@ public class ProgramServiceImpl implements ProgramService {
             }
         }
         //System.out.println(System.currentTimeMillis() - start);
+        return result;
+    }
+
+    /**
+     * 按类型获取节目
+     *
+     * @param city          制定城市
+     * @param programType   节目类型
+     * @param localDateTime 指定时间
+     * @return 节目列表
+     */
+    @Override
+    public List<BriefProgram> getBriefPrograms(String city, ProgramType programType, LocalDateTime localDateTime) {
+        List<Program> programs = programRepository.getAvailablePrograms(localDateTime, programType, city);
+        List<BriefProgram> result = new ArrayList<>();
+        for (Program program : programs) {
+            int judge = ticketRepository.hasTickets(program.getProgramID());
+            SaleType type = SaleType.TICKETING;
+            if (judge == 0) {
+                type = SaleType.REPLACEMENTTICKETING;
+            }
+            BriefProgram briefProgram = new BriefProgram(program, type);
+            result.add(briefProgram);
+        }
         return result;
     }
 

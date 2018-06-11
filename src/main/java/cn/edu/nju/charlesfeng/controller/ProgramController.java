@@ -6,6 +6,8 @@ import cn.edu.nju.charlesfeng.util.enums.ProgramType;
 import cn.edu.nju.charlesfeng.util.enums.RequestReturnObjectState;
 import cn.edu.nju.charlesfeng.util.filter.BriefProgram;
 import cn.edu.nju.charlesfeng.util.helper.RequestReturnObject;
+import com.alibaba.fastjson.support.spring.annotation.FastJsonFilter;
+import com.alibaba.fastjson.support.spring.annotation.FastJsonView;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -66,6 +68,7 @@ public class ProgramController {
      * @return 首页的节目推荐
      */
     @GetMapping("/recommend")
+    @FastJsonView(exclude = @FastJsonFilter(clazz = BriefProgram.class, props = {"scanVolume", "favoriteVolume", "saleType"}))
     public RequestReturnObject getRecommendPrograms(@RequestParam("city") String city) {
         logger.debug("INTO /program/recommend" + city);
         Map<ProgramType, List<Program>> map = programService.recommendPrograms(LocalDateTime.now(), city, 5);
@@ -78,6 +81,16 @@ public class ProgramController {
             }
             result.put(key, briefPrograms);
         }
+        return new RequestReturnObject(RequestReturnObjectState.OK, result);
+    }
+
+    /**
+     * @return 根据节目类型获取节目列表
+     */
+    @GetMapping("/getProgramsByType")
+    public RequestReturnObject getProgramsByType(@RequestParam("city") String city, @RequestParam("programType") ProgramType programType) {
+        logger.debug("INTO /program/getProgramsByType" + city + programType);
+        List<BriefProgram> result = programService.getBriefPrograms(city, programType, LocalDateTime.now());
         return new RequestReturnObject(RequestReturnObjectState.OK, result);
     }
 

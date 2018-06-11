@@ -36,7 +36,7 @@ public class ProgramRepositoryTest {
         programID.setStartTime(LocalDateTime.of(2018, 7, 12, 18, 0, 0));
         program.setProgramID(programID);
         program.setDescription("good");
-        program.setLikeVolume(200);
+        program.setFavoriteVolume(200);
         program.setName("YIYA NO");
         program.setProgramType(ProgramType.CONCERT);
         program.setScanVolume(23456);
@@ -99,7 +99,7 @@ public class ProgramRepositoryTest {
                     program.setDescription(content.get("desc"));
                     program.setProgramType(map.get(folder));
                     program.setScanVolume(Integer.parseInt(content.get("scan").replace("人浏览", "")));
-                    program.setLikeVolume(Integer.parseInt(content.get("like").replace("人想看", "")));
+                    program.setFavoriteVolume(Integer.parseInt(content.get("like").replace("人想看", "")));
                     String poster = getBaseImg(filePath.replace(".txt", ".jpg"));
                     program.setPoster(poster);
                     programRepository.save(program);

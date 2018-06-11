@@ -45,7 +45,6 @@ public class OrderServiceImpl implements OrderService {
         return orderRepository.getMyOrders(uid);
     }
 
-
 //    @Override
 //    public boolean payOrder(Member member, int oid, String paymentId, String paymentPwd) throws AlipayWrongPwdException, AlipayBalanceNotAdequateException {
 //        AlipayAccount alipayAccount = alipayDao.getAlipayEntity(paymentId);

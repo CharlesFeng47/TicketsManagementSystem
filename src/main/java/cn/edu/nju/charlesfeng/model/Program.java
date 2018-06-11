@@ -6,7 +6,6 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -59,7 +58,7 @@ public class Program implements Serializable {
      * 节目喜爱量
      */
     @Column(name = "`like`", columnDefinition = "int default 0", nullable = false)
-    private int likeVolume;
+    private int favoriteVolume;
 
     /**
      * 节目所属的场馆实体(N->1)
@@ -134,12 +133,12 @@ public class Program implements Serializable {
         this.scanVolume = scan;
     }
 
-    public int getLikeVolume() {
-        return likeVolume;
+    public int getFavoriteVolume() {
+        return favoriteVolume;
     }
 
-    public void setLikeVolume(int like) {
-        this.likeVolume = like;
+    public void setFavoriteVolume(int like) {
+        this.favoriteVolume = like;
     }
 
     public Venue getVenue() {
