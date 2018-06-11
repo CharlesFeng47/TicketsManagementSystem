@@ -69,10 +69,9 @@ public class ProgramController {
      */
     @GetMapping("/recommend")
     //@FastJsonView(exclude = @FastJsonFilter(clazz = BriefProgram.class, props = {"scanVolume", "favoriteVolume", "saleType"}))
-    public RequestReturnObject getRecommendPrograms() {
-        //@RequestParam("city") String city
-        logger.debug("INTO /program/recommend" + "南京");
-        Map<ProgramType, List<Program>> map = programService.recommendPrograms(LocalDateTime.now(), "南京", 5); //今天之后包括今天
+    public RequestReturnObject getRecommendPrograms(@RequestParam("city") String city) {
+        logger.debug("INTO /program/recommend" + city);
+        Map<ProgramType, List<Program>> map = programService.recommendPrograms(LocalDateTime.now(), city, 5); //今天之后包括今天
         Map<ProgramType, List<BriefProgram>> result = new HashMap<>();
         for (ProgramType key : map.keySet()) {
             List<Program> programs = map.get(key);
