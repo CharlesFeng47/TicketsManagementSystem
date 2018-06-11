@@ -12,6 +12,6 @@ import org.springframework.data.repository.query.Param;
  */
 public interface TicketRepository extends JpaRepository<Ticket, TicketID> {
 
-    @Query("select count(t.ticketID) from Ticket t where t.ticketID.programID=:programID")
+    @Query("select count(t) from Ticket t where t.ticketID.programID=:programID")
     int hasTickets(@Param("programID") ProgramID programID);
 }

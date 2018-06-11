@@ -22,7 +22,7 @@ public class TicketID implements Serializable {
     /**
      * 座位的行
      */
-    @Column(length = 8)
+    @Column(name = "`row`", length = 8)
     private int row;
 
     public ProgramID getProgramID() {
