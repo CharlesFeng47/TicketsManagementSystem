@@ -5,6 +5,7 @@ import cn.edu.nju.charlesfeng.model.Program;
 import cn.edu.nju.charlesfeng.model.Venue;
 import cn.edu.nju.charlesfeng.model.id.OrderID;
 import cn.edu.nju.charlesfeng.service.OrderService;
+import cn.edu.nju.charlesfeng.util.enums.OrderState;
 import cn.edu.nju.charlesfeng.util.enums.RequestReturnObjectState;
 import cn.edu.nju.charlesfeng.util.helper.RequestReturnObject;
 import com.alibaba.fastjson.support.spring.annotation.FastJsonFilter;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * 对订单信息的控制器
@@ -59,6 +61,21 @@ public class OrderController {
         orderID.setEmail(userID);
         orderID.setTime(time);
         return orderService.checkOrderDetail(orderID);
+    }
+
+    /**
+     * 获取指定类型订单（确认订单操作时）TODO 暂时无法测试，底层尚未有订单
+     */
+    @GetMapping("/getMyOrdersByState")
+    @FastJsonView(include = {
+            @FastJsonFilter(clazz = Order.class, props = {"orderID", "totalPrice", "program", "tickets", "orderState"}),
+            @FastJsonFilter(clazz = Program.class, props = {"programID", "name", "venue"}),
+            @FastJsonFilter(clazz = Venue.class, props = {"venueName", "address"})
+    })
+    public List<Order> getMyOrdersByState(@RequestParam("orderType") String type, @SessionAttribute("user_id") String userID) {
+        logger.debug("INTO /order/getMyOrdersByState" + userID + type);
+        OrderState orderState = OrderState.valueOf(type);
+        return orderService.getMyOrders(userID, orderState);
     }
 
 

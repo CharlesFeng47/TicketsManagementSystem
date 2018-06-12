@@ -2,6 +2,8 @@ package cn.edu.nju.charlesfeng.repository;
 
 import cn.edu.nju.charlesfeng.model.Order;
 import cn.edu.nju.charlesfeng.model.id.OrderID;
+import cn.edu.nju.charlesfeng.util.enums.OrderState;
+import cn.edu.nju.charlesfeng.util.enums.OrderType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -29,5 +31,15 @@ public interface OrderRepository extends JpaRepository<Order, OrderID> {
      */
     @Query(value = "select o from Order as o where o.orderID.email=:email")
     List<Order> getMyOrders(@Param("email") String email);
+
+    /**
+     * 获取指定用户的所有指定类型的订单
+     *
+     * @param email 用户的邮箱（ID）
+     * @return 所有订单实体
+     */
+    @Query(value = "select o from Order as o where o.orderID.email=:email and o.orderState=:orderState")
+    List<Order> getMyOrders(@Param("email") String email, @Param("orderState") OrderState orderState);
+
 
 }

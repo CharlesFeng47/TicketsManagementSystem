@@ -2,6 +2,7 @@ package cn.edu.nju.charlesfeng.service;
 
 import cn.edu.nju.charlesfeng.model.*;
 import cn.edu.nju.charlesfeng.model.id.OrderID;
+import cn.edu.nju.charlesfeng.util.enums.OrderState;
 import cn.edu.nju.charlesfeng.util.enums.OrderType;
 import cn.edu.nju.charlesfeng.util.enums.OrderWay;
 import cn.edu.nju.charlesfeng.util.exceptions.*;
@@ -33,6 +34,13 @@ public interface OrderService {
      * @return 查看某一用户的全部订单
      */
     List<Order> getMyOrders(String uid);
+
+    /**
+     * @param uid 查看指定类型订单的用户
+     * @param orderState 订单状态或订单类型
+     * @return 查看某一用户的全部订单
+     */
+    List<Order> getMyOrders(String uid, OrderState orderState);
 
 //    /**
 //     * @param spot 检票登记的主动方场馆

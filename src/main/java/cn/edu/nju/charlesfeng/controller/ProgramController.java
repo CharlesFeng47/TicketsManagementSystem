@@ -9,6 +9,7 @@ import cn.edu.nju.charlesfeng.service.TicketService;
 import cn.edu.nju.charlesfeng.util.enums.ProgramType;
 import cn.edu.nju.charlesfeng.util.enums.RequestReturnObjectState;
 import cn.edu.nju.charlesfeng.util.enums.SaleType;
+import cn.edu.nju.charlesfeng.util.filter.PreviewSearchResult;
 import cn.edu.nju.charlesfeng.util.filter.ProgramBrief;
 import cn.edu.nju.charlesfeng.util.filter.ProgramDetail;
 import cn.edu.nju.charlesfeng.util.helper.RequestReturnObject;
@@ -104,12 +105,9 @@ public class ProgramController {
      * @return 根据节目ID获取节目详情
      */
     @GetMapping("/getProgramDetail")
-    @FastJsonView(exclude = {
-            @FastJsonFilter(clazz = Venue.class, props = {"venueID", "alipayId", "programs", "seats"}),
-            @FastJsonFilter(clazz = Par.class, props = {"program"})
-    })
     public ProgramDetail getProgramDetail(@RequestParam("briefProgramID") String id) {
         logger.debug("INTO /program/getProgramDetail" + id);
+
         String ids[] = id.split(";");
         ProgramID programID = new ProgramID();
         programID.setVenueID(Integer.parseInt(ids[0]));
@@ -120,6 +118,32 @@ public class ProgramController {
         int number = ticketService.getProgramRemainTicketNumber(programID);
         return new ProgramDetail(program, saleType, fields, number);
     }
+
+    /**
+     * @return 模糊搜索（支持空格）
+     */
+    @GetMapping("/search")
+    public RequestReturnObject search(@RequestParam("conditions") String conditions) {
+        logger.debug("INTO /program/search" + conditions);
+        Set<Program> programs = programService.search(conditions);
+        List<ProgramBrief> result = new ArrayList<>();
+        for (Program program : programs) {
+            SaleType saleType = ticketService.getProgramSaleType(program.getProgramID());
+            result.add(new ProgramBrief(program, saleType));
+        }
+        return new RequestReturnObject(RequestReturnObjectState.OK, result);
+    }
+
+    /**
+     * @return 预搜索
+     */
+    @GetMapping("/previewSearch")
+    public RequestReturnObject previewSearch(@RequestParam("conditions") String conditions) {
+        logger.debug("INTO /program/search" + conditions);
+        List<PreviewSearchResult> programs = programService.previewSearch(conditions, 10);
+        return new RequestReturnObject(RequestReturnObjectState.OK, programs);
+    }
+
 
 //    /**
 //     * @return 某一条日程的详情

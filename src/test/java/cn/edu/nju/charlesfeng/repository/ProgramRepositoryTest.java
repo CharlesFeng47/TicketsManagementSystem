@@ -8,7 +8,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
@@ -65,16 +67,18 @@ public class ProgramRepositoryTest {
     }
 
     @Test
+//    @Rollback
+//    @Transactional
     public void testAddAll() {
         Map<String, ProgramType> map = new HashMap<>();
-        map.put("vocalconcert", ProgramType.VOCALCONCERT);
+//        map.put("vocalconcert", ProgramType.VOCALCONCERT);
 //        map.put("concert", ProgramType.CONCERT);
 //        map.put("ballet", ProgramType.DANCE);
 //        map.put("drama", ProgramType.DRAMA);
 //        map.put("exhibition", ProgramType.EXHIBITION);
 //        map.put("child", ProgramType.PARENTCHILD);
 //        map.put("match", ProgramType.SPORT);
-//        map.put("quyi", ProgramType.QUYITALK);
+        map.put("quyi", ProgramType.QUYITALK);
 
         for (String folder : map.keySet()) {
             String path = "F:\\crawler\\" + folder + "\\";
@@ -88,7 +92,7 @@ public class ProgramRepositoryTest {
                     String name = readName(filePath);
                     Venue venue = venueRepository.findByVenueName(name);
                     Map<String, String> content = readContent(filePath);
-                    System.out.println(map.get(folder) + "-" + venue.getVenueID() + "-" +content.get("time") + "-" + programName);
+                    System.out.println(map.get(folder) + "-" + venue.getVenueID() + "-" + content.get("time") + "-" + programName);
                     ProgramID programID = new ProgramID();
                     programID.setVenueID(venue.getVenueID());
                     programID.setStartTime(LocalDateTime.parse(content.get("time")));
@@ -104,7 +108,7 @@ public class ProgramRepositoryTest {
                     program.setPoster(poster);
                     programRepository.save(program);
                     venue.getPrograms().add(program);
-                    venueRepository.save(venue);
+                    //venueRepository.save(venue);
                 }
             }
         }
@@ -229,7 +233,7 @@ public class ProgramRepositoryTest {
         }
         BASE64Encoder encoder = new BASE64Encoder();
         assert data != null;
-        return encoder.encode(data);
+        return "data:image/jpeg;base64," + encoder.encode(data);
     }
 
     private void createImg(String img) {
@@ -279,4 +283,15 @@ public class ProgramRepositoryTest {
     }
 
 
+    @Test
+    public void searchProgram() {
+        List<Program> programs = programRepository.searchProgram("%上海%");
+        System.out.println("---------------------------");
+    }
+
+    @Test
+    public void previewSearchProgram() {
+        List<Object[]> programs = programRepository.previewSearchProgram("%张韶涵%");
+        System.out.println("---------------------------");
+    }
 }

@@ -115,7 +115,7 @@ public class ParRepositoryTest {
 //                program.setPars(newPars);
 //                programRepository.save(program);
                 parRepository.saveAll(newPars);
-                pars.clear();
+                //pars.clear();
                 //parRepository.deleteAll(deletePars);
             }
         }

@@ -6,6 +6,7 @@ import cn.edu.nju.charlesfeng.repository.AlipayRepository;
 import cn.edu.nju.charlesfeng.repository.OrderRepository;
 import cn.edu.nju.charlesfeng.repository.UserRepository;
 import cn.edu.nju.charlesfeng.service.OrderService;
+import cn.edu.nju.charlesfeng.util.enums.OrderState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -43,6 +44,16 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<Order> getMyOrders(String uid) {
         return orderRepository.getMyOrders(uid);
+    }
+
+    /**
+     * @param uid        查看指定类型订单的用户
+     * @param orderState 订单状态或订单类型
+     * @return 查看某一用户的全部订单
+     */
+    @Override
+    public List<Order> getMyOrders(String uid, OrderState orderState) {
+        return orderRepository.getMyOrders(uid, orderState);
     }
 
 //    @Override

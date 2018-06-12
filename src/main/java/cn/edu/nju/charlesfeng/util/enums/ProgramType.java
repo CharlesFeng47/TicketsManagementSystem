@@ -10,13 +10,13 @@ package cn.edu.nju.charlesfeng.util.enums;
 public enum ProgramType {
 
     VOCALCONCERT("演唱会"),
+    CONCERT("音乐会"),
     DRAMA("话剧歌剧"),
     SPORT("体育赛事"),
-    CONCERT("音乐会"),
-    PARENTCHILD("儿童亲子"),
     DANCE("舞蹈芭蕾"),
-    EXHIBITION("展览休闲"),
+    PARENTCHILD("儿童亲子"),
     QUYITALK("曲艺杂谈"),
+    EXHIBITION("展览休闲"),
     ALL("首页");
 
     private String val;

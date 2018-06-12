@@ -8,6 +8,7 @@ import cn.edu.nju.charlesfeng.service.ProgramService;
 import cn.edu.nju.charlesfeng.util.enums.ProgramType;
 import cn.edu.nju.charlesfeng.util.enums.SaleType;
 import cn.edu.nju.charlesfeng.util.exceptions.ProgramNotSettlableException;
+import cn.edu.nju.charlesfeng.util.filter.PreviewSearchResult;
 import cn.edu.nju.charlesfeng.util.filter.ProgramBrief;
 import cn.edu.nju.charlesfeng.util.helper.AddressHelper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -148,6 +149,59 @@ public class ProgramServiceImpl implements ProgramService {
     }
 
     /**
+     * 根据条件进行模糊搜索节目
+     *
+     * @param condition 条件
+     * @return 节目简介列表
+     */
+    @Override
+    public Set<Program> search(String condition) {
+        Set<Program> result = new TreeSet<>();
+        String conditions[] = condition.split("\\s");
+        for (String info : conditions) {
+            if (result.isEmpty()) {
+                result.addAll(programRepository.searchProgram("%" + info + "%")); //结合初始为空时，取并集
+            } else {
+                result.retainAll(programRepository.searchProgram("%" + info + "%")); //取交集
+            }
+
+        }
+        return result;
+    }
+
+    /**
+     * 根据条件进行模糊预搜索节目
+     *
+     * @param condition 条件
+     * @return 节目简介列表
+     */
+    @Override
+    public List<PreviewSearchResult> previewSearch(String condition, int result_num) {
+        List<PreviewSearchResult> result = new ArrayList<>();
+        String conditions[] = null;
+        if (condition.contains(" ")) {
+            conditions = condition.split("\\s");
+        } else {
+            conditions = new String[]{condition};
+        }
+
+        for (String info : conditions) {
+            List<Object[]> search_result = programRepository.previewSearchProgram("%" + info + "%");
+            if (result.isEmpty()) {
+                result.addAll(convert(search_result)); //结合初始为空时，取并集
+            } else {
+                result.retainAll(convert(search_result)); //取交集
+            }
+        }
+
+        if (result.size() <= result_num) {
+            return result;
+        }
+
+        return result.subList(0, result_num);
+    }
+
+    /**
      * @param program 欲发布的活动日程描述
      * @return 是否成功发布，成功则为该实体对象
      */
@@ -174,5 +228,19 @@ public class ProgramServiceImpl implements ProgramService {
     @Override
     public boolean settleOneProgram(ProgramID programID) throws ProgramNotSettlableException {
         return false;
+    }
+
+    /**
+     * 用于将查询出来Object转化包装类，主要用于比较
+     *
+     * @param list 查询的结果
+     * @return
+     */
+    private List<PreviewSearchResult> convert(List<Object[]> list) {
+        List<PreviewSearchResult> result = new ArrayList<>();
+        for (Object[] need : list) {
+            result.add(new PreviewSearchResult(need));
+        }
+        return result;
     }
 }

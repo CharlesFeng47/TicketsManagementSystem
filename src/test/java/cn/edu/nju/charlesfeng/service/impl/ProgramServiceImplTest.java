@@ -3,6 +3,7 @@ package cn.edu.nju.charlesfeng.service.impl;
 import cn.edu.nju.charlesfeng.model.Program;
 import cn.edu.nju.charlesfeng.service.ProgramService;
 import cn.edu.nju.charlesfeng.util.enums.ProgramType;
+import cn.edu.nju.charlesfeng.util.filter.PreviewSearchResult;
 import cn.edu.nju.charlesfeng.util.filter.ProgramBrief;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,8 +26,8 @@ public class ProgramServiceImplTest {
 
     @Test
     public void recommendPrograms() {
-        Map<ProgramType, List<Program>> result = programService.recommendPrograms(LocalDateTime.now(), "南京", 5);
-        for (ProgramType type : result.keySet()) {
+        Map<String, List<Program>> result = programService.recommendPrograms(LocalDateTime.now(), "南京", 5);
+        for (String type : result.keySet()) {
             List<Program> programs = result.get(type);
             System.out.println(type);
             for (Program program : programs) {
@@ -38,9 +39,9 @@ public class ProgramServiceImplTest {
 
     @Test
     public void test() {
-        Map<ProgramType, List<Program>> map = programService.recommendPrograms(LocalDateTime.now(), "南京", 5);
-        Map<ProgramType, List<ProgramBrief>> result = new HashMap<>();
-        for (ProgramType key : map.keySet()) {
+        Map<String, List<Program>> map = programService.recommendPrograms(LocalDateTime.now(), "南京", 5);
+        Map<String, List<ProgramBrief>> result = new HashMap<>();
+        for (String key : map.keySet()) {
             List<Program> programs = map.get(key);
             List<ProgramBrief> programBriefs = new ArrayList<>();
             for (Program program : programs) {
@@ -76,5 +77,23 @@ public class ProgramServiceImplTest {
 
     @Test
     public void settleOneProgram() {
+    }
+
+    @Test
+    public void getBriefPrograms() {
+    }
+
+    @Test
+    public void getAllProgramField() {
+    }
+
+    @Test
+    public void search() {
+    }
+
+    @Test
+    public void previewSearch() {
+        List<PreviewSearchResult> result = programService.previewSearch("上海 张韶涵", 10);
+        System.out.println("-------------------------");
     }
 }
