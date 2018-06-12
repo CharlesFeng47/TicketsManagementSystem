@@ -8,14 +8,13 @@ import cn.edu.nju.charlesfeng.service.ProgramService;
 import cn.edu.nju.charlesfeng.util.enums.ProgramType;
 import cn.edu.nju.charlesfeng.util.enums.SaleType;
 import cn.edu.nju.charlesfeng.util.exceptions.ProgramNotSettlableException;
-import cn.edu.nju.charlesfeng.util.filter.BriefProgram;
+import cn.edu.nju.charlesfeng.util.filter.ProgramBrief;
 import cn.edu.nju.charlesfeng.util.helper.AddressHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.querydsl.QPageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -87,17 +86,17 @@ public class ProgramServiceImpl implements ProgramService {
      * @return 节目列表
      */
     @Override
-    public List<BriefProgram> getBriefPrograms(String city, ProgramType programType, LocalDateTime localDateTime) {
+    public List<ProgramBrief> getBriefPrograms(String city, ProgramType programType, LocalDateTime localDateTime) {
         List<Program> programs = programRepository.getAvailablePrograms(localDateTime, programType, city);
-        List<BriefProgram> result = new ArrayList<>();
+        List<ProgramBrief> result = new ArrayList<>();
         for (Program program : programs) {
             int judge = ticketRepository.hasTickets(program.getProgramID());
             SaleType type = SaleType.TICKETING;
             if (judge == 0) {
                 type = SaleType.REPLACEMENTTICKETING;
             }
-            BriefProgram briefProgram = new BriefProgram(program, type);
-            result.add(briefProgram);
+            ProgramBrief programBrief = new ProgramBrief(program, type);
+            result.add(programBrief);
         }
         return result;
     }
@@ -133,7 +132,19 @@ public class ProgramServiceImpl implements ProgramService {
      */
     @Override
     public Program getOneProgram(ProgramID programID) {
-        return programRepository.getOne(programID);
+        return programRepository.findByProgramID(programID);
+    }
+
+    /**
+     * 根据场馆ID，节目名获取所有场次
+     *
+     * @param venueID 场馆ID
+     * @param name    节目名
+     * @return 场次
+     */
+    @Override
+    public Set<LocalDateTime> getAllProgramField(int venueID, String name) {
+        return new TreeSet<>(programRepository.findField(venueID, name));
     }
 
     /**

@@ -4,30 +4,31 @@ import cn.edu.nju.charlesfeng.model.Program;
 import cn.edu.nju.charlesfeng.model.id.ProgramID;
 import cn.edu.nju.charlesfeng.util.enums.ProgramType;
 import cn.edu.nju.charlesfeng.util.exceptions.ProgramNotSettlableException;
-import cn.edu.nju.charlesfeng.util.filter.BriefProgram;
+import cn.edu.nju.charlesfeng.util.filter.ProgramBrief;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public interface ProgramService {
 
     /**
      * 获取首页的每种类型的5个推荐节目
      *
-     * @return Map<ProgramType   ,       List   <   Program>>
+     * @return Map<ProgramType               ,                               List               <               Program>>
      */
     Map<String, List<Program>> recommendPrograms(LocalDateTime localDateTime, String city, int num);
 
     /**
      * 按类型获取节目
      *
-     * @param city 制定城市
-     * @param programType 节目类型
+     * @param city          制定城市
+     * @param programType   节目类型
      * @param localDateTime 指定时间
      * @return 节目列表
      */
-    List<BriefProgram> getBriefPrograms(String city, ProgramType programType, LocalDateTime localDateTime);
+    List<ProgramBrief> getBriefPrograms(String city, ProgramType programType, LocalDateTime localDateTime);
 
     /**
      * @return 所有日程
@@ -50,6 +51,15 @@ public interface ProgramService {
      * @return 日程详情实体
      */
     Program getOneProgram(ProgramID programID);
+
+    /**
+     * 根据场馆ID，节目名获取所有场次
+     *
+     * @param venueID 场馆ID
+     * @param name    节目名
+     * @return 场次
+     */
+    Set<LocalDateTime> getAllProgramField(int venueID, String name);
 
     /**
      * @param program 欲发布的活动日程描述

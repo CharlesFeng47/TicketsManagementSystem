@@ -1,10 +1,16 @@
 package cn.edu.nju.charlesfeng.controller;
 
+import cn.edu.nju.charlesfeng.model.Par;
 import cn.edu.nju.charlesfeng.model.Program;
+import cn.edu.nju.charlesfeng.model.Venue;
+import cn.edu.nju.charlesfeng.model.id.ProgramID;
 import cn.edu.nju.charlesfeng.service.ProgramService;
+import cn.edu.nju.charlesfeng.service.TicketService;
 import cn.edu.nju.charlesfeng.util.enums.ProgramType;
 import cn.edu.nju.charlesfeng.util.enums.RequestReturnObjectState;
-import cn.edu.nju.charlesfeng.util.filter.BriefProgram;
+import cn.edu.nju.charlesfeng.util.enums.SaleType;
+import cn.edu.nju.charlesfeng.util.filter.ProgramBrief;
+import cn.edu.nju.charlesfeng.util.filter.ProgramDetail;
 import cn.edu.nju.charlesfeng.util.helper.RequestReturnObject;
 import com.alibaba.fastjson.support.spring.annotation.FastJsonFilter;
 import com.alibaba.fastjson.support.spring.annotation.FastJsonView;
@@ -16,10 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 有关计划／日程的前端控制器
@@ -32,9 +35,12 @@ public class ProgramController {
 
     private final ProgramService programService;
 
+    private final TicketService ticketService;
+
     @Autowired
-    public ProgramController(ProgramService programService) {
+    public ProgramController(ProgramService programService, TicketService ticketService) {
         this.programService = programService;
+        this.ticketService = ticketService;
     }
 
 //    /**
@@ -68,18 +74,18 @@ public class ProgramController {
      * @return 首页的节目推荐
      */
     @GetMapping("/recommend")
-    //@FastJsonView(exclude = @FastJsonFilter(clazz = BriefProgram.class, props = {"scanVolume", "favoriteVolume", "saleType"}))
+    //@FastJsonView(exclude = @FastJsonFilter(clazz = ProgramBrief.class, props = {"scanVolume", "favoriteVolume", "saleType"}))
     public RequestReturnObject getRecommendPrograms(@RequestParam("city") String city) {
         logger.debug("INTO /program/recommend" + city);
         Map<String, List<Program>> map = programService.recommendPrograms(LocalDateTime.now(), city, 5); //今天之后包括今天
-        Map<String, List<BriefProgram>> result = new HashMap<>();
+        Map<String, List<ProgramBrief>> result = new HashMap<>();
         for (String key : map.keySet()) {
             List<Program> programs = map.get(key);
-            List<BriefProgram> briefPrograms = new ArrayList<>();
+            List<ProgramBrief> programBriefs = new ArrayList<>();
             for (Program program : programs) {
-                briefPrograms.add(new BriefProgram(program));
+                programBriefs.add(new ProgramBrief(program));
             }
-            result.put(key, briefPrograms);
+            result.put(key, programBriefs);
         }
         return new RequestReturnObject(RequestReturnObjectState.OK, result);
     }
@@ -90,8 +96,29 @@ public class ProgramController {
     @GetMapping("/getProgramsByType")
     public RequestReturnObject getProgramsByType(@RequestParam("city") String city, @RequestParam("programType") String programType) {
         logger.debug("INTO /program/getProgramsByType" + city + programType);
-        List<BriefProgram> result = programService.getBriefPrograms(city, ProgramType.getEnum(programType), LocalDateTime.now()); //今天之后包括今天
+        List<ProgramBrief> result = programService.getBriefPrograms(city, ProgramType.getEnum(programType), LocalDateTime.now()); //今天之后包括今天
         return new RequestReturnObject(RequestReturnObjectState.OK, result);
+    }
+
+    /**
+     * @return 根据节目ID获取节目详情
+     */
+    @GetMapping("/getProgramDetail")
+    @FastJsonView(exclude = {
+            @FastJsonFilter(clazz = Venue.class, props = {"venueID", "alipayId", "programs", "seats"}),
+            @FastJsonFilter(clazz = Par.class, props = {"program"})
+    })
+    public ProgramDetail getProgramDetail(@RequestParam("briefProgramID") String id) {
+        logger.debug("INTO /program/getProgramDetail" + id);
+        String ids[] = id.split(";");
+        ProgramID programID = new ProgramID();
+        programID.setVenueID(Integer.parseInt(ids[0]));
+        programID.setStartTime(LocalDateTime.parse(ids[1]));
+        Program program = programService.getOneProgram(programID);
+        SaleType saleType = ticketService.getProgramSaleType(programID);
+        Set<LocalDateTime> fields = programService.getAllProgramField(programID.getVenueID(), program.getName());
+        int number = ticketService.getProgramRemainTicketNumber(programID);
+        return new ProgramDetail(program, saleType, fields, number);
     }
 
 //    /**

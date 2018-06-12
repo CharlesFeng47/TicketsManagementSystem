@@ -12,7 +12,7 @@ import java.util.Iterator;
 /**
  * 节目概览
  */
-public class BriefProgram implements Serializable {
+public class ProgramBrief implements Serializable {
 
     /**
      * 界面需要的ID定位
@@ -62,9 +62,9 @@ public class BriefProgram implements Serializable {
     /**
      * 当前节目的售票状态
      */
-    private SaleType saleType;
+    private String saleType;
 
-    public BriefProgram(Program program) {
+    public ProgramBrief(Program program) {
         id = String.valueOf(program.getProgramID().getVenueID()) + ";" + program.getProgramID().getStartTime().toString();
         poster = program.getPoster();
         programName = program.getName();
@@ -82,7 +82,7 @@ public class BriefProgram implements Serializable {
         }
     }
 
-    public BriefProgram(Program program, SaleType type) {
+    public ProgramBrief(Program program, SaleType type) {
         id = String.valueOf(program.getProgramID().getVenueID()) + ";" + program.getProgramID().getStartTime().toString();
         poster = program.getPoster();
         programName = program.getName();
@@ -92,7 +92,7 @@ public class BriefProgram implements Serializable {
         venueName = venue.getVenueName();
         scanVolume = program.getScanVolume();
         favoriteVolume = program.getFavoriteVolume();
-        saleType = type;
+        saleType = type.toString();
         Iterator<Par> iterator = program.getPars().iterator();
         lowPrice = iterator.next().getParID().getBasePrice();
         while (iterator.hasNext()) {
@@ -139,7 +139,7 @@ public class BriefProgram implements Serializable {
         return favoriteVolume;
     }
 
-    public SaleType getSaleType() {
+    public String getSaleType() {
         return saleType;
     }
 }

@@ -3,7 +3,7 @@ package cn.edu.nju.charlesfeng.service.impl;
 import cn.edu.nju.charlesfeng.model.Program;
 import cn.edu.nju.charlesfeng.service.ProgramService;
 import cn.edu.nju.charlesfeng.util.enums.ProgramType;
-import cn.edu.nju.charlesfeng.util.filter.BriefProgram;
+import cn.edu.nju.charlesfeng.util.filter.ProgramBrief;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +15,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -41,14 +39,14 @@ public class ProgramServiceImplTest {
     @Test
     public void test() {
         Map<ProgramType, List<Program>> map = programService.recommendPrograms(LocalDateTime.now(), "南京", 5);
-        Map<ProgramType, List<BriefProgram>> result = new HashMap<>();
+        Map<ProgramType, List<ProgramBrief>> result = new HashMap<>();
         for (ProgramType key : map.keySet()) {
             List<Program> programs = map.get(key);
-            List<BriefProgram> briefPrograms = new ArrayList<>();
+            List<ProgramBrief> programBriefs = new ArrayList<>();
             for (Program program : programs) {
-                briefPrograms.add(new BriefProgram(program));
+                programBriefs.add(new ProgramBrief(program));
             }
-            result.put(key, briefPrograms);
+            result.put(key, programBriefs);
         }
     }
 

@@ -17,10 +17,15 @@ import java.util.List;
  */
 public interface ProgramRepository extends JpaRepository<Program, ProgramID> {
 
+    Program findByProgramID(ProgramID programID);
+
     List<Program> findByName(String name);
 
+    @Query("select p.programID.startTime from Program p where p.programID.venueID=:venueID and p.name=:programName")
+    List<LocalDateTime> findField(@Param("venueID") int venueID, @Param("programName") String name);
+
     @Query("select p from Program p where p.programID.venueID=:venueID")
-    List<Program> findByVenueID(int venueID);
+    List<Program> findByVenueID(@Param("venueID") int venueID);
 
     @Query(value = "select p from Program p where p.programType=:programType and p.programID.startTime>=:today and p.venue.address.city=:city")
     Page<Program> getAvailablePrograms(@Param("today") LocalDateTime today, @Param("programType") ProgramType programType, @Param("city") String city, Pageable pageable);
