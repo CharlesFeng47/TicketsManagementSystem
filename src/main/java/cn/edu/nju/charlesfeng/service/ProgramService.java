@@ -17,7 +17,7 @@ public interface ProgramService {
      *
      * @return Map<ProgramType   ,       List   <   Program>>
      */
-    Map<ProgramType, List<Program>> recommendPrograms(LocalDateTime localDateTime, String city, int num);
+    Map<String, List<Program>> recommendPrograms(LocalDateTime localDateTime, String city, int num);
 
     /**
      * 按类型获取节目

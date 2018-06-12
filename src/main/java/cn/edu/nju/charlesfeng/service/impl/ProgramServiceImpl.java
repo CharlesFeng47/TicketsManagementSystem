@@ -19,10 +19,7 @@ import org.springframework.data.querydsl.QPageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class ProgramServiceImpl implements ProgramService {
@@ -43,10 +40,10 @@ public class ProgramServiceImpl implements ProgramService {
      * @return 推荐列表
      */
     @Override
-    public Map<ProgramType, List<Program>> recommendPrograms(LocalDateTime localDateTime, String city, int num) {
+    public Map<String, List<Program>> recommendPrograms(LocalDateTime localDateTime, String city, int num) {
         //long start = System.currentTimeMillis();
         ProgramType types[] = ProgramType.values();
-        Map<ProgramType, List<Program>> result = new HashMap<>();
+        Map<String, List<Program>> result = new TreeMap<>();
         for (ProgramType programType : types) {
             if (programType.equals(ProgramType.ALL)) {
                 continue;
@@ -74,7 +71,7 @@ public class ProgramServiceImpl implements ProgramService {
             }
 
             if (programs.size() == num) {
-                result.put(programType, programs);
+                result.put(programType.toString(), programs);
             }
         }
         //System.out.println(System.currentTimeMillis() - start);

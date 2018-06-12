@@ -71,9 +71,9 @@ public class ProgramController {
     //@FastJsonView(exclude = @FastJsonFilter(clazz = BriefProgram.class, props = {"scanVolume", "favoriteVolume", "saleType"}))
     public RequestReturnObject getRecommendPrograms(@RequestParam("city") String city) {
         logger.debug("INTO /program/recommend" + city);
-        Map<ProgramType, List<Program>> map = programService.recommendPrograms(LocalDateTime.now(), city, 5); //今天之后包括今天
-        Map<ProgramType, List<BriefProgram>> result = new HashMap<>();
-        for (ProgramType key : map.keySet()) {
+        Map<String, List<Program>> map = programService.recommendPrograms(LocalDateTime.now(), city, 5); //今天之后包括今天
+        Map<String, List<BriefProgram>> result = new HashMap<>();
+        for (String key : map.keySet()) {
             List<Program> programs = map.get(key);
             List<BriefProgram> briefPrograms = new ArrayList<>();
             for (Program program : programs) {
@@ -88,9 +88,9 @@ public class ProgramController {
      * @return 根据节目类型获取节目列表
      */
     @GetMapping("/getProgramsByType")
-    public RequestReturnObject getProgramsByType(@RequestParam("city") String city, @RequestParam("programType") ProgramType programType) {
+    public RequestReturnObject getProgramsByType(@RequestParam("city") String city, @RequestParam("programType") String programType) {
         logger.debug("INTO /program/getProgramsByType" + city + programType);
-        List<BriefProgram> result = programService.getBriefPrograms(city, programType, LocalDateTime.now()); //今天之后包括今天
+        List<BriefProgram> result = programService.getBriefPrograms(city, ProgramType.getEnum(programType), LocalDateTime.now()); //今天之后包括今天
         return new RequestReturnObject(RequestReturnObjectState.OK, result);
     }
 
