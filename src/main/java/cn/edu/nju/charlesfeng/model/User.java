@@ -4,6 +4,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Set;
 
 /**
  * 系统的用户实体
@@ -45,6 +46,16 @@ public class User implements Serializable {
     @Column(nullable = false, columnDefinition = "bit default 0")
     private boolean activated;
 
+    /**
+     * 该用户收藏的节目（设为喜欢的节目）(N->N)
+     */
+    @ManyToMany(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
+    @JoinTable(name = "user_program",
+            joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "email")},
+            inverseJoinColumns = {@JoinColumn(name = "program_vid", referencedColumnName = "vid"),
+                    @JoinColumn(name = "program_time", referencedColumnName = "start_time")})
+    private Set<Program> programs;
+
     public String getEmail() {
         return email;
     }
@@ -83,5 +94,13 @@ public class User implements Serializable {
 
     public void setActivated(boolean activated) {
         this.activated = activated;
+    }
+
+    public Set<Program> getPrograms() {
+        return programs;
+    }
+
+    public void setPrograms(Set<Program> programs) {
+        this.programs = programs;
     }
 }

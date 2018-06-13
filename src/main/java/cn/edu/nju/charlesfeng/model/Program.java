@@ -85,6 +85,12 @@ public class Program implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "program", fetch = FetchType.LAZY)
     private Set<Order> orders;
 
+    /**
+     * 喜欢该节目的用户(N->N)
+     */
+    @ManyToMany(mappedBy = "programs", fetch = FetchType.LAZY)
+    private Set<User> users;
+
     public ProgramID getProgramID() {
         return programID;
     }
@@ -171,5 +177,13 @@ public class Program implements Serializable {
 
     public void setOrders(Set<Order> orders) {
         this.orders = orders;
+    }
+
+    public Set<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(Set<User> users) {
+        this.users = users;
     }
 }
