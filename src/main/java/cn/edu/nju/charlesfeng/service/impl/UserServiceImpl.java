@@ -1,11 +1,15 @@
 package cn.edu.nju.charlesfeng.service.impl;
 
+import cn.edu.nju.charlesfeng.model.Program;
 import cn.edu.nju.charlesfeng.model.User;
+import cn.edu.nju.charlesfeng.model.id.ProgramID;
 import cn.edu.nju.charlesfeng.repository.UserRepository;
+import cn.edu.nju.charlesfeng.service.ProgramService;
 import cn.edu.nju.charlesfeng.service.UserService;
 import cn.edu.nju.charlesfeng.task.MD5Task;
 import cn.edu.nju.charlesfeng.task.MailTask;
 import cn.edu.nju.charlesfeng.util.exceptions.*;
+import cn.edu.nju.charlesfeng.util.filter.ProgramBrief;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,16 +19,22 @@ import javax.mail.MessagingException;
 import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.List;
+import java.util.Set;
 
 @Service
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
+    private final ProgramService programService;
+
     @Autowired
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, ProgramService programService) {
         this.userRepository = userRepository;
+        this.programService = programService;
     }
 
     /**
@@ -121,5 +131,36 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUser(String id) {
         return userRepository.findByEmail(id);
+    }
+
+    /**
+     * 收藏，设为喜欢
+     *
+     * @param programID 节目ID
+     * @param userID    用户ID
+     */
+    @Override
+    public void star(ProgramID programID, String userID) {
+        User user = userRepository.findByEmail(userID);
+        Program program = programService.getOneProgram(programID);
+        user.getPrograms().add(program);
+        userRepository.save(user);
+    }
+
+    /**
+     * 获取用户star的节目
+     *
+     * @param userID 用户ID
+     * @return 节目列表
+     */
+    @Override
+    public List<ProgramBrief> getUserStarPrograms(String userID) {
+        User user = userRepository.findByEmail(userID);
+        Set<Program> programs = user.getPrograms();
+        List<ProgramBrief> result = new ArrayList<>();
+        for (Program program : programs) {
+            result.add(new ProgramBrief(program));
+        }
+        return result;
     }
 }

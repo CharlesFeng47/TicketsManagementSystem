@@ -1,9 +1,13 @@
 package cn.edu.nju.charlesfeng.service;
 
+import cn.edu.nju.charlesfeng.model.Program;
 import cn.edu.nju.charlesfeng.model.User;
+import cn.edu.nju.charlesfeng.model.id.ProgramID;
 import cn.edu.nju.charlesfeng.util.exceptions.*;
+import cn.edu.nju.charlesfeng.util.filter.ProgramBrief;
 
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 
 /**
  * 系统中用户的服务
@@ -44,4 +48,20 @@ public interface UserService {
      * @return 用户详情
      */
     User getUser(String id);
+
+    /**
+     * 收藏，设为喜欢
+     *
+     * @param programID 节目ID
+     * @param userID 用户ID
+     */
+    void star(ProgramID programID, String userID);
+
+    /**
+     * 获取用户star的节目
+     *
+    * @param userID 用户ID
+     * @return 节目列表
+     */
+    List<ProgramBrief> getUserStarPrograms(String userID);
 }

@@ -1,10 +1,12 @@
 package cn.edu.nju.charlesfeng.controller;
 
 import cn.edu.nju.charlesfeng.model.User;
+import cn.edu.nju.charlesfeng.model.id.ProgramID;
 import cn.edu.nju.charlesfeng.service.UserService;
 import cn.edu.nju.charlesfeng.task.MD5Task;
 import cn.edu.nju.charlesfeng.util.enums.RequestReturnObjectState;
 import cn.edu.nju.charlesfeng.util.exceptions.*;
+import cn.edu.nju.charlesfeng.util.filter.ProgramBrief;
 import cn.edu.nju.charlesfeng.util.helper.ImgHelper;
 import cn.edu.nju.charlesfeng.util.helper.RequestReturnObject;
 import org.apache.log4j.Logger;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -133,6 +136,27 @@ public class UserController {
         User curUser = (User) o;
         return new RequestReturnObject(RequestReturnObjectState.OK, curUser);
     }
+
+    /**
+     * 收藏节目
+     */
+    @PostMapping("/star")
+    public RequestReturnObject star(@RequestBody ProgramID programID, @SessionAttribute("user_id") String userID) {
+        logger.debug("INTO /user: " + userID);
+        userService.star(programID, userID);
+        return new RequestReturnObject(RequestReturnObjectState.OK);
+    }
+
+    /**
+     * 获取收藏节目
+     */
+    @PostMapping("/getStarPrograms")
+    public RequestReturnObject getStarPrograms(@SessionAttribute("user_id") String userID) {
+        logger.debug("INTO /user: " + userID);
+        List<ProgramBrief> result = userService.getUserStarPrograms(userID);
+        return new RequestReturnObject(RequestReturnObjectState.OK, result);
+    }
+
 
 //    /**
 //     * 会员修改
