@@ -34,6 +34,12 @@ public class Ticket implements Serializable {
     private boolean isLock;
 
     /**
+     * 该座位所属的座位类型
+     */
+    @Column(name = "seat_type")
+    private String seatType;
+
+    /**
      * 票所属的节目(N->1)
      */
     @ManyToOne(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
@@ -79,6 +85,14 @@ public class Ticket implements Serializable {
 
     public void setLock(boolean lock) {
         isLock = lock;
+    }
+
+    public String getSeatType() {
+        return seatType;
+    }
+
+    public void setSeatType(String seatType) {
+        this.seatType = seatType;
     }
 
     public Program getProgram() {

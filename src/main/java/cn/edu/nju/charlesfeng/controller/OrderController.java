@@ -2,11 +2,17 @@ package cn.edu.nju.charlesfeng.controller;
 
 import cn.edu.nju.charlesfeng.model.Order;
 import cn.edu.nju.charlesfeng.model.Program;
+import cn.edu.nju.charlesfeng.model.Ticket;
 import cn.edu.nju.charlesfeng.model.Venue;
 import cn.edu.nju.charlesfeng.model.id.OrderID;
+import cn.edu.nju.charlesfeng.model.id.ProgramID;
 import cn.edu.nju.charlesfeng.service.OrderService;
+import cn.edu.nju.charlesfeng.service.ParService;
+import cn.edu.nju.charlesfeng.service.ProgramService;
+import cn.edu.nju.charlesfeng.service.TicketService;
 import cn.edu.nju.charlesfeng.util.enums.OrderState;
 import cn.edu.nju.charlesfeng.util.enums.RequestReturnObjectState;
+import cn.edu.nju.charlesfeng.util.exceptions.TicketsNotAdequateException;
 import cn.edu.nju.charlesfeng.util.helper.RequestReturnObject;
 import com.alibaba.fastjson.support.spring.annotation.FastJsonFilter;
 import com.alibaba.fastjson.support.spring.annotation.FastJsonView;
@@ -15,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -28,9 +35,18 @@ public class OrderController {
 
     private final OrderService orderService;
 
+    private final ProgramService programService;
+
+    private final ParService parService;
+
+    private final TicketService ticketService;
+
     @Autowired
-    public OrderController(OrderService orderService) {
+    public OrderController(OrderService orderService, ProgramService programService, ParService parService, TicketService ticketService) {
         this.orderService = orderService;
+        this.programService = programService;
+        this.parService = parService;
+        this.ticketService = ticketService;
     }
 
     /**
@@ -55,7 +71,8 @@ public class OrderController {
             @FastJsonFilter(clazz = Program.class, props = {"name", "poster", "venue"}),
             @FastJsonFilter(clazz = Venue.class, props = {"address"})
     })
-    public Order getOneOrderForConfirm(@RequestParam("order_time") LocalDateTime time, @SessionAttribute("user_id") String userID) {
+    public @ResponseBody
+    Order getOneOrderForConfirm(@RequestParam("order_time") LocalDateTime time, @SessionAttribute("user_id") String userID) {
         logger.debug("INTO /order/getOneOrder" + userID + time);
         OrderID orderID = new OrderID();
         orderID.setEmail(userID);
@@ -72,10 +89,37 @@ public class OrderController {
             @FastJsonFilter(clazz = Program.class, props = {"programID", "name", "venue"}),
             @FastJsonFilter(clazz = Venue.class, props = {"venueName", "address"})
     })
-    public List<Order> getMyOrdersByState(@RequestParam("orderType") String type, @SessionAttribute("user_id") String userID) {
+    public @ResponseBody
+    List<Order> getMyOrdersByState(@RequestParam("orderType") String type, @SessionAttribute("user_id") String userID) {
         logger.debug("INTO /order/getMyOrdersByState" + userID + type);
         OrderState orderState = OrderState.valueOf(type);
         return orderService.getMyOrders(userID, orderState);
+    }
+
+    /**
+     * 下订单（立即购买）TODO 暂时无法测试，底层尚未有订单
+     */
+    @GetMapping("/generateOrder")
+    public RequestReturnObject generateOrder(@RequestBody ProgramID programID, @RequestParam("seatType") String seatType, @RequestParam("ticket_num") int num, @SessionAttribute("user_id") String userID) {
+        logger.debug("INTO /order/generateOrder" + userID);
+        try {
+            List<Ticket> tickets = ticketService.lock(programID, num, seatType); //进行锁票
+            OrderID orderID = new OrderID();
+            orderID.setTime(LocalDateTime.now());
+            orderID.setEmail(userID);
+            Order order = new Order();
+            Program program = programService.getOneProgram(programID);
+            order.setOrderID(orderID);
+            order.setProgram(program);
+            double price = parService.getSeatPrice(programID, seatType);
+            order.setTotalPrice(price * num);
+            order.setOrderState(OrderState.UNPAID);
+            order.setTickets(new HashSet<>(tickets)); //关联订单
+            orderService.createOrder(order);
+            return new RequestReturnObject(RequestReturnObjectState.OK);
+        } catch (TicketsNotAdequateException e) {
+            return new RequestReturnObject(RequestReturnObjectState.OK, "余票不足");
+        }
     }
 
 

@@ -15,7 +15,6 @@ import java.util.List;
  */
 public interface ParRepository extends JpaRepository<Par, ParID> {
 
-    @Query(value = "select p.base_price from par as p where p.vid=:venueID and p.start_time=:start_time and p.seat_type=:type", nativeQuery = true)
-    double findPrice(@Param("venueID") int venueID, @Param("start_time") LocalDateTime time, @Param("type") String type);
-
+    @Query(value = "select p.parID.basePrice from Par as p where p.parID.programID=:programID and p.seatType=:seatType")
+    double findPrice(@Param("programID") ProgramID programID, @Param("seatType") String type);
 }

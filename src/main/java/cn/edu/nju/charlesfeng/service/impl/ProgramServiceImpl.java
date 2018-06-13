@@ -91,7 +91,7 @@ public class ProgramServiceImpl implements ProgramService {
         List<Program> programs = programRepository.getAvailablePrograms(localDateTime, programType, city);
         List<ProgramBrief> result = new ArrayList<>();
         for (Program program : programs) {
-            int judge = ticketRepository.hasTickets(program.getProgramID());
+            int judge = ticketRepository.hasTickets(program.getProgramID(), false);
             SaleType type = SaleType.TICKETING;
             if (judge == 0) {
                 type = SaleType.REPLACEMENTTICKETING;

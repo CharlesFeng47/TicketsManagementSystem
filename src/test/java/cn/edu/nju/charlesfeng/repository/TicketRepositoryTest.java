@@ -84,11 +84,11 @@ public class TicketRepositoryTest {
         List<Program> programs = programRepository.findAll();
         for (Program program : programs) {
             System.out.println("----------------------------------------");
-            System.out.println("开始生成节目票："+program.getName());
+            System.out.println("开始生成节目票：" + program.getName());
             Venue venue = program.getVenue();
             Set<Seat> seats = venue.getSeats();
-            if(seats.isEmpty()){
-                System.out.println(venue.getVenueID()+"--"+venue.getVenueName());
+            if (seats.isEmpty()) {
+                System.out.println(venue.getVenueID() + "--" + venue.getVenueName());
                 System.out.println("该节目为空");
             }
             Iterable<Ticket> tickets = new HashSet<>();
@@ -101,9 +101,9 @@ public class TicketRepositoryTest {
                 ticket.setLock(false);
                 ticket.setTicketID(ticketID);
                 ticket.setProgram(program);
-                ticket.setPrice(parRepository.findPrice(program.getProgramID().getVenueID(), program.getProgramID().getStartTime(), seat.getType()));
+                ticket.setPrice(parRepository.findPrice(program.getProgramID(), seat.getType()));
                 ((HashSet<Ticket>) tickets).add(ticket);
-                System.out.println(ticket.getTicketID().getRow()+"--"+ticket.getTicketID().getCol()+"--"+ticket.getPrice());
+                System.out.println(ticket.getTicketID().getRow() + "--" + ticket.getTicketID().getCol() + "--" + ticket.getPrice());
             }
 
             //seats.clear();
@@ -114,4 +114,13 @@ public class TicketRepositoryTest {
 
     }
 
+    @Test
+    public void testModifyType() {
+
+    }
+
+    @Test
+    public void lock() {
+
+    }
 }

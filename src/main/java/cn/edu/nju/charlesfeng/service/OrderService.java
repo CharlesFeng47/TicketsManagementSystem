@@ -20,6 +20,14 @@ public interface OrderService {
      */
     Order checkOrderDetail(OrderID orderID);
 
+    /**
+     * 生成订单
+     *
+     * @param order 订单实体
+     * @return 保存结果
+     */
+    boolean createOrder(Order order);
+
 //    /**
 //     * @param member     支付的用户
 //     * @param oid        支付的订单编号

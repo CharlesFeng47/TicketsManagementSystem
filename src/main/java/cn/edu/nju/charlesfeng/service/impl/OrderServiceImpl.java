@@ -38,6 +38,18 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
+     * 生成订单
+     *
+     * @param order 订单实体
+     * @return 保存结果
+     */
+    @Override
+    public boolean createOrder(Order order) {
+        orderRepository.save(order);
+        return true;
+    }
+
+    /**
      * @param uid 查看订单的用户
      * @return 查看某一用户的全部订单
      */

@@ -5,13 +5,14 @@ package cn.edu.nju.charlesfeng.util.enums;
  */
 public enum OrderState {
 
-    ORDERED("已下单"),
-    CANCELLED("逾期未付款自动取消"),
+    UNPAID("未支付"),
     PAYED("已支付"),
-    DISPATCH_FAIL("配票失败"),
-    CHECKED("已检票"),
+    ORDERED("已下单"),
+    REFUND("已退款"),
     EXPIRED("已过期"),
-    REFUND("已退款");
+    CANCELLED("逾期未付款自动取消"),
+    DISPATCH_FAIL("配票失败"),
+    CHECKED("已检票");
 
     private String val;
 
