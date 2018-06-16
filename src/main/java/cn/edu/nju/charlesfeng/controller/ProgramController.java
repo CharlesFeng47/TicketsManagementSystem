@@ -1,8 +1,6 @@
 package cn.edu.nju.charlesfeng.controller;
 
-import cn.edu.nju.charlesfeng.model.Par;
 import cn.edu.nju.charlesfeng.model.Program;
-import cn.edu.nju.charlesfeng.model.Venue;
 import cn.edu.nju.charlesfeng.model.id.ProgramID;
 import cn.edu.nju.charlesfeng.service.ProgramService;
 import cn.edu.nju.charlesfeng.service.TicketService;
@@ -13,8 +11,6 @@ import cn.edu.nju.charlesfeng.util.filter.PreviewSearchResult;
 import cn.edu.nju.charlesfeng.util.filter.ProgramBrief;
 import cn.edu.nju.charlesfeng.util.filter.ProgramDetail;
 import cn.edu.nju.charlesfeng.util.helper.RequestReturnObject;
-import com.alibaba.fastjson.support.spring.annotation.FastJsonFilter;
-import com.alibaba.fastjson.support.spring.annotation.FastJsonView;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -77,7 +73,7 @@ public class ProgramController {
     @GetMapping("/recommend")
     //@FastJsonView(exclude = @FastJsonFilter(clazz = ProgramBrief.class, props = {"scanVolume", "favoriteVolume", "saleType"}))
     public RequestReturnObject getRecommendPrograms(@RequestParam("city") String city) {
-        logger.debug("INTO /program/recommend" + city);
+        logger.debug("INTO /program/recommend?city=" + city);
         Map<String, List<Program>> map = programService.recommendPrograms(LocalDateTime.now(), city, 5); //今天之后包括今天
         Map<String, List<ProgramBrief>> result = new HashMap<>();
         for (String key : map.keySet()) {
@@ -96,7 +92,7 @@ public class ProgramController {
      */
     @GetMapping("/getProgramsByType")
     public RequestReturnObject getProgramsByType(@RequestParam("city") String city, @RequestParam("programType") String programType) {
-        logger.debug("INTO /program/getProgramsByType" + city + programType);
+        logger.debug("INTO /program/getProgramsByType?city=" + city + "&programType=" + programType);
         List<ProgramBrief> result = programService.getBriefPrograms(city, ProgramType.getEnum(programType), LocalDateTime.now()); //今天之后包括今天
         return new RequestReturnObject(RequestReturnObjectState.OK, result);
     }
@@ -105,8 +101,8 @@ public class ProgramController {
      * @return 根据节目ID获取节目详情
      */
     @GetMapping("/getProgramDetail")
-    public ProgramDetail getProgramDetail(@RequestParam("briefProgramID") String id) {
-        logger.debug("INTO /program/getProgramDetail" + id);
+    public RequestReturnObject getProgramDetail(@RequestParam("briefProgramID") String id) {
+        logger.debug("INTO /program/getProgramDetail?briefProgramID" + id);
 
         String ids[] = id.split(";");
         ProgramID programID = new ProgramID();
@@ -116,7 +112,7 @@ public class ProgramController {
         SaleType saleType = ticketService.getProgramSaleType(programID);
         Set<LocalDateTime> fields = programService.getAllProgramField(programID.getVenueID(), program.getName());
         int number = ticketService.getProgramRemainTicketNumber(programID);
-        return new ProgramDetail(program, saleType, fields, number);
+        return new RequestReturnObject(RequestReturnObjectState.OK, new ProgramDetail(program, saleType, fields, number));
     }
 
     /**
@@ -124,7 +120,7 @@ public class ProgramController {
      */
     @GetMapping("/search")
     public RequestReturnObject search(@RequestParam("conditions") String conditions) {
-        logger.debug("INTO /program/search" + conditions);
+        logger.debug("INTO /program/search?conditions=" + conditions);
         Set<Program> programs = programService.search(conditions);
         List<ProgramBrief> result = new ArrayList<>();
         for (Program program : programs) {
@@ -139,7 +135,7 @@ public class ProgramController {
      */
     @GetMapping("/previewSearch")
     public RequestReturnObject previewSearch(@RequestParam("conditions") String conditions) {
-        logger.debug("INTO /program/search" + conditions);
+        logger.debug("INTO /program/previewSearch?conditions=" + conditions);
         List<PreviewSearchResult> programs = programService.previewSearch(conditions, 10);
         return new RequestReturnObject(RequestReturnObjectState.OK, programs);
     }

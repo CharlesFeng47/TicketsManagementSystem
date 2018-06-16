@@ -7,8 +7,10 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="charlesfeng" />
-        <module name="TicketsManagementSystem" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel target="1.8">
+      <module name="charlesfeng" target="1.8" />
+    </bytecodeTargetLevel>
   </component>
 </project>

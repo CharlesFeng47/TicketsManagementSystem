@@ -35,7 +35,7 @@ public class Address implements Serializable {
     /**
      * 地址的补充，默认为空串
      */
-    private  String comment;
+    private String comment;
 
     public String getCity() {
         return city;
@@ -93,5 +93,10 @@ public class Address implements Serializable {
     public int hashCode() {
 
         return Objects.hash(city, district, street, number, comment);
+    }
+
+    @Override
+    public String toString() {
+        return city + "市" + district + "区" + street + number + "号" + comment;
     }
 }

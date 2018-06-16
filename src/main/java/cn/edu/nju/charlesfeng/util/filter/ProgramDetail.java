@@ -2,13 +2,10 @@ package cn.edu.nju.charlesfeng.util.filter;
 
 import cn.edu.nju.charlesfeng.model.Par;
 import cn.edu.nju.charlesfeng.model.Program;
-import cn.edu.nju.charlesfeng.model.Venue;
 import cn.edu.nju.charlesfeng.util.enums.SaleType;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -62,9 +59,14 @@ public class ProgramDetail implements Serializable {
     private Set<Par> pars;
 
     /**
-     * 场馆
+     * 场馆名
      */
-    private Venue venue;
+    private String venueName;
+
+    /**
+     * 场馆地址
+     */
+    private String address;
 
     /**
      * 海报
@@ -81,7 +83,8 @@ public class ProgramDetail implements Serializable {
         poster = program.getPoster();
         programName = program.getName();
         time = program.getProgramID().getStartTime();
-        venue = program.getVenue();
+        venueName = program.getVenue().getVenueName();
+        address = program.getVenue().getAddress().toString();
         scanVolume = program.getScanVolume();
         favoriteVolume = program.getFavoriteVolume();
         saleType = type.toString();
@@ -127,8 +130,12 @@ public class ProgramDetail implements Serializable {
         return pars;
     }
 
-    public Venue getVenue() {
-        return venue;
+    public String getVenueName() {
+        return venueName;
+    }
+
+    public String getAddress() {
+        return address;
     }
 
     public String getPoster() {
