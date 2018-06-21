@@ -18,7 +18,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
 
 @Service
@@ -158,11 +160,12 @@ public class ProgramServiceImpl implements ProgramService {
     public Set<Program> search(String condition) {
         Set<Program> result = new TreeSet<>();
         String conditions[] = condition.split("\\s");
+        LocalDateTime time = LocalDateTime.of(LocalDate.now(), LocalTime.of(0, 0, 0));
         for (String info : conditions) {
             if (result.isEmpty()) {
-                result.addAll(programRepository.searchProgram("%" + info + "%")); //结合初始为空时，取并集
+                result.addAll(programRepository.searchProgram("%" + info + "%", time)); //结合初始为空时，取并集
             } else {
-                result.retainAll(programRepository.searchProgram("%" + info + "%")); //取交集
+                result.retainAll(programRepository.searchProgram("%" + info + "%", time)); //取交集
             }
 
         }
@@ -185,8 +188,9 @@ public class ProgramServiceImpl implements ProgramService {
             conditions = new String[]{condition};
         }
 
+        LocalDateTime time = LocalDateTime.of(LocalDate.now(), LocalTime.of(0, 0, 0));
         for (String info : conditions) {
-            List<Object[]> search_result = programRepository.previewSearchProgram("%" + info + "%");
+            List<Object[]> search_result = programRepository.previewSearchProgram("%" + info + "%", time);
             if (result.isEmpty()) {
                 result.addAll(convert(search_result)); //结合初始为空时，取并集
             } else {

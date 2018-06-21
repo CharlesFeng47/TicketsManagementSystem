@@ -15,7 +15,9 @@ import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
 import java.io.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
 
 @RunWith(SpringRunner.class)
@@ -285,13 +287,15 @@ public class ProgramRepositoryTest {
 
     @Test
     public void searchProgram() {
-        List<Program> programs = programRepository.searchProgram("%上海%");
+        LocalDateTime time = LocalDateTime.of(LocalDate.now(), LocalTime.of(0, 0, 0));
+        List<Program> programs = programRepository.searchProgram("%上海%", time);
         System.out.println("---------------------------");
     }
 
     @Test
     public void previewSearchProgram() {
-        List<Object[]> programs = programRepository.previewSearchProgram("%张韶涵%");
+        LocalDateTime time = LocalDateTime.of(LocalDate.now(), LocalTime.of(0, 0, 0));
+        List<Object[]> programs = programRepository.previewSearchProgram("%张韶涵%", time);
         System.out.println("---------------------------");
     }
 }

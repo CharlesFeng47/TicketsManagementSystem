@@ -10,6 +10,8 @@ import java.util.Objects;
  */
 public class PreviewSearchResult implements Serializable {
 
+    private String id;
+
     private ProgramID programID;
 
     private String programName;
@@ -17,6 +19,15 @@ public class PreviewSearchResult implements Serializable {
     public PreviewSearchResult(Object[] program) {
         this.programID = (ProgramID) program[0];
         this.programName = String.valueOf(program[1]);
+        id = String.valueOf(programID.getVenueID()) + ";" + programID.getStartTime().toString();
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public ProgramID getProgramID() {
@@ -40,13 +51,14 @@ public class PreviewSearchResult implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         PreviewSearchResult that = (PreviewSearchResult) o;
-        return Objects.equals(programID, that.programID) &&
+        return Objects.equals(id, that.id) &&
+                Objects.equals(programID, that.programID) &&
                 Objects.equals(programName, that.programName);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(programID, programName);
+        return Objects.hash(id, programID, programName);
     }
 }

@@ -33,9 +33,9 @@ public interface ProgramRepository extends JpaRepository<Program, ProgramID> {
     @Query(value = "select p from Program p where p.programType=:programType and p.programID.startTime>=:today and p.venue.address.city=:city")
     List<Program> getAvailablePrograms(@Param("today") LocalDateTime today, @Param("programType") ProgramType programType, @Param("city") String city);
 
-    @Query(value = "select p from Program p where concat(p.name, p.venue.venueName) like:info")
-    List<Program> searchProgram(@Param("info") String info);
+    @Query(value = "select p from Program p where concat(p.name, p.venue.venueName) like:info and p.programID.startTime>=:time")
+    List<Program> searchProgram(@Param("info") String info, @Param("time") LocalDateTime time);
 
-    @Query(value = "select p.programID, p.name from Program p where concat(p.name, p.venue.venueName) like:info")
-    List<Object[]> previewSearchProgram(@Param("info") String info);
+    @Query(value = "select p.programID, p.name from Program p where concat(p.name, p.venue.venueName) like:info and p.programID.startTime>=:time")
+    List<Object[]> previewSearchProgram(@Param("info") String info, @Param("time") LocalDateTime time);
 }

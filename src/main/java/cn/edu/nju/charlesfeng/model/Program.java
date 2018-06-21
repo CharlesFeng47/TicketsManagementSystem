@@ -6,6 +6,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -13,7 +14,7 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "program")
-public class Program implements Serializable {
+public class Program implements Serializable, Comparable<Program> {
 
     /**
      * 节目ID（节目开始时间， 场馆ID）
@@ -185,5 +186,42 @@ public class Program implements Serializable {
 
     public void setUsers(Set<User> users) {
         this.users = users;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Program program = (Program) o;
+        return Objects.equals(programID, program.programID);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(programID);
+    }
+
+    /**
+     *
+     */
+    @Override
+    public int compareTo(Program o) {
+        //两个ID相同，则返回节目相同
+        if (programID.getVenueID() == o.programID.getVenueID() && programID.getStartTime().isEqual(o.getProgramID().getStartTime())) {
+            return 0;
+        }
+
+        // 我的场馆ID小于指定场馆ID，则返回我的大
+        if (programID.getVenueID() < o.programID.getVenueID()) {
+            return 1;
+        }
+
+        //场馆ID相同，节目开始时间先于指定节目开始时间，返回大
+        if (programID.getVenueID() == o.programID.getVenueID() && programID.getStartTime().isBefore(o.getProgramID().getStartTime())) {
+            return 1;
+        }
+
+        return -1;
     }
 }
