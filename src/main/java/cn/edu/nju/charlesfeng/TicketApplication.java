@@ -15,9 +15,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableScheduling
 @EnableTransactionManagement
 public class TicketApplication {
-
     public static void main(String[] args) {
         SpringApplication.run(TicketApplication.class, args);
     }
-
 }

@@ -126,7 +126,7 @@ public class UserController {
     /**
      * 根据Token获取当前用户
      */
-    @PostMapping
+    @PostMapping("/token")
     public RequestReturnObject getToken(@RequestParam("token") String token, HttpServletRequest request) {
         logger.debug("INTO /user: " + token);
         HttpSession session = request.getSession();
