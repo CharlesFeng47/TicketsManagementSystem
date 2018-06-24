@@ -173,8 +173,13 @@ public class UserController {
     @PostMapping("/modifyPassword")
     public RequestReturnObject modifyPassword(@SessionAttribute("user_id") String userID, @RequestParam("password") String password) {
         logger.debug("INTO /user: " + userID);
-        userService.modifyUserPassword(userID, password);
-        return new RequestReturnObject(RequestReturnObjectState.OK);
+        try {
+            userService.modifyUserPassword(userID, password);
+            return new RequestReturnObject(RequestReturnObjectState.OK);
+        } catch (OriginalSamePwdException e) {
+            e.printStackTrace();
+            return new RequestReturnObject(RequestReturnObjectState.PWD_SAME_ORIGINAL);
+        }
     }
 
     /**

@@ -44,7 +44,9 @@ public enum RequestReturnObjectState implements Serializable {
     // 用户链接错误
     MEMBER_ACTIVATE_URL_WRONG(17),
     // 订单检票方不是订单中的场馆
-    TICKET_CHECKER_WRONG(18);
+    TICKET_CHECKER_WRONG(18),
+    // 新密码与原密码相同
+    PWD_SAME_ORIGINAL(19);
 
     private int repre;
 

@@ -55,7 +55,7 @@ public interface UserService {
      * @param password  密码
      * @return 修改结果，成果则true
      */
-    boolean modifyUserPassword(String userID, String password);
+    boolean modifyUserPassword(String userID, String password) throws OriginalSamePwdException;
 
     /**
      * @param userID   欲修改用户ID

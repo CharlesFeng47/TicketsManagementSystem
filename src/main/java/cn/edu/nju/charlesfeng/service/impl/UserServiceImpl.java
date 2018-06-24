@@ -141,7 +141,11 @@ public class UserServiceImpl implements UserService {
      * @return 修改结果，成果则true
      */
     @Override
-    public boolean modifyUserPassword(String userID, String password) {
+    public boolean modifyUserPassword(String userID, String password) throws OriginalSamePwdException {
+        User user = userRepository.findByEmail(userID);
+        if (user.getPassword().equals(MD5Task.encodeMD5(password))) {
+            throw new OriginalSamePwdException();
+        }
         userRepository.modifyUserPassword(userID, password);
         return true;
     }
