@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.*;
 import java.time.LocalDateTime;
@@ -67,16 +68,39 @@ public class ParRepositoryTest {
     }
 
     @Test
+//    @Rollback
+//    @Transactional
     public void testModify() {
-//        List<Par> pars = parRepository.findAll();
-//        for (Par par : pars) {
-//            String price = String.valueOf(par.getParID().getBasePrice());
-//            if (price.endsWith(".99")) {
-//                double basePrice = par.getParID().getBasePrice() - 0.99;
-//                ParID parID
-//
-//            }
-//        }
+        List<Par> pars = parRepository.findAll();
+        Set<Par> last_pars = new HashSet();
+        Set<Par> new_pars = new HashSet();
+        for (Par par : pars) {
+            String price = String.valueOf(par.getParID().getBasePrice());
+            if (price.endsWith(".99")) {
+                Par new_par = new Par();
+                double basePrice = par.getParID().getBasePrice() - 0.99;
+                ParID new_parID = new ParID();
+                ParID parID = par.getParID();
+                new_parID.setProgramID(parID.getProgramID());
+                new_parID.setComments(parID.getComments());
+                new_parID.setBasePrice(Math.round(basePrice + randomPrice()));
+                new_par.setParID(new_parID);
+                new_par.setProgram(par.getProgram());
+                new_par.setSeatType(par.getSeatType());
+                new_par.setDiscount(par.getDiscount());
+                new_pars.add(new_par);
+
+                par.setProgram(null);
+                last_pars.add(par);
+            }
+        }
+
+        System.out.println("去除外键的限制");
+        parRepository.saveAll(last_pars);
+        System.out.println("新增记录");
+        parRepository.saveAll(new_pars);
+        System.out.println("删除无用记录");
+        parRepository.deleteAll(last_pars);
     }
 
     @Test

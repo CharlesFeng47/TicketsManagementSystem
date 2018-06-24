@@ -171,14 +171,14 @@ public class UserController {
      * 修改密码
      */
     @PostMapping("/modifyPassword")
-    public RequestReturnObject modifyPassword(@SessionAttribute("user_id") String userID, @RequestParam("password") String password) {
+    public RequestReturnObject modifyPassword(@SessionAttribute("user_id") String userID, @RequestParam("old_password") String old_password, @RequestParam("new_password") String new_password) {
         logger.debug("INTO /user: " + userID);
         try {
-            userService.modifyUserPassword(userID, password);
+            userService.modifyUserPassword(userID, old_password, new_password);
             return new RequestReturnObject(RequestReturnObjectState.OK);
-        } catch (OriginalSamePwdException e) {
+        } catch (WrongPwdException e) {
             e.printStackTrace();
-            return new RequestReturnObject(RequestReturnObjectState.PWD_SAME_ORIGINAL);
+            return new RequestReturnObject(RequestReturnObjectState.USER_PWD_WRONG);
         }
     }
 

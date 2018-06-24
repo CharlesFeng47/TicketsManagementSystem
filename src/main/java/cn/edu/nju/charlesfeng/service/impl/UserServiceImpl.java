@@ -136,17 +136,18 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * @param userID   欲修改用户ID
-     * @param password 密码
+     * @param userID       欲修改用户ID
+     * @param old_password 过去的密码
+     * @param new_password 新密码
      * @return 修改结果，成果则true
      */
     @Override
-    public boolean modifyUserPassword(String userID, String password) throws OriginalSamePwdException {
+    public boolean modifyUserPassword(String userID, String old_password, String new_password) throws WrongPwdException {
         User user = userRepository.findByEmail(userID);
-        if (user.getPassword().equals(MD5Task.encodeMD5(password))) {
-            throw new OriginalSamePwdException();
+        if (user.getPassword().equals(MD5Task.encodeMD5(old_password))) {
+            throw new WrongPwdException();
         }
-        userRepository.modifyUserPassword(userID, password);
+        userRepository.modifyUserPassword(userID, new_password);
         return true;
     }
 

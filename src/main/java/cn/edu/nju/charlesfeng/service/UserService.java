@@ -52,10 +52,11 @@ public interface UserService {
 
     /**
      * @param userID   欲修改用户ID
-     * @param password  密码
+     * @param old_password  过去的密码
+     * @param new_password  新密码
      * @return 修改结果，成果则true
      */
-    boolean modifyUserPassword(String userID, String password) throws OriginalSamePwdException;
+    boolean modifyUserPassword(String userID, String old_password,String new_password) throws WrongPwdException;
 
     /**
      * @param userID   欲修改用户ID
