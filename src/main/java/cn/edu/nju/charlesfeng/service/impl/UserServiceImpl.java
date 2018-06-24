@@ -125,6 +125,39 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
+     * @param userID   欲修改用户ID
+     * @param portrait 头像
+     * @return 修改结果，成果则true
+     */
+    @Override
+    public boolean modifyUserPortrait(String userID, String portrait) {
+        userRepository.modifyUserPortrait(userID, portrait);
+        return true;
+    }
+
+    /**
+     * @param userID   欲修改用户ID
+     * @param password 密码
+     * @return 修改结果，成果则true
+     */
+    @Override
+    public boolean modifyUserPassword(String userID, String password) {
+        userRepository.modifyUserPassword(userID, password);
+        return true;
+    }
+
+    /**
+     * @param userID 欲修改用户ID
+     * @param name   用户名
+     * @return 修改结果，成果则true
+     */
+    @Override
+    public boolean modifyUserName(String userID, String name) {
+        userRepository.modifyUserName(userID, name);
+        return true;
+    }
+
+    /**
      * @param id 要查看的用户ID
      * @return 用户详情
      */

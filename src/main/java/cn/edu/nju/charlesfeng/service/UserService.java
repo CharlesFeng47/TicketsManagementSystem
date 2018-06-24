@@ -44,6 +44,27 @@ public interface UserService {
     boolean modifyUser(User user) throws UserNotExistException;
 
     /**
+     * @param userID   欲修改用户ID
+     * @param portrait 头像
+     * @return 修改结果，成果则true
+     */
+    boolean modifyUserPortrait(String userID, String portrait);
+
+    /**
+     * @param userID   欲修改用户ID
+     * @param password  密码
+     * @return 修改结果，成果则true
+     */
+    boolean modifyUserPassword(String userID, String password);
+
+    /**
+     * @param userID   欲修改用户ID
+     * @param name  用户名
+     * @return 修改结果，成果则true
+     */
+    boolean modifyUserName(String userID, String name);
+
+    /**
      * @param id 要查看的用户ID
      * @return 用户详情
      */
@@ -53,14 +74,14 @@ public interface UserService {
      * 收藏，设为喜欢
      *
      * @param programID 节目ID
-     * @param userID 用户ID
+     * @param userID    用户ID
      */
     void star(ProgramID programID, String userID);
 
     /**
      * 获取用户star的节目
      *
-    * @param userID 用户ID
+     * @param userID 用户ID
      * @return 节目列表
      */
     List<ProgramBrief> getUserStarPrograms(String userID);
@@ -68,7 +89,7 @@ public interface UserService {
     /**
      * 判断用户是否喜欢指定的节目
      *
-     * @param userID 用户ID
+     * @param userID  用户ID
      * @param program 节目
      * @return 是否喜欢
      */

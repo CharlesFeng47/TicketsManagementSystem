@@ -14,10 +14,7 @@ import cn.edu.nju.charlesfeng.util.filter.ProgramDetail;
 import cn.edu.nju.charlesfeng.util.helper.RequestReturnObject;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -107,7 +104,7 @@ public class ProgramController {
      * @return 根据节目ID获取节目详情
      */
     @GetMapping("/getProgramDetail")
-    public RequestReturnObject getProgramDetail(@RequestParam("briefProgramID") String id, HttpServletRequest request) {
+    public RequestReturnObject getProgramDetail(@RequestParam("briefProgramID") String id, @SessionAttribute("user_id") String userID) {
         logger.debug("INTO /program/getProgramDetail?briefProgramID" + id);
 
         if (!id.contains(";")) {
@@ -119,8 +116,6 @@ public class ProgramController {
             return new RequestReturnObject(RequestReturnObjectState.INTERIOR_WRONG);
         }
 
-        HttpSession session = request.getSession();
-        String userID = String.valueOf(session.getAttribute("user_id"));
         ProgramID programID = new ProgramID();
         programID.setVenueID(Integer.parseInt(ids[0]));
         programID.setStartTime(LocalDateTime.parse(ids[1]));

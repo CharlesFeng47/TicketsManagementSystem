@@ -41,7 +41,7 @@ public class UserController {
      * @return 系统服务状态
      */
     @PostMapping("/user_login")
-        public RequestReturnObject login(@RequestParam("email") String email, @RequestParam("password") String pwd, HttpServletRequest request) {
+    public RequestReturnObject login(@RequestParam("email") String email, @RequestParam("password") String pwd, HttpServletRequest request) {
         logger.debug("INTO /user/login");
         try {
             User user = userService.logIn(email, pwd);
@@ -157,6 +157,35 @@ public class UserController {
         return new RequestReturnObject(RequestReturnObjectState.OK, result);
     }
 
+    /**
+     * 修改头像
+     */
+    @PostMapping("/modifyPortrait")
+    public RequestReturnObject modifyPortrait(@SessionAttribute("user_id") String userID, @RequestParam("portrait") String newPortrait) {
+        logger.debug("INTO /user: " + userID);
+        userService.modifyUserPortrait(userID, newPortrait);
+        return new RequestReturnObject(RequestReturnObjectState.OK);
+    }
+
+    /**
+     * 修改密码
+     */
+    @PostMapping("/modifyPassword")
+    public RequestReturnObject modifyPassword(@SessionAttribute("user_id") String userID, @RequestParam("password") String password) {
+        logger.debug("INTO /user: " + userID);
+        userService.modifyUserPassword(userID, password);
+        return new RequestReturnObject(RequestReturnObjectState.OK);
+    }
+
+    /**
+     * 修改用户名
+     */
+    @PostMapping("/modifyName")
+    public RequestReturnObject modifyName(@SessionAttribute("user_id") String userID, @RequestParam("name") String name) {
+        logger.debug("INTO /user: " + userID);
+        userService.modifyUserName(userID, name);
+        return new RequestReturnObject(RequestReturnObjectState.OK);
+    }
 
 //    /**
 //     * 会员修改
