@@ -6,8 +6,10 @@ import cn.edu.nju.charlesfeng.util.enums.ProgramType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -38,4 +40,9 @@ public interface ProgramRepository extends JpaRepository<Program, ProgramID> {
 
     @Query(value = "select p.programID, p.name from Program p where concat(p.name, p.venue.venueName) like:info and p.programID.startTime>=:time")
     List<Object[]> previewSearchProgram(@Param("info") String info, @Param("time") LocalDateTime time);
+
+    @Modifying
+    @Transactional
+    @Query(value = "update program set scan = scan + 1 WHERE vid=:venueID and start_time=:startTime", nativeQuery = true)
+    void addOneScanVolume(@Param("venueID") int venueID, @Param("startTime") LocalDateTime time);
 }

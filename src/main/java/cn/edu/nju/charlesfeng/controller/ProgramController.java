@@ -4,6 +4,7 @@ import cn.edu.nju.charlesfeng.model.Program;
 import cn.edu.nju.charlesfeng.model.id.ProgramID;
 import cn.edu.nju.charlesfeng.service.ProgramService;
 import cn.edu.nju.charlesfeng.service.TicketService;
+import cn.edu.nju.charlesfeng.service.UserService;
 import cn.edu.nju.charlesfeng.util.enums.ProgramType;
 import cn.edu.nju.charlesfeng.util.enums.RequestReturnObjectState;
 import cn.edu.nju.charlesfeng.util.enums.SaleType;
@@ -18,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -34,10 +37,13 @@ public class ProgramController {
 
     private final TicketService ticketService;
 
+    private final UserService userService;
+
     @Autowired
-    public ProgramController(ProgramService programService, TicketService ticketService) {
+    public ProgramController(ProgramService programService, TicketService ticketService, UserService userService) {
         this.programService = programService;
         this.ticketService = ticketService;
+        this.userService = userService;
     }
 
 //    /**
@@ -101,18 +107,30 @@ public class ProgramController {
      * @return 根据节目ID获取节目详情
      */
     @GetMapping("/getProgramDetail")
-    public RequestReturnObject getProgramDetail(@RequestParam("briefProgramID") String id) {
+    public RequestReturnObject getProgramDetail(@RequestParam("briefProgramID") String id, HttpServletRequest request) {
         logger.debug("INTO /program/getProgramDetail?briefProgramID" + id);
 
+        if (!id.contains(";")) {
+            return new RequestReturnObject(RequestReturnObjectState.INTERIOR_WRONG);
+        }
+
         String ids[] = id.split(";");
+        if (ids.length != 2) {
+            return new RequestReturnObject(RequestReturnObjectState.INTERIOR_WRONG);
+        }
+
+        HttpSession session = request.getSession();
+        String userID = String.valueOf(session.getAttribute("user_id"));
         ProgramID programID = new ProgramID();
         programID.setVenueID(Integer.parseInt(ids[0]));
         programID.setStartTime(LocalDateTime.parse(ids[1]));
         Program program = programService.getOneProgram(programID);
+        boolean isLike = userService.isLike(userID, program);
         SaleType saleType = ticketService.getProgramSaleType(programID);
         Set<LocalDateTime> fields = programService.getAllProgramField(programID.getVenueID(), program.getName());
         int number = ticketService.getProgramRemainTicketNumber(programID);
-        return new RequestReturnObject(RequestReturnObjectState.OK, new ProgramDetail(program, saleType, fields, number));
+        programService.addScanVolume(program.getProgramID()); //浏览量加1
+        return new RequestReturnObject(RequestReturnObjectState.OK, new ProgramDetail(program, saleType, fields, number, isLike));
     }
 
     /**

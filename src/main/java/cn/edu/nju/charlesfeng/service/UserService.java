@@ -64,4 +64,13 @@ public interface UserService {
      * @return 节目列表
      */
     List<ProgramBrief> getUserStarPrograms(String userID);
+
+    /**
+     * 判断用户是否喜欢指定的节目
+     *
+     * @param userID 用户ID
+     * @param program 节目
+     * @return 是否喜欢
+     */
+    boolean isLike(String userID, Program program);
 }

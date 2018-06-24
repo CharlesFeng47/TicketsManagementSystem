@@ -17,7 +17,7 @@ public interface ProgramService {
     /**
      * 获取首页的每种类型的5个推荐节目
      *
-     * @return Map<ProgramType                                                               ,                                                                                                                               List                                                               <                                                               Program>>
+     * @return Map<ProgramType                                                                                                                               ,                                                                                                                                                                                                                                                               List                                                                                                                               <                                                                                                                               Program>>
      */
     Map<String, List<Program>> recommendPrograms(LocalDateTime localDateTime, String city, int num);
 
@@ -77,6 +77,13 @@ public interface ProgramService {
      * @return 节目简介列表
      */
     List<PreviewSearchResult> previewSearch(String condition, int result_num);
+
+    /**
+     * 对节目的浏览量加1
+     *
+     * @param programID 节目ID
+     */
+    void addScanVolume(ProgramID programID);
 
     /**
      * @param program 欲发布的活动日程描述

@@ -68,7 +68,15 @@ public class ParRepositoryTest {
 
     @Test
     public void testModify() {
-
+//        List<Par> pars = parRepository.findAll();
+//        for (Par par : pars) {
+//            String price = String.valueOf(par.getParID().getBasePrice());
+//            if (price.endsWith(".99")) {
+//                double basePrice = par.getParID().getBasePrice() - 0.99;
+//                ParID parID
+//
+//            }
+//        }
     }
 
     @Test
@@ -348,5 +356,9 @@ public class ParRepositoryTest {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private int randomPrice() {
+        return (int) (Math.random() * 100);
     }
 }

@@ -78,7 +78,12 @@ public class ProgramDetail implements Serializable {
      */
     private int remainTicketsNumber;
 
-    public ProgramDetail(Program program, SaleType type, Set<LocalDateTime> fields, int remianNumber) {
+    /**
+     * 当前登陆用户对该节目是否喜爱
+     */
+    private boolean isLike;
+
+    public ProgramDetail(Program program, SaleType type, Set<LocalDateTime> fields, int remainNumber, boolean isLike) {
         id = String.valueOf(program.getProgramID().getVenueID()) + ";" + program.getProgramID().getStartTime().toString();
         poster = program.getPoster();
         programName = program.getName();
@@ -91,7 +96,8 @@ public class ProgramDetail implements Serializable {
         this.fields = fields;
         pars = program.getPars();
         programType = program.getProgramType().toString();
-        remainTicketsNumber = remianNumber;
+        remainTicketsNumber = remainNumber;
+        this.isLike = isLike;
     }
 
     public String getId() {
@@ -144,5 +150,9 @@ public class ProgramDetail implements Serializable {
 
     public int getRemainTicketsNumber() {
         return remainTicketsNumber;
+    }
+
+    public boolean isLike() {
+        return isLike;
     }
 }

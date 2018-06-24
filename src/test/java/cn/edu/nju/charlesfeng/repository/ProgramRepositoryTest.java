@@ -298,4 +298,14 @@ public class ProgramRepositoryTest {
         List<Object[]> programs = programRepository.previewSearchProgram("%张韶涵%", time);
         System.out.println("---------------------------");
     }
+
+    @Test
+    public void testAddOneScanVolume() {
+        int vid = 15;
+        LocalDateTime dateTime = LocalDateTime.of(2017, 6, 14, 0, 0, 0);
+        ProgramID programID = new ProgramID();
+        programID.setVenueID(vid);
+        programID.setStartTime(dateTime);
+        programRepository.addOneScanVolume(vid, dateTime);
+    }
 }

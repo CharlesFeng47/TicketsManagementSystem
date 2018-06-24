@@ -41,7 +41,7 @@ public class UserController {
      * @return 系统服务状态
      */
     @PostMapping("/user_login")
-    public RequestReturnObject login(@RequestParam("email") String email, @RequestParam("password") String pwd, HttpServletRequest request) {
+        public RequestReturnObject login(@RequestParam("email") String email, @RequestParam("password") String pwd, HttpServletRequest request) {
         logger.debug("INTO /user/login");
         try {
             User user = userService.logIn(email, pwd);

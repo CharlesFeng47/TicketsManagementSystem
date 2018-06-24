@@ -163,4 +163,18 @@ public class UserServiceImpl implements UserService {
         }
         return result;
     }
+
+    /**
+     * 判断用户是否喜欢指定的节目
+     *
+     * @param userID  用户ID
+     * @param program 节目
+     * @return 是否喜欢
+     */
+    @Override
+    public boolean isLike(String userID, Program program) {
+        User user = userRepository.findByEmail(userID);
+        Set<Program> programs = user.getPrograms();
+        return programs.contains(program);
+    }
 }
