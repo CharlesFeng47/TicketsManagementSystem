@@ -147,7 +147,7 @@ public class UserServiceImpl implements UserService {
         if (user.getPassword().equals(MD5Task.encodeMD5(old_password))) {
             throw new WrongPwdException();
         }
-        userRepository.modifyUserPassword(userID, new_password);
+        userRepository.modifyUserPassword(userID, MD5Task.encodeMD5(new_password));
         return true;
     }
 
