@@ -1,11 +1,16 @@
 package cn.edu.nju.charlesfeng.service.impl;
 
 import cn.edu.nju.charlesfeng.model.Program;
+import cn.edu.nju.charlesfeng.model.id.ProgramID;
 import cn.edu.nju.charlesfeng.service.ProgramService;
+import cn.edu.nju.charlesfeng.service.TicketService;
 import cn.edu.nju.charlesfeng.util.enums.ProgramType;
+import cn.edu.nju.charlesfeng.util.enums.RequestReturnObjectState;
 import cn.edu.nju.charlesfeng.util.enums.SaleType;
 import cn.edu.nju.charlesfeng.util.filter.PreviewSearchResult;
 import cn.edu.nju.charlesfeng.util.filter.ProgramBrief;
+import cn.edu.nju.charlesfeng.util.filter.ProgramDetail;
+import cn.edu.nju.charlesfeng.util.helper.RequestReturnObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +26,9 @@ public class ProgramServiceImplTest {
 
     @Autowired
     private ProgramService programService;
+
+    @Autowired
+    private TicketService ticketService;
 
     @Test
     public void recommendPrograms() {
@@ -96,5 +104,24 @@ public class ProgramServiceImplTest {
     public void previewSearch() {
         List<PreviewSearchResult> result = programService.previewSearch("上海 张韶涵", 10);
         System.out.println("-------------------------");
+    }
+
+    @Test
+    public void testProgramBrief() {
+
+        String id = "129;2018-08-11T18:35";
+        String id1 = "129;2018-08-15T17:00";
+        long start = System.currentTimeMillis();
+
+        String fast_id = "120;2018-06-29T00:00";
+        String ids[] = fast_id.split(";");
+        ProgramID programID = new ProgramID();
+        programID.setVenueID(Integer.parseInt(ids[0]));
+        programID.setStartTime(LocalDateTime.parse(ids[1]));
+        Program program = programService.getOneProgram(programID);
+        SaleType saleType = ticketService.getProgramSaleType(programID);
+        Set<LocalDateTime> fields = programService.getAllProgramField(programID.getVenueID(), program.getName());
+        int number = ticketService.getProgramRemainTicketNumber(programID);
+        System.out.println(System.currentTimeMillis() - start);
     }
 }
