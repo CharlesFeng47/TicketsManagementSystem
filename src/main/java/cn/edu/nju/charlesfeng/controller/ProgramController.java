@@ -104,7 +104,7 @@ public class ProgramController {
      * @return 根据节目ID获取节目详情
      */
     @GetMapping("/getProgramDetail")
-    public RequestReturnObject getProgramDetail(@RequestParam("briefProgramID") String id, @SessionAttribute("user_id") String userID) {
+    public RequestReturnObject getProgramDetail(@RequestParam("briefProgramID") String id, HttpServletRequest request) {
         logger.debug("INTO /program/getProgramDetail?briefProgramID" + id);
 
         if (!id.contains(";")) {
@@ -120,7 +120,14 @@ public class ProgramController {
         programID.setVenueID(Integer.parseInt(ids[0]));
         programID.setStartTime(LocalDateTime.parse(ids[1]));
         Program program = programService.getOneProgram(programID);
-        boolean isLike = userService.isLike(userID, program);
+
+        HttpSession session = request.getSession();
+        String userID = (String) session.getAttribute("user_id");
+        boolean isLike = false;
+        if (userID != null) {
+            isLike = userService.isLike(userID, program);
+        }
+
         SaleType saleType = ticketService.getProgramSaleType(programID);
         Set<LocalDateTime> fields = programService.getAllProgramField(programID.getVenueID(), program.getName());
         int number = ticketService.getProgramRemainTicketNumber(programID);
