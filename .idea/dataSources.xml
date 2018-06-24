@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="tickets_msdb_v2@localhost" uuid="18bef90c-36e3-4931-adbd-3bbb8e64541c">
+    <data-source source="LOCAL" name="tickets_msdb_v2@localhost" uuid="be20a957-e121-41d5-9947-91a230d64792">
       <driver-ref>mysql</driver-ref>
       <jdbc-driver>com.mysql.jdbc.Driver</jdbc-driver>
       <jdbc-url>jdbc:mysql://localhost:3306/tickets_msdb_v2</jdbc-url>
