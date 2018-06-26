@@ -151,17 +151,6 @@ public class ProgramServiceImpl implements ProgramService {
     }
 
     /**
-     * 获取指定节目的海报
-     *
-     * @param programID 节目ID
-     * @return 海报
-     */
-    @Override
-    public String getProgramPoster(ProgramID programID) {
-        return programRepository.getProgramPoster(programID);
-    }
-
-    /**
      * 根据条件进行模糊搜索节目
      *
      * @param condition 条件

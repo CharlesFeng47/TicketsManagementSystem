@@ -161,21 +161,6 @@ public class ProgramController {
         return new RequestReturnObject(RequestReturnObjectState.OK, programs);
     }
 
-    /**
-     * @return 根据节目ID获取节目详情
-     */
-    @GetMapping("/getPoster")
-    public RequestReturnObject getProgramPoster(@RequestParam("id") String id, HttpServletRequest request) {
-        logger.debug("INTO /program/getProgramDetail?briefProgramID" + id);
-        String ids[] = id.split("-");
-        ProgramID programID = new ProgramID();
-        programID.setVenueID(Integer.parseInt(ids[0]));
-        programID.setStartTime(TimeHelper.getLocalDateTime(Long.parseLong(ids[1])));
-        String poster = programService.getProgramPoster(programID);
-        return new RequestReturnObject(RequestReturnObjectState.OK, poster);
-    }
-
-
 //    /**
 //     * @return 某一条日程的详情
 //     */
