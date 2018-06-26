@@ -7,7 +7,9 @@ import cn.edu.nju.charlesfeng.util.helper.TimeHelper;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * 节目概览
@@ -57,7 +59,7 @@ public class ProgramDetail implements Serializable {
     /**
      * 票面
      */
-    private Set<Par> pars;
+    private Set<ParDto> pars;
 
     /**
      * 场馆名
@@ -95,10 +97,13 @@ public class ProgramDetail implements Serializable {
         programTypeName = program.getProgramType().name();
         saleType = type.toString();
         this.fields = fields;
-        pars = program.getPars();
         programType = program.getProgramType().toString();
         remainTicketsNumber = remainNumber;
         this.isLike = isLike;
+        pars = new TreeSet<>();
+        for(Par par: program.getPars()){
+            pars.add(new ParDto(par));
+        }
     }
 
     public String getId() {
@@ -133,7 +138,7 @@ public class ProgramDetail implements Serializable {
         return fields;
     }
 
-    public Set<Par> getPars() {
+    public Set<ParDto> getPars() {
         return pars;
     }
 
