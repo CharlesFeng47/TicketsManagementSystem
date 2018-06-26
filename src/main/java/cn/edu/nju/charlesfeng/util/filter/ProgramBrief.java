@@ -31,6 +31,11 @@ public class ProgramBrief implements Serializable {
     private String programName;
 
     /**
+     * 节目介绍
+     */
+    private String description;
+
+    /**
      * 最低价
      */
     private double lowPrice;
@@ -68,6 +73,7 @@ public class ProgramBrief implements Serializable {
     public ProgramBrief(Program program) {
         id = String.valueOf(program.getProgramID().getVenueID()) + "-" + String.valueOf(TimeHelper.getLong(program.getProgramID().getStartTime()));
         programName = program.getName();
+        description = program.getDescription();
         time = program.getProgramID().getStartTime();
         Venue venue = program.getVenue();
         city = venue.getAddress().getCity();
@@ -86,6 +92,7 @@ public class ProgramBrief implements Serializable {
     public ProgramBrief(Program program, SaleType type) {
         id = String.valueOf(program.getProgramID().getVenueID()) + "-" + String.valueOf(TimeHelper.getLong(program.getProgramID().getStartTime()));
         programName = program.getName();
+        description = program.getDescription();
         time = program.getProgramID().getStartTime();
         Venue venue = program.getVenue();
         city = venue.getAddress().getCity();
@@ -110,6 +117,10 @@ public class ProgramBrief implements Serializable {
 
     public String getProgramName() {
         return programName;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     public double getLowPrice() {
