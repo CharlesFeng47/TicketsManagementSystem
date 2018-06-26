@@ -161,9 +161,12 @@ public class UserController {
      * 修改头像
      */
     @PostMapping("/modifyPortrait")
-    public RequestReturnObject modifyPortrait(@SessionAttribute("user_id") String userID, @RequestParam("portrait") String newPortrait) {
+    public RequestReturnObject modifyPortrait(@SessionAttribute("user_id") String userID,
+                                              @RequestParam("portrait") String newPortrait,  @RequestParam("token") String token,  HttpServletRequest request) {
         logger.debug("INTO /user: " + userID);
         userService.modifyUserPortrait(userID, newPortrait);
+        HttpSession session = request.getSession();
+        session.setAttribute(token, userService.getUser(userID));
         return new RequestReturnObject(RequestReturnObjectState.OK);
     }
 
@@ -171,7 +174,8 @@ public class UserController {
      * 修改密码
      */
     @PostMapping("/modifyPassword")
-    public RequestReturnObject modifyPassword(@SessionAttribute("user_id") String userID, @RequestParam("old_password") String old_password, @RequestParam("new_password") String new_password) {
+    public RequestReturnObject modifyPassword(@SessionAttribute("user_id") String userID, @RequestParam("old_password") String old_password,
+                                              @RequestParam("new_password") String new_password) {
         logger.debug("INTO /user: " + userID);
         try {
             userService.modifyUserPassword(userID, old_password, new_password);
@@ -186,9 +190,12 @@ public class UserController {
      * 修改用户名
      */
     @PostMapping("/modifyName")
-    public RequestReturnObject modifyName(@SessionAttribute("user_id") String userID, @RequestParam("name") String name) {
+    public RequestReturnObject modifyName(@SessionAttribute("user_id") String userID, @RequestParam("name") String name,@RequestParam("token") String token,
+                                          HttpServletRequest request ) {
         logger.debug("INTO /user: " + userID);
         userService.modifyUserName(userID, name);
+        HttpSession session = request.getSession();
+        session.setAttribute(token, userService.getUser(userID));
         return new RequestReturnObject(RequestReturnObjectState.OK);
     }
 
