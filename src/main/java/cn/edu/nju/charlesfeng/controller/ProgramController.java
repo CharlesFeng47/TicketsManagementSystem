@@ -12,6 +12,7 @@ import cn.edu.nju.charlesfeng.util.filter.PreviewSearchResult;
 import cn.edu.nju.charlesfeng.util.filter.ProgramBrief;
 import cn.edu.nju.charlesfeng.util.filter.ProgramDetail;
 import cn.edu.nju.charlesfeng.util.helper.RequestReturnObject;
+import cn.edu.nju.charlesfeng.util.helper.TimeHelper;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -107,18 +108,18 @@ public class ProgramController {
     public RequestReturnObject getProgramDetail(@RequestParam("briefProgramID") String id, HttpServletRequest request) {
         logger.debug("INTO /program/getProgramDetail?briefProgramID" + id);
 
-        if (!id.contains(";")) {
+        if (!id.contains("-")) {
             return new RequestReturnObject(RequestReturnObjectState.INTERIOR_WRONG);
         }
 
-        String ids[] = id.split(";");
+        String ids[] = id.split("-");
         if (ids.length != 2) {
             return new RequestReturnObject(RequestReturnObjectState.INTERIOR_WRONG);
         }
 
         ProgramID programID = new ProgramID();
         programID.setVenueID(Integer.parseInt(ids[0]));
-        programID.setStartTime(LocalDateTime.parse(ids[1]));
+        programID.setStartTime(TimeHelper.getLocalDateTime(Long.parseLong(ids[1])));
         Program program = programService.getOneProgram(programID);
 
         HttpSession session = request.getSession();
@@ -158,6 +159,20 @@ public class ProgramController {
         logger.debug("INTO /program/previewSearch?conditions=" + conditions);
         List<PreviewSearchResult> programs = programService.previewSearch(conditions, 10);
         return new RequestReturnObject(RequestReturnObjectState.OK, programs);
+    }
+
+    /**
+     * @return 根据节目ID获取节目详情
+     */
+    @GetMapping("/getPoster")
+    public RequestReturnObject getProgramPoster(@RequestParam("id") String id, HttpServletRequest request) {
+        logger.debug("INTO /program/getProgramDetail?briefProgramID" + id);
+        String ids[] = id.split("-");
+        ProgramID programID = new ProgramID();
+        programID.setVenueID(Integer.parseInt(ids[0]));
+        programID.setStartTime(TimeHelper.getLocalDateTime(Long.parseLong(ids[1])));
+        String poster = programService.getProgramPoster(programID);
+        return new RequestReturnObject(RequestReturnObjectState.OK, poster);
     }
 
 

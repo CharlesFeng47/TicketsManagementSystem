@@ -6,6 +6,7 @@ import cn.edu.nju.charlesfeng.util.enums.ProgramType;
 import cn.edu.nju.charlesfeng.util.exceptions.ProgramNotSettlableException;
 import cn.edu.nju.charlesfeng.util.filter.PreviewSearchResult;
 import cn.edu.nju.charlesfeng.util.filter.ProgramBrief;
+import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -61,6 +62,14 @@ public interface ProgramService {
      * @return 场次
      */
     Set<LocalDateTime> getAllProgramField(int venueID, String name);
+
+    /**
+     * 获取指定节目的海报
+     *
+     * @param programID 节目ID
+     * @return 海报
+     */
+    String getProgramPoster(@Param("programID") ProgramID programID);
 
     /**
      * 根据条件进行模糊搜索节目

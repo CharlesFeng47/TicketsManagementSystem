@@ -43,7 +43,7 @@ public class ProgramServiceImpl implements ProgramService {
      */
     @Override
     public Map<String, List<Program>> recommendPrograms(LocalDateTime localDateTime, String city, int num) {
-        //long start = System.currentTimeMillis();
+        long start = System.currentTimeMillis();
         ProgramType types[] = ProgramType.values();
         Map<String, List<Program>> result = new TreeMap<>();
         for (ProgramType programType : types) {
@@ -52,14 +52,14 @@ public class ProgramServiceImpl implements ProgramService {
             }
             Sort sort = new Sort(Sort.Direction.ASC, "programID.startTime");
             Pageable pageable = new PageRequest(1, num, sort);
-            //long start1 = System.currentTimeMillis();
+            long start1 = System.currentTimeMillis();
             Page<Program> program_page = programRepository.getAvailablePrograms(localDateTime, programType, city, pageable);
-            //System.out.println(programType+"第一次取"+(System.currentTimeMillis()-start1));
+            System.out.println(programType+"第一次取"+(System.currentTimeMillis()-start1));
             List<Program> programs = new ArrayList<>(program_page.getContent());
             AddressHelper addressHelper = new AddressHelper();
             List<String> cities = addressHelper.getNearCity(city);
             if (programs.size() < num) {
-                //long start2 = System.currentTimeMillis();
+                long start2 = System.currentTimeMillis();
                 for (String near_city : cities) {
                     Pageable pageable_need = new PageRequest(1, (num - programs.size()), sort);
                     Page<Program> program_page_need = programRepository.getAvailablePrograms(localDateTime, programType, near_city, pageable_need);
@@ -69,14 +69,14 @@ public class ProgramServiceImpl implements ProgramService {
                         break;
                     }
                 }
-                //System.out.println(programType+"第二次取"+(System.currentTimeMillis()-start2));
+                System.out.println(programType+"第二次取"+(System.currentTimeMillis()-start2));
             }
 
             if (programs.size() == num) {
                 result.put(programType.toString(), programs);
             }
         }
-        //System.out.println(System.currentTimeMillis() - start);
+        System.out.println(System.currentTimeMillis() - start);
         return result;
     }
 
@@ -148,6 +148,17 @@ public class ProgramServiceImpl implements ProgramService {
     @Override
     public Set<LocalDateTime> getAllProgramField(int venueID, String name) {
         return new TreeSet<>(programRepository.findField(venueID, name));
+    }
+
+    /**
+     * 获取指定节目的海报
+     *
+     * @param programID 节目ID
+     * @return 海报
+     */
+    @Override
+    public String getProgramPoster(ProgramID programID) {
+        return programRepository.getProgramPoster(programID);
     }
 
     /**

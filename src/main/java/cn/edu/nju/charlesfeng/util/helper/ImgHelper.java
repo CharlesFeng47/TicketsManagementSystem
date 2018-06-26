@@ -45,7 +45,6 @@ public class ImgHelper {
         if (img == null) {//图像数据为空
             return;
         }
-
         BASE64Decoder decoder = new BASE64Decoder();
         try {
             //Base64解码

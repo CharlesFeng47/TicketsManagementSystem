@@ -38,13 +38,6 @@ public class Program implements Serializable, Comparable<Program> {
     private ProgramType programType;
 
     /**
-     * 节目海报
-     */
-    @Lob
-    @Column(columnDefinition = "longblob")
-    private String poster;
-
-    /**
      * 节目介绍
      */
     private String description;
@@ -114,14 +107,6 @@ public class Program implements Serializable, Comparable<Program> {
 
     public void setProgramType(ProgramType programType) {
         this.programType = programType;
-    }
-
-    public String getPoster() {
-        return poster;
-    }
-
-    public void setPoster(String poster) {
-        this.poster = poster;
     }
 
     public String getDescription() {

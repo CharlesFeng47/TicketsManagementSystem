@@ -4,6 +4,7 @@ import cn.edu.nju.charlesfeng.model.Par;
 import cn.edu.nju.charlesfeng.model.Program;
 import cn.edu.nju.charlesfeng.model.Venue;
 import cn.edu.nju.charlesfeng.util.enums.SaleType;
+import cn.edu.nju.charlesfeng.util.helper.TimeHelper;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -20,9 +21,9 @@ public class ProgramBrief implements Serializable {
     private String id;
 
     /**
-     * 海报
+     * 节目开始时间
      */
-    private String poster;
+    private LocalDateTime time;
 
     /**
      * 节目名称
@@ -45,11 +46,6 @@ public class ProgramBrief implements Serializable {
     private String venueName;
 
     /**
-     * 节目开始时间
-     */
-    private LocalDateTime time;
-
-    /**
      * 浏览量
      */
     private int scanVolume;
@@ -64,14 +60,19 @@ public class ProgramBrief implements Serializable {
      */
     private String saleType;
 
+    /**
+     * 节目类型的名称（英文）
+     */
+    private String programTypeName;
+
     public ProgramBrief(Program program) {
-        id = String.valueOf(program.getProgramID().getVenueID()) + ";" + program.getProgramID().getStartTime().toString();
-        poster = program.getPoster();
+        id = String.valueOf(program.getProgramID().getVenueID()) + "-" + String.valueOf(TimeHelper.getLong(program.getProgramID().getStartTime()));
         programName = program.getName();
         time = program.getProgramID().getStartTime();
         Venue venue = program.getVenue();
         city = venue.getAddress().getCity();
         venueName = venue.getVenueName();
+        programTypeName = program.getProgramType().name();
         Iterator<Par> iterator = program.getPars().iterator();
         lowPrice = iterator.next().getParID().getBasePrice();
         while (iterator.hasNext()) {
@@ -83,8 +84,7 @@ public class ProgramBrief implements Serializable {
     }
 
     public ProgramBrief(Program program, SaleType type) {
-        id = String.valueOf(program.getProgramID().getVenueID()) + ";" + program.getProgramID().getStartTime().toString();
-        poster = program.getPoster();
+        id = String.valueOf(program.getProgramID().getVenueID()) + "-" + String.valueOf(TimeHelper.getLong(program.getProgramID().getStartTime()));
         programName = program.getName();
         time = program.getProgramID().getStartTime();
         Venue venue = program.getVenue();
@@ -92,6 +92,7 @@ public class ProgramBrief implements Serializable {
         venueName = venue.getVenueName();
         scanVolume = program.getScanVolume();
         favoriteVolume = program.getFavoriteVolume();
+        programTypeName = program.getProgramType().name();
         saleType = type.toString();
         Iterator<Par> iterator = program.getPars().iterator();
         lowPrice = iterator.next().getParID().getBasePrice();
@@ -105,10 +106,6 @@ public class ProgramBrief implements Serializable {
 
     public String getId() {
         return id;
-    }
-
-    public String getPoster() {
-        return poster;
     }
 
     public String getProgramName() {
@@ -141,5 +138,9 @@ public class ProgramBrief implements Serializable {
 
     public String getSaleType() {
         return saleType;
+    }
+
+    public String getProgramTypeName() {
+        return programTypeName;
     }
 }

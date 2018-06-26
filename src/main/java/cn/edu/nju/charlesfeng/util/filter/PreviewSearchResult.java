@@ -1,6 +1,7 @@
 package cn.edu.nju.charlesfeng.util.filter;
 
 import cn.edu.nju.charlesfeng.model.id.ProgramID;
+import cn.edu.nju.charlesfeng.util.helper.TimeHelper;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -19,7 +20,7 @@ public class PreviewSearchResult implements Serializable {
     public PreviewSearchResult(Object[] program) {
         this.programID = (ProgramID) program[0];
         this.programName = String.valueOf(program[1]);
-        id = String.valueOf(programID.getVenueID()) + ";" + programID.getStartTime().toString();
+        id = String.valueOf(programID.getVenueID()) + "-" + String.valueOf(TimeHelper.getLong(programID.getStartTime()));
     }
 
     public String getId() {

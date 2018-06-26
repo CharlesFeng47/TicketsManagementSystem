@@ -10,11 +10,16 @@ import cn.edu.nju.charlesfeng.util.enums.SaleType;
 import cn.edu.nju.charlesfeng.util.filter.PreviewSearchResult;
 import cn.edu.nju.charlesfeng.util.filter.ProgramBrief;
 import cn.edu.nju.charlesfeng.util.filter.ProgramDetail;
+import cn.edu.nju.charlesfeng.util.helper.AddressHelper;
 import cn.edu.nju.charlesfeng.util.helper.RequestReturnObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDateTime;
@@ -32,15 +37,31 @@ public class ProgramServiceImplTest {
 
     @Test
     public void recommendPrograms() {
-        Map<String, List<Program>> result = programService.recommendPrograms(LocalDateTime.now(), "南京", 5);
-        for (String type : result.keySet()) {
-            List<Program> programs = result.get(type);
-            System.out.println(type);
+        long start = System.currentTimeMillis();
+        Map<String, List<Program>> map = programService.recommendPrograms(LocalDateTime.now(), "南京", 5);
+        Map<String, List<ProgramBrief>> result = new HashMap<>();
+        for (String key : map.keySet()) {
+            List<Program> programs = map.get(key);
+            List<ProgramBrief> programBriefs = new ArrayList<>();
             for (Program program : programs) {
-                System.out.println(program.getName());
+                programBriefs.add(new ProgramBrief(program));
             }
-            System.out.println("-----------------------------------------------------");
+            result.put(key, programBriefs);
         }
+        System.out.println(System.currentTimeMillis() - start);
+        System.out.println("--------------------------------");
+        long start1 = System.currentTimeMillis();
+        Map<String, List<Program>> map1 = programService.recommendPrograms(LocalDateTime.now(), "上海", 5);
+        Map<String, List<ProgramBrief>> result1 = new HashMap<>();
+        for (String key : map1.keySet()) {
+            List<Program> programs = map1.get(key);
+            List<ProgramBrief> programBriefs = new ArrayList<>();
+            for (Program program : programs) {
+                programBriefs.add(new ProgramBrief(program));
+            }
+            result1.put(key, programBriefs);
+        }
+        System.out.println(System.currentTimeMillis() - start1);
     }
 
     @Test
@@ -57,8 +78,11 @@ public class ProgramServiceImplTest {
         }
     }
 
+
+
     @Test
     public void getAllPrograms() {
+
     }
 
     @Test

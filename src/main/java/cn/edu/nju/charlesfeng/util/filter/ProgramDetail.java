@@ -3,6 +3,7 @@ package cn.edu.nju.charlesfeng.util.filter;
 import cn.edu.nju.charlesfeng.model.Par;
 import cn.edu.nju.charlesfeng.model.Program;
 import cn.edu.nju.charlesfeng.util.enums.SaleType;
+import cn.edu.nju.charlesfeng.util.helper.TimeHelper;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -69,11 +70,6 @@ public class ProgramDetail implements Serializable {
     private String address;
 
     /**
-     * 海报
-     */
-    private String poster;
-
-    /**
      * 剩余票的数量
      */
     private int remainTicketsNumber;
@@ -83,15 +79,20 @@ public class ProgramDetail implements Serializable {
      */
     private boolean isLike;
 
+    /**
+     * 节目类型的名称（英文）
+     */
+    private String programTypeName;
+
     public ProgramDetail(Program program, SaleType type, Set<LocalDateTime> fields, int remainNumber, boolean isLike) {
-        id = String.valueOf(program.getProgramID().getVenueID()) + ";" + program.getProgramID().getStartTime().toString();
-        poster = program.getPoster();
+        id = String.valueOf(program.getProgramID().getVenueID()) + "-" + String.valueOf(TimeHelper.getLong(program.getProgramID().getStartTime()));
         programName = program.getName();
         time = program.getProgramID().getStartTime();
         venueName = program.getVenue().getVenueName();
         address = program.getVenue().getAddress().toString();
         scanVolume = program.getScanVolume();
         favoriteVolume = program.getFavoriteVolume();
+        programTypeName = program.getProgramType().name();
         saleType = type.toString();
         this.fields = fields;
         pars = program.getPars();
@@ -144,15 +145,15 @@ public class ProgramDetail implements Serializable {
         return address;
     }
 
-    public String getPoster() {
-        return poster;
-    }
-
     public int getRemainTicketsNumber() {
         return remainTicketsNumber;
     }
 
     public boolean isLike() {
         return isLike;
+    }
+
+    public String getProgramTypeName() {
+        return programTypeName;
     }
 }
