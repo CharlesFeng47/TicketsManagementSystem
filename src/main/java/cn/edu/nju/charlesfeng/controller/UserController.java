@@ -9,6 +9,7 @@ import cn.edu.nju.charlesfeng.util.exceptions.*;
 import cn.edu.nju.charlesfeng.util.filter.program.ProgramBrief;
 import cn.edu.nju.charlesfeng.util.helper.ImgHelper;
 import cn.edu.nju.charlesfeng.util.helper.RequestReturnObject;
+import cn.edu.nju.charlesfeng.util.helper.TimeHelper;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.UnsupportedEncodingException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -141,8 +143,14 @@ public class UserController {
      * 收藏节目
      */
     @PostMapping("/star")
-    public RequestReturnObject star(@RequestBody ProgramID programID, @SessionAttribute("user_id") String userID) {
+    public RequestReturnObject star(@RequestParam("programID") String programIDString, @SessionAttribute("user_id") String userID) {
         logger.debug("INTO /user: " + userID);
+
+        String[] parts = programIDString.split("-");
+        ProgramID programID = new ProgramID();
+        programID.setVenueID(Integer.parseInt(parts[0]));
+        programID.setStartTime(TimeHelper.getLocalDateTime(Long.parseLong(parts[1])));
+
         userService.star(programID, userID);
         return new RequestReturnObject(RequestReturnObjectState.OK);
     }
