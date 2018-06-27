@@ -47,7 +47,7 @@ public class UserController {
         logger.debug("INTO /user/login");
         try {
             User user = userService.logIn(email, pwd);
-            String token = "USER:" + ": " + email;
+            String token = "USER:" + email;
             HttpSession session = request.getSession();
             session.setAttribute("user_id", email);
             session.setAttribute(token, user);
@@ -132,7 +132,7 @@ public class UserController {
     public RequestReturnObject getToken(@RequestParam("token") String token, HttpServletRequest request) {
         logger.debug("INTO /user: " + token);
         HttpSession session = request.getSession();
-//        User curUser = (User) session.getAttribute(token);
+//        User curUser = (User) session.getAttribute(token);o-
         Object o = session.getAttribute(token);
         assert o instanceof User;
         User curUser = (User) o;
@@ -151,8 +151,24 @@ public class UserController {
         programID.setVenueID(Integer.parseInt(parts[0]));
         programID.setStartTime(TimeHelper.getLocalDateTime(Long.parseLong(parts[1])));
 
-        userService.star(programID, userID);
-        return new RequestReturnObject(RequestReturnObjectState.OK);
+        int now_num = userService.star(programID, userID);
+        return new RequestReturnObject(RequestReturnObjectState.OK, now_num);
+    }
+
+    /**
+     * 收藏节目
+     */
+    @PostMapping("/cancelStar")
+    public RequestReturnObject cancelStar(@RequestParam("programID") String programIDString, @SessionAttribute("user_id") String userID) {
+        logger.debug("INTO /user: " + userID);
+
+        String[] parts = programIDString.split("-");
+        ProgramID programID = new ProgramID();
+        programID.setVenueID(Integer.parseInt(parts[0]));
+        programID.setStartTime(TimeHelper.getLocalDateTime(Long.parseLong(parts[1])));
+
+        int now_num = userService.cancelStar(programID, userID);
+        return new RequestReturnObject(RequestReturnObjectState.OK, now_num);
     }
 
     /**
@@ -170,7 +186,7 @@ public class UserController {
      */
     @PostMapping("/modifyPortrait")
     public RequestReturnObject modifyPortrait(@SessionAttribute("user_id") String userID,
-                                              @RequestParam("portrait") String newPortrait,  @RequestParam("token") String token,  HttpServletRequest request) {
+                                              @RequestParam("portrait") String newPortrait, @RequestParam("token") String token, HttpServletRequest request) {
         logger.debug("INTO /user: " + userID);
         userService.modifyUserPortrait(userID, newPortrait);
         HttpSession session = request.getSession();
@@ -198,8 +214,8 @@ public class UserController {
      * 修改用户名
      */
     @PostMapping("/modifyName")
-    public RequestReturnObject modifyName(@SessionAttribute("user_id") String userID, @RequestParam("name") String name,@RequestParam("token") String token,
-                                          HttpServletRequest request ) {
+    public RequestReturnObject modifyName(@SessionAttribute("user_id") String userID, @RequestParam("name") String name, @RequestParam("token") String token,
+                                          HttpServletRequest request) {
         logger.debug("INTO /user: " + userID);
         userService.modifyUserName(userID, name);
         HttpSession session = request.getSession();

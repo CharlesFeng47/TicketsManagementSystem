@@ -77,7 +77,15 @@ public interface UserService {
      * @param programID 节目ID
      * @param userID    用户ID
      */
-    void star(ProgramID programID, String userID);
+    int star(ProgramID programID, String userID);
+
+    /**
+     * 取消收藏
+     *
+     * @param programID 节目ID
+     * @param userID    用户ID
+     */
+    int cancelStar(ProgramID programID, String userID);
 
     /**
      * 获取用户star的节目

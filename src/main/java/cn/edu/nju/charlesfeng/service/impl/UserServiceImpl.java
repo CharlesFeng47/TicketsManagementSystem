@@ -16,10 +16,7 @@ import org.springframework.stereotype.Service;
 import javax.mail.MessagingException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -173,13 +170,30 @@ public class UserServiceImpl implements UserService {
      *
      * @param programID 节目ID
      * @param userID    用户ID
+     * @return 收藏后的节目数
      */
     @Override
-    public void star(ProgramID programID, String userID) {
+    public int star(ProgramID programID, String userID) {
         User user = userRepository.findByEmail(userID);
         Program program = programService.getOneProgram(programID);
         user.getPrograms().add(program);
         userRepository.save(user);
+        return user.getPrograms().size();
+    }
+
+    /**
+     * 取消收藏
+     *
+     * @param programID 节目ID
+     * @param userID    用户ID
+     * @return 取消收藏后的节目数
+     */
+    @Override
+    public int cancelStar(ProgramID programID, String userID) {
+        User user = userRepository.findByEmail(userID);
+        user.setPrograms(excludeProgram(user.getPrograms(), programID));
+        userRepository.save(user);
+        return user.getPrograms().size();
     }
 
     /**
@@ -211,5 +225,22 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByEmail(userID);
         Set<Program> programs = user.getPrograms();
         return programs.contains(program);
+    }
+
+    /**
+     * 除去不需要的节目
+     *
+     * @param programs  节目列表
+     * @param programID 不需要的节目ID
+     * @return 新的节目列表
+     */
+    private Set<Program> excludeProgram(Set<Program> programs, ProgramID programID) {
+        Set<Program> result = new HashSet<>();
+        for (Program program : programs) {
+            if (!program.getProgramID().equals(programID)) {
+                result.add(program);
+            }
+        }
+        return result;
     }
 }

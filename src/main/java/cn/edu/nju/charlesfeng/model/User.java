@@ -11,7 +11,7 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "user")
-public class User implements Serializable {
+public class User implements Serializable, Comparable<User> {
 
     /**
      * 用户ID，邮箱
@@ -55,6 +55,17 @@ public class User implements Serializable {
             inverseJoinColumns = {@JoinColumn(name = "program_vid", referencedColumnName = "vid"),
                     @JoinColumn(name = "program_time", referencedColumnName = "start_time")})
     private Set<Program> programs;
+
+    public User() {
+    }
+
+    public User(User u) {
+        email = u.getEmail();
+        password = u.getPassword();
+        name = u.getName();
+        portrait = u.getPortrait();
+        activated = u.isActivated();
+    }
 
     public String getEmail() {
         return email;
@@ -102,5 +113,10 @@ public class User implements Serializable {
 
     public void setPrograms(Set<Program> programs) {
         this.programs = programs;
+    }
+
+    @Override
+    public int compareTo(User o) {
+        return email.compareTo(o.getEmail());
     }
 }
