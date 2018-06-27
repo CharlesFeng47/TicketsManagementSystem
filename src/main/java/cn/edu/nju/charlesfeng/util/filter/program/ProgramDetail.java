@@ -1,4 +1,4 @@
-package cn.edu.nju.charlesfeng.util.filter;
+package cn.edu.nju.charlesfeng.util.filter.program;
 
 import cn.edu.nju.charlesfeng.model.Par;
 import cn.edu.nju.charlesfeng.model.Program;
@@ -59,7 +59,7 @@ public class ProgramDetail implements Serializable {
     /**
      * 票面ID集合
      */
-    private Set<ParID> parIDs;
+    private Set<ParDto> parIDs;
 
     /**
      * 场馆名
@@ -99,7 +99,7 @@ public class ProgramDetail implements Serializable {
         this.fields = fields;
         parIDs = new HashSet<>();
         for(Par par : program.getPars()){
-            parIDs.add(par.getParID());
+            parIDs.add(new ParDto(par));
         }
         programType = program.getProgramType().toString();
         remainTicketsNumber = remainNumber;
@@ -138,7 +138,7 @@ public class ProgramDetail implements Serializable {
         return fields;
     }
 
-    public Set<ParID> getParIDs() {
+    public Set<ParDto> getParIDs() {
         return parIDs;
     }
 

@@ -14,6 +14,7 @@ import cn.edu.nju.charlesfeng.util.enums.OrderState;
 import cn.edu.nju.charlesfeng.util.enums.RequestReturnObjectState;
 import cn.edu.nju.charlesfeng.util.exceptions.TicketsNotAdequateException;
 import cn.edu.nju.charlesfeng.util.helper.RequestReturnObject;
+import cn.edu.nju.charlesfeng.util.helper.TimeHelper;
 import com.alibaba.fastjson.support.spring.annotation.FastJsonFilter;
 import com.alibaba.fastjson.support.spring.annotation.FastJsonView;
 import org.apache.log4j.Logger;
@@ -52,12 +53,17 @@ public class OrderController {
     /**
      * 获取单个订单
      */
-    @GetMapping("/getOneOrder")
-    public RequestReturnObject getOneOrder(@RequestParam("order_time") LocalDateTime time, @SessionAttribute("user_id") String userID) {
+    @PostMapping("/getOneOrder")
+    public RequestReturnObject getOneOrder(@RequestParam("order_time") long time, @SessionAttribute("user_id") String userID) {
         logger.debug("INTO /order/getOneOrder" + userID + time);
+
+        if (userID == null) { //用户未登录， userID为null
+            return new RequestReturnObject(RequestReturnObjectState.INTERIOR_WRONG);
+        }
+
         OrderID orderID = new OrderID();
         orderID.setEmail(userID);
-        orderID.setTime(time);
+        orderID.setTime(TimeHelper.getLocalDateTime(time));
         Order order = orderService.checkOrderDetail(orderID);
         return new RequestReturnObject(RequestReturnObjectState.OK, order);
     }
@@ -65,25 +71,25 @@ public class OrderController {
     /**
      * 获取单个订单（确认订单操作时）TODO 暂时无法测试，底层尚未有订单
      */
-    @GetMapping("/getOneOrderForConfirm")
+    @PostMapping("/getOneOrderForConfirm")
     @FastJsonView(include = {
             @FastJsonFilter(clazz = Order.class, props = {"orderID", "totalPrice", "program", "tickets"}),
             @FastJsonFilter(clazz = Program.class, props = {"name", "poster", "venue"}),
             @FastJsonFilter(clazz = Venue.class, props = {"address"})
     })
     public @ResponseBody
-    Order getOneOrderForConfirm(@RequestParam("order_time") LocalDateTime time, @SessionAttribute("user_id") String userID) {
+    Order getOneOrderForConfirm(@RequestParam("order_time") long time, @SessionAttribute("user_id") String userID) {
         logger.debug("INTO /order/getOneOrder" + userID + time);
         OrderID orderID = new OrderID();
         orderID.setEmail(userID);
-        orderID.setTime(time);
+        orderID.setTime(TimeHelper.getLocalDateTime(time));
         return orderService.checkOrderDetail(orderID);
     }
 
     /**
      * 获取指定类型订单（确认订单操作时）TODO 暂时无法测试，底层尚未有订单
      */
-    @GetMapping("/getMyOrdersByState")
+    @PostMapping("/getMyOrdersByState")
     @FastJsonView(include = {
             @FastJsonFilter(clazz = Order.class, props = {"orderID", "totalPrice", "program", "tickets", "orderState"}),
             @FastJsonFilter(clazz = Program.class, props = {"programID", "name", "venue"}),
@@ -99,7 +105,7 @@ public class OrderController {
     /**
      * 下订单（立即购买）TODO 暂时无法测试，底层尚未有订单
      */
-    @GetMapping("/generateOrder")
+    @PostMapping("/generateOrder")
     public RequestReturnObject generateOrder(@RequestBody ProgramID programID, @RequestParam("seatType") String seatType, @RequestParam("ticket_num") int num, @SessionAttribute("user_id") String userID) {
         logger.debug("INTO /order/generateOrder" + userID);
         try {

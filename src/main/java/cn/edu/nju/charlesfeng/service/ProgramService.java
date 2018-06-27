@@ -4,9 +4,8 @@ import cn.edu.nju.charlesfeng.model.Program;
 import cn.edu.nju.charlesfeng.model.id.ProgramID;
 import cn.edu.nju.charlesfeng.util.enums.ProgramType;
 import cn.edu.nju.charlesfeng.util.exceptions.ProgramNotSettlableException;
-import cn.edu.nju.charlesfeng.util.filter.PreviewSearchResult;
-import cn.edu.nju.charlesfeng.util.filter.ProgramBrief;
-import org.springframework.data.repository.query.Param;
+import cn.edu.nju.charlesfeng.util.filter.program.PreviewSearchResult;
+import cn.edu.nju.charlesfeng.util.filter.program.ProgramBrief;
 
 import java.time.LocalDateTime;
 import java.util.List;
