@@ -21,6 +21,9 @@ public class ProgramID implements Serializable {
     @Column(name = "start_time")
     private LocalDateTime startTime;
 
+    public ProgramID() {
+    }
+
     public int getVenueID() {
         return venueID;
     }
