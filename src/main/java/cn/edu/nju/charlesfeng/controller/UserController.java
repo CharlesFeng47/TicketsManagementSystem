@@ -6,7 +6,7 @@ import cn.edu.nju.charlesfeng.service.UserService;
 import cn.edu.nju.charlesfeng.task.MD5Task;
 import cn.edu.nju.charlesfeng.util.enums.RequestReturnObjectState;
 import cn.edu.nju.charlesfeng.util.exceptions.*;
-import cn.edu.nju.charlesfeng.util.filter.ProgramBrief;
+import cn.edu.nju.charlesfeng.util.filter.program.ProgramBrief;
 import cn.edu.nju.charlesfeng.util.helper.ImgHelper;
 import cn.edu.nju.charlesfeng.util.helper.RequestReturnObject;
 import org.apache.log4j.Logger;

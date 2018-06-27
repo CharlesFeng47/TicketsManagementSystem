@@ -14,23 +14,23 @@ import org.springframework.transaction.annotation.Transactional;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@Transactional
+//@Transactional
 public class AlipayRepositoryTest {
 
     @Autowired
     private AlipayRepository alipayRepository;
 
     @Test
-    public void testAdd(){
+    public void testAdd() {
         AlipayAccount account = new AlipayAccount();
-        account.setId("1234567890@qq.com");
+        account.setId("151250043@smail.nju.edu.cn");
         account.setPwd("qwertyuiop");
-        account.setBalance(10000);
+        account.setBalance(1000000);
         alipayRepository.save(account);
     }
 
     @Test
-    public void testModify(){
+    public void testModify() {
         AlipayAccount account = new AlipayAccount();
         account.setId("1234567890@qq.com");
         account.setPwd("qwertyuiop");
@@ -39,14 +39,14 @@ public class AlipayRepositoryTest {
     }
 
     @Test
-    public void testGet(){
+    public void testGet() {
         AlipayAccount alipayAccount = alipayRepository.getOne("1234567890@qq.com");
-        Assert.assertEquals(50000.0,alipayAccount.getBalance(), 0);
+        Assert.assertEquals(50000.0, alipayAccount.getBalance(), 0);
         Assert.assertEquals("qwertyuiop", alipayAccount.getPwd());
     }
 
     @Test
-    public void testDelete(){
+    public void testDelete() {
         alipayRepository.deleteById("1234567890@qq.com");
     }
 

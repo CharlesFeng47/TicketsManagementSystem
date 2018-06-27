@@ -45,4 +45,10 @@ public interface ProgramRepository extends JpaRepository<Program, ProgramID> {
     @Transactional
     @Query(value = "update program set scan = scan + 1 WHERE vid=:venueID and start_time=:startTime", nativeQuery = true)
     void addOneScanVolume(@Param("venueID") int venueID, @Param("startTime") LocalDateTime time);
+
+    /**
+     * test method
+     */
+    @Query(value = "select p from Program p where p.venue.address.city=:city and p.programID.startTime<:start_time")
+    List<Program> getBeforeProrgam(@Param("city") String city, @Param("start_time") LocalDateTime localDateTime);
 }

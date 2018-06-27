@@ -4,8 +4,10 @@ import cn.edu.nju.charlesfeng.model.Ticket;
 import cn.edu.nju.charlesfeng.model.id.ProgramID;
 import cn.edu.nju.charlesfeng.model.id.TicketID;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -22,4 +24,10 @@ public interface TicketRepository extends JpaRepository<Ticket, TicketID> {
 
     @Query(value = "select t from Ticket t where t.ticketID in :ticketIDs")
     List<Ticket> getUnLockTickets(@Param("ticketIDs") List<TicketID> ticketIDS);
+
+    /**
+     * test method
+     */
+    @Query(value = "select t from Ticket t where t.ticketID.programID=:programID and t.isLock=:isLock")
+    List<Ticket> getTickets(@Param("programID") ProgramID programID, @Param("isLock") boolean isLock);
 }

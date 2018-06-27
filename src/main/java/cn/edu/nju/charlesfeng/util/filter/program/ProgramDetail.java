@@ -93,12 +93,12 @@ public class ProgramDetail implements Serializable {
         venueName = program.getVenue().getVenueName();
         address = program.getVenue().getAddress().toString();
         scanVolume = program.getScanVolume();
-        favoriteVolume = program.getFavoriteVolume();
+        favoriteVolume = program.getFavoriteVolume() + program.getUsers().size();
         programTypeName = program.getProgramType().name();
         saleType = type.toString();
         this.fields = fields;
         parIDs = new HashSet<>();
-        for(Par par : program.getPars()){
+        for (Par par : program.getPars()) {
             parIDs.add(new ParDto(par));
         }
         programType = program.getProgramType().toString();

@@ -21,7 +21,7 @@ public interface OrderRepository extends JpaRepository<Order, OrderID> {
      * @param orderID 订单ID
      * @return 订单实体
      */
-    Order findByOrOrderID(OrderID orderID);
+    Order findByOrderID(OrderID orderID);
 
     /**
      * 获取指定用户的所有订单

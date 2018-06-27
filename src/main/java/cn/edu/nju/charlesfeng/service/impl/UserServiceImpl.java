@@ -9,14 +9,11 @@ import cn.edu.nju.charlesfeng.service.UserService;
 import cn.edu.nju.charlesfeng.task.MD5Task;
 import cn.edu.nju.charlesfeng.task.MailTask;
 import cn.edu.nju.charlesfeng.util.exceptions.*;
-import cn.edu.nju.charlesfeng.util.filter.ProgramBrief;
-import org.hibernate.Hibernate;
+import cn.edu.nju.charlesfeng.util.filter.program.ProgramBrief;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.mail.MessagingException;
-import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;

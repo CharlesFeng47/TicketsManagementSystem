@@ -34,7 +34,7 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     public Order checkOrderDetail(OrderID orderID) {
-        return orderRepository.findByOrOrderID(orderID);
+        return orderRepository.findByOrderID(orderID);
     }
 
     /**

@@ -2,6 +2,8 @@ package cn.edu.nju.charlesfeng.repository;
 
 import cn.edu.nju.charlesfeng.model.AlipayAccount;
 import cn.edu.nju.charlesfeng.model.User;
+import cn.edu.nju.charlesfeng.task.MD5Task;
+import cn.edu.nju.charlesfeng.util.helper.ImgHelper;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -16,6 +18,7 @@ import sun.misc.BASE64Encoder;
 
 import javax.persistence.EntityNotFoundException;
 import java.io.*;
+import java.util.Objects;
 
 import static org.junit.Assert.*;
 
@@ -31,11 +34,11 @@ public class UserRepositoryTest {
     @Test
     public void testAdd() {
         User user = new User();
-        user.setEmail("123fvg4567890@qq.com");
-        user.setPassword("qwertyuiop");
-        user.setName("byron");
-        user.setActivated(false);
-        user.setPortrait(getBaseImg());
+        user.setEmail("151250043@smail.nju.edu.cn");
+        user.setPassword(MD5Task.encodeMD5("qwertyuiop"));
+        user.setName("龚尘淼");
+        user.setActivated(true);
+        user.setPortrait(ImgHelper.getBaseImg(Objects.requireNonNull(this.getClass().getClassLoader().getResource("default.png")).getPath()));
         System.out.println("开始添加");
         userRepository.saveAndFlush(user);
         System.out.println("添加结束");

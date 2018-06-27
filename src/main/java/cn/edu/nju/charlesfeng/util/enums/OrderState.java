@@ -7,12 +7,9 @@ public enum OrderState {
 
     UNPAID("未支付"),
     PAYED("已支付"),
-    ORDERED("已下单"),
     REFUND("已退款"),
-    EXPIRED("已过期"),
-    CANCELLED("逾期未付款自动取消"),
-    DISPATCH_FAIL("配票失败"),
-    CHECKED("已检票");
+    CANCELLED("已取消"),
+    ALL("全部");
 
     private String val;
 
