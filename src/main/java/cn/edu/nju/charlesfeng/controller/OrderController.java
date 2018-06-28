@@ -21,7 +21,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
@@ -88,13 +90,14 @@ public class OrderController {
      */
     @PostMapping("/generateOrder")
     public RequestReturnObject generateOrder(@RequestParam("programID") String program_id, @RequestParam("seatType") String seatType,
-                                             @RequestParam("programTime") LocalDateTime programTime, @RequestParam("ticket_num") int num,
+                                             @RequestParam("programTime") String programTime, @RequestParam("ticket_num") int num,
                                              @SessionAttribute("user_id") String userID) {
         logger.debug("INTO /order/generateOrder" + userID);
         try {
             //TODO 后面加拦截器单独对programID进行正确性检测,避免到处写
-
-            if (programTime.plusMinutes(15).isBefore(LocalDateTime.now())) {
+            DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            LocalDateTime time = LocalDateTime.parse(programTime,df);
+            if (time.plusMinutes(15).isBefore(LocalDateTime.now())) {
                 return new RequestReturnObject(RequestReturnObjectState.ORDER_NOT_CREATE);
             }
 
