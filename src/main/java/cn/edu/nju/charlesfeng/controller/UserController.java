@@ -58,6 +58,7 @@ public class UserController {
             e.printStackTrace();
             return new RequestReturnObject(RequestReturnObjectState.USER_PWD_WRONG);
         } catch (UserNotActivatedException e) {
+            // TODO 未激活是否可以登录
             e.printStackTrace();
             return new RequestReturnObject(RequestReturnObjectState.USER_INACTIVE);
         }
@@ -133,13 +134,14 @@ public class UserController {
         HttpSession session = request.getSession();
 //        User curUser = (User) session.getAttribute(token);o-
         Object o = session.getAttribute(token);
+        // TODO token 不存在怎么办
         assert o instanceof User;
         User curUser = (User) o;
         return new RequestReturnObject(RequestReturnObjectState.OK, curUser);
     }
 
     /**
-     * 收藏节目
+     * 收藏节目 TODO ???
      */
     @PostMapping("/star")
     public RequestReturnObject star(@RequestParam("programID") String programIDString, @SessionAttribute("user_id") String userID) {
@@ -155,7 +157,7 @@ public class UserController {
     }
 
     /**
-     * 收藏节目
+     * 收藏节目 TODO ???
      */
     @PostMapping("/cancelStar")
     public RequestReturnObject cancelStar(@RequestParam("programID") String programIDString, @SessionAttribute("user_id") String userID) {
@@ -171,7 +173,7 @@ public class UserController {
     }
 
     /**
-     * 获取收藏节目
+     * 获取收藏节目 TODO ???
      */
     @PostMapping("/getStarPrograms")
     public RequestReturnObject getStarPrograms(@SessionAttribute("user_id") String userID) {
@@ -181,7 +183,7 @@ public class UserController {
     }
 
     /**
-     * 修改头像
+     * 修改头像 TODO ???
      */
     @PostMapping("/modifyPortrait")
     public RequestReturnObject modifyPortrait(@SessionAttribute("user_id") String userID,
@@ -194,7 +196,7 @@ public class UserController {
     }
 
     /**
-     * 修改密码
+     * 修改密码 TODO ???
      */
     @PostMapping("/modifyPassword")
     public RequestReturnObject modifyPassword(@SessionAttribute("user_id") String userID, @RequestParam("old_password") String old_password,
@@ -210,7 +212,7 @@ public class UserController {
     }
 
     /**
-     * 修改用户名
+     * 修改用户名 TODO ???
      */
     @PostMapping("/modifyName")
     public RequestReturnObject modifyName(@SessionAttribute("user_id") String userID, @RequestParam("name") String name, @RequestParam("token") String token,
