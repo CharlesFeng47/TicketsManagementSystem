@@ -4,6 +4,7 @@ import cn.edu.nju.charlesfeng.model.Par;
 import cn.edu.nju.charlesfeng.model.Program;
 import cn.edu.nju.charlesfeng.model.id.ParID;
 import cn.edu.nju.charlesfeng.util.enums.SaleType;
+import cn.edu.nju.charlesfeng.util.helper.SystemHelper;
 import cn.edu.nju.charlesfeng.util.helper.TimeHelper;
 
 import java.io.Serializable;
@@ -82,9 +83,9 @@ public class ProgramDetail implements Serializable {
     private boolean isLike;
 
     /**
-     * 节目类型的名称（英文）
+     * 海报的图片url
      */
-    private String programTypeName;
+    private String imageUrl;
 
     public ProgramDetail(Program program, SaleType type, Set<LocalDateTime> fields, int remainNumber, boolean isLike) {
         id = String.valueOf(program.getProgramID().getVenueID()) + "-" + String.valueOf(TimeHelper.getLong(program.getProgramID().getStartTime()));
@@ -94,7 +95,7 @@ public class ProgramDetail implements Serializable {
         address = program.getVenue().getAddress().toString();
         scanVolume = program.getScanVolume();
         favoriteVolume = program.getFavoriteVolume() + program.getUsers().size();
-        programTypeName = program.getProgramType().name();
+        imageUrl = SystemHelper.getDomainName() + program.getProgramType().name() + "/" + id + ".jpg";
         saleType = type.toString();
         this.fields = fields;
         parIDs = new HashSet<>();
@@ -158,7 +159,7 @@ public class ProgramDetail implements Serializable {
         return isLike;
     }
 
-    public String getProgramTypeName() {
-        return programTypeName;
+    public String getImageUrl() {
+        return imageUrl;
     }
 }

@@ -7,11 +7,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Properties;
 
-public class SystemAccountHelper {
+public class SystemHelper {
 
 
-    private SystemAccountHelper() {
-
+    private SystemHelper() {
     }
 
     /**
@@ -23,11 +22,28 @@ public class SystemAccountHelper {
         try {
             Properties properties = new Properties();
             properties.load(new BufferedReader(new InputStreamReader
-                    (Thread.currentThread().getContextClassLoader().getResourceAsStream("system_account.properties"))));
+                    (Thread.currentThread().getContextClassLoader().getResourceAsStream("system.properties"))));
             AlipayAccount alipayAccount = new AlipayAccount();
             alipayAccount.setId(String.valueOf(properties.get("account")));
             alipayAccount.setPwd(String.valueOf(properties.get("password")));
             return alipayAccount;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * 得到图片的服务器
+     *
+     * @return
+     */
+    public static String getDomainName() {
+        try {
+            Properties properties = new Properties();
+            properties.load(new BufferedReader(new InputStreamReader
+                    (Thread.currentThread().getContextClassLoader().getResourceAsStream("system.properties"))));
+            return String.valueOf(properties.get("imagesDomainName"));
         } catch (IOException e) {
             e.printStackTrace();
             return null;

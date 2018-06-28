@@ -15,7 +15,7 @@ import cn.edu.nju.charlesfeng.service.OrderService;
 import cn.edu.nju.charlesfeng.service.ProgramService;
 import cn.edu.nju.charlesfeng.util.enums.OrderState;
 import cn.edu.nju.charlesfeng.util.exceptions.*;
-import cn.edu.nju.charlesfeng.util.helper.SystemAccountHelper;
+import cn.edu.nju.charlesfeng.util.helper.SystemHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -143,7 +143,7 @@ public class OrderServiceImpl implements OrderService {
         }
 
         AlipayAccount from = alipayService.getUserAccount(orderID.getEmail());
-        AlipayAccount to = SystemAccountHelper.getSystemAccount();
+        AlipayAccount to = SystemHelper.getSystemAccount();
         alipayService.transferAccounts(from.getId(), from.getPwd(), Objects.requireNonNull(to).getId(), order.getTotalPrice());
         order.setOrderState(OrderState.PAYED);
         orderRepository.save(order);
@@ -171,7 +171,7 @@ public class OrderServiceImpl implements OrderService {
 
         //退款操作
         AlipayAccount to = alipayService.getUserAccount(orderID.getEmail());
-        AlipayAccount from = SystemAccountHelper.getSystemAccount();
+        AlipayAccount from = SystemHelper.getSystemAccount();
         alipayService.transferAccounts(Objects.requireNonNull(from).getId(), from.getPwd(), to.getId(), order.getTotalPrice());
 
         order.setOrderState(OrderState.REFUND);

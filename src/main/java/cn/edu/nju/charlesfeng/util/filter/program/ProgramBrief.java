@@ -4,6 +4,7 @@ import cn.edu.nju.charlesfeng.model.Par;
 import cn.edu.nju.charlesfeng.model.Program;
 import cn.edu.nju.charlesfeng.model.Venue;
 import cn.edu.nju.charlesfeng.util.enums.SaleType;
+import cn.edu.nju.charlesfeng.util.helper.SystemHelper;
 import cn.edu.nju.charlesfeng.util.helper.TimeHelper;
 
 import java.io.Serializable;
@@ -66,9 +67,9 @@ public class ProgramBrief implements Serializable {
     private String saleType;
 
     /**
-     * 节目类型的名称（英文）
+     * 海报的图片url
      */
-    private String programTypeName;
+    private String imageUrl;
 
     public ProgramBrief(Program program) {
         id = String.valueOf(program.getProgramID().getVenueID()) + "-" + String.valueOf(TimeHelper.getLong(program.getProgramID().getStartTime()));
@@ -78,7 +79,7 @@ public class ProgramBrief implements Serializable {
         Venue venue = program.getVenue();
         city = venue.getAddress().getCity();
         venueName = venue.getVenueName();
-        programTypeName = program.getProgramType().name();
+        imageUrl = SystemHelper.getDomainName() + program.getProgramType().name() + "/" + id + ".jpg";
         Iterator<Par> iterator = program.getPars().iterator();
         lowPrice = iterator.next().getParID().getBasePrice();
         while (iterator.hasNext()) {
@@ -99,7 +100,7 @@ public class ProgramBrief implements Serializable {
         venueName = venue.getVenueName();
         scanVolume = program.getScanVolume();
         favoriteVolume = program.getFavoriteVolume();
-        programTypeName = program.getProgramType().name();
+        imageUrl = SystemHelper.getDomainName() + program.getProgramType().name() + "/" + id + ".jpg";
         saleType = type.toString();
         Iterator<Par> iterator = program.getPars().iterator();
         lowPrice = iterator.next().getParID().getBasePrice();
@@ -151,7 +152,7 @@ public class ProgramBrief implements Serializable {
         return saleType;
     }
 
-    public String getProgramTypeName() {
-        return programTypeName;
+    public String getImageUrl() {
+        return imageUrl;
     }
 }
