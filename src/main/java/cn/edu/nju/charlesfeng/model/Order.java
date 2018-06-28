@@ -54,6 +54,9 @@ public class Order implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "order", fetch = FetchType.LAZY)
     private Set<Ticket> tickets;
 
+    public Order() {
+    }
+
     public OrderID getOrderID() {
         return orderID;
     }

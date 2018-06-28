@@ -52,14 +52,13 @@ public class TicketServiceImpl implements TicketService {
     }
 
     /**
-     * 立即购买锁票
+     * 立即购买锁票(后面可能要加锁)
      *
      * @param programID 节目ID
      * @param num       数量
      * @return 锁票后的票列表
      */
     @Override
-//    @Transactional
     public List<Ticket> lock(ProgramID programID, int num, String seatType) throws TicketsNotAdequateException {
         List<Ticket> unlockTickets = ticketRepository.getUnLockTickets(programID, seatType, false);
         if (unlockTickets.size() < num) {

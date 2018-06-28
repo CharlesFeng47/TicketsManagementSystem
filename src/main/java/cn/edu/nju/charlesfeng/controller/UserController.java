@@ -7,7 +7,7 @@ import cn.edu.nju.charlesfeng.task.MD5Task;
 import cn.edu.nju.charlesfeng.util.enums.RequestReturnObjectState;
 import cn.edu.nju.charlesfeng.util.exceptions.*;
 import cn.edu.nju.charlesfeng.util.filter.program.ProgramBrief;
-import cn.edu.nju.charlesfeng.util.helper.ImgHelper;
+import cn.edu.nju.charlesfeng.util.helper.ImageHelper;
 import cn.edu.nju.charlesfeng.util.helper.RequestReturnObject;
 import cn.edu.nju.charlesfeng.util.helper.TimeHelper;
 import org.apache.log4j.Logger;
@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.UnsupportedEncodingException;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -50,7 +49,7 @@ public class UserController {
             String token = "USER:" + email;
             HttpSession session = request.getSession();
             session.setAttribute("user_id", email);
-            session.setAttribute(token, user);
+            session.setAttribute(token, new User(user));
             return new RequestReturnObject(RequestReturnObjectState.OK, token);
         } catch (UserNotExistException e) {
             e.printStackTrace();
@@ -80,13 +79,13 @@ public class UserController {
             user.setActivated(false);
             user.setPassword(MD5Task.encodeMD5(pwd));
             user.setName(username);
-            user.setPortrait(ImgHelper.getBaseImg(Objects.requireNonNull(this.getClass().getClassLoader().getResource("default.png")).getPath()));
+            user.setPortrait(ImageHelper.getBaseImg(Objects.requireNonNull(this.getClass().getClassLoader().getResource("default.png")).getPath()));
             userService.register(user);
             //TODO 注册后邮箱尚未验证，应该不需要把用户的实体置于session中吧
             String token = "USER: " + user.getEmail();
             HttpSession session = request.getSession();
             session.setAttribute("user_id", email);
-            session.setAttribute(token, user);
+            session.setAttribute(token, new User(user));
             return new RequestReturnObject(RequestReturnObjectState.OK, token);
         } catch (UserHasBeenSignUpException e) {
             return new RequestReturnObject(RequestReturnObjectState.USER_HAS_BEEN_SIGN_UP);
@@ -190,7 +189,7 @@ public class UserController {
         logger.debug("INTO /user: " + userID);
         userService.modifyUserPortrait(userID, newPortrait);
         HttpSession session = request.getSession();
-        session.setAttribute(token, userService.getUser(userID));
+        session.setAttribute(token, new User(userService.getUser(userID)));
         return new RequestReturnObject(RequestReturnObjectState.OK);
     }
 
@@ -219,7 +218,7 @@ public class UserController {
         logger.debug("INTO /user: " + userID);
         userService.modifyUserName(userID, name);
         HttpSession session = request.getSession();
-        session.setAttribute(token, userService.getUser(userID));
+        session.setAttribute(token, new User(userService.getUser(userID)));
         return new RequestReturnObject(RequestReturnObjectState.OK);
     }
 

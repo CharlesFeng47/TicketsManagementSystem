@@ -8,9 +8,9 @@ import java.io.*;
 /**
  * 用户读取存储图片并转换图片编码
  */
-public class ImgHelper {
+public class ImageHelper {
 
-    private ImgHelper() {
+    private ImageHelper() {
     }
 
     /**

@@ -54,14 +54,24 @@ public class Ticket implements Serializable {
      */
     @ManyToOne(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
     @JoinTable(name = "order_ticket",
-    joinColumns = {@JoinColumn(name = "ticket_vid",referencedColumnName = "vid"),
-            @JoinColumn(name = "ticket_start_time",referencedColumnName = "start_time"),
-            @JoinColumn(name = "ticket_row", referencedColumnName = "row"),
-            @JoinColumn(name = "ticket_col", referencedColumnName = "col")},
-    inverseJoinColumns = {@JoinColumn(name = "order_email", referencedColumnName = "email"),
-            @JoinColumn(name = "order_time", referencedColumnName = "time")
-    })
+            joinColumns = {@JoinColumn(name = "ticket_vid", referencedColumnName = "vid"),
+                    @JoinColumn(name = "ticket_start_time", referencedColumnName = "start_time"),
+                    @JoinColumn(name = "ticket_row", referencedColumnName = "row"),
+                    @JoinColumn(name = "ticket_col", referencedColumnName = "col")},
+            inverseJoinColumns = {@JoinColumn(name = "order_email", referencedColumnName = "email"),
+                    @JoinColumn(name = "order_time", referencedColumnName = "time")
+            })
     private Order order;
+
+    public Ticket() {
+    }
+
+    public Ticket(Ticket ticket) {
+        ticketID = ticket.getTicketID();
+        price = ticket.getPrice();
+        isLock = ticket.isLock();
+        seatType = ticket.getSeatType();
+    }
 
     public TicketID getTicketID() {
         return ticketID;

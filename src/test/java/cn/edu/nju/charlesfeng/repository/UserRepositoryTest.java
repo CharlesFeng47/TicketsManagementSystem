@@ -1,26 +1,20 @@
 package cn.edu.nju.charlesfeng.repository;
 
-import cn.edu.nju.charlesfeng.model.AlipayAccount;
 import cn.edu.nju.charlesfeng.model.User;
 import cn.edu.nju.charlesfeng.task.MD5Task;
-import cn.edu.nju.charlesfeng.util.helper.ImgHelper;
-import org.junit.After;
+import cn.edu.nju.charlesfeng.util.helper.ImageHelper;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.transaction.annotation.Transactional;
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
 import javax.persistence.EntityNotFoundException;
 import java.io.*;
 import java.util.Objects;
-
-import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -38,7 +32,7 @@ public class UserRepositoryTest {
         user.setPassword(MD5Task.encodeMD5("qwertyuiop"));
         user.setName("龚尘淼");
         user.setActivated(true);
-        user.setPortrait(ImgHelper.getBaseImg(Objects.requireNonNull(this.getClass().getClassLoader().getResource("default.png")).getPath()));
+        user.setPortrait(ImageHelper.getBaseImg(Objects.requireNonNull(this.getClass().getClassLoader().getResource("default.png")).getPath()));
         System.out.println("开始添加");
         userRepository.saveAndFlush(user);
         System.out.println("添加结束");

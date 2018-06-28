@@ -26,29 +26,60 @@ public interface OrderService {
      * @param order 订单实体
      * @return 保存结果
      */
-    boolean createOrder(Order order);
+    boolean generateOrder(Order order);
 
-//    /**
-//     * @param member     支付的用户
-//     * @param oid        支付的订单编号
-//     * @param paymentId  支付的账号
-//     * @param paymentPwd 支付的密码
-//     * @return 支付结果，成功则true
-//     */
-//    boolean payOrder(Member member, int oid, String paymentId, String paymentPwd) throws AlipayWrongPwdException, AlipayBalanceNotAdequateException;
+    /**
+     * 取消订单
+     *
+     * @param orderID 订单ID
+     * @return 是否成功取消
+     */
+    boolean cancelOrder(OrderID orderID) throws OrderNotCancelException;
+
+    /**
+     * 取消订单(系统调度取消)
+     *
+     * @param order 订单
+     * @return 是否成功取消
+     */
+    boolean cancelOrderBySchedule(Order order);
+
+    /**
+     * 订单支付
+     *
+     * @param orderID 订单ID
+     * @return 是否成功支付
+     */
+    boolean payOrder(OrderID orderID) throws OrderNotPaymentException, UserNotExistException, WrongPwdException, AlipayBalanceNotAdequateException;
+
+    /**
+     * 订单退订
+     *
+     * @param orderID 订单ID
+     * @return 是否成功退订
+     */
+    boolean unsubscribe(OrderID orderID) throws OrderNotRefundableException, UserNotExistException, WrongPwdException, AlipayBalanceNotAdequateException;
 
     /**
      * @param uid 查看订单的用户
      * @return 查看某一用户的全部订单
      */
-    List<Order> getMyOrders(String uid);
+    List<OrderID> getMyOrders(String uid);
 
     /**
-     * @param uid 查看指定类型订单的用户
+     * @param uid        查看指定类型订单的用户
      * @param orderState 订单状态或订单类型
      * @return 查看某一用户的全部订单
      */
-    List<Order> getMyOrders(String uid, OrderState orderState);
+    List<OrderID> getMyOrders(String uid, OrderState orderState);
+
+    /**
+     * 跟据订单状态获取订单
+     *
+     * @param orderState
+     * @return
+     */
+    List<OrderID> getOrderByState(OrderState orderState);
 
 //    /**
 //     * @param spot 检票登记的主动方场馆
@@ -57,13 +88,6 @@ public interface OrderService {
 //     */
 //    boolean checkTicket(Spot spot, int oid) throws TicketHasBeenCheckedException, TicketStateWrongException, OrderNotExistException, TicketCheckerWrongException;
 
-//    /**
-//     * @param member    要退订的用户
-//     * @param oid       要退订的订单ID
-//     * @param paymentId 退款到账账户
-//     * @return 退订结果，成功则true
-//     */
-//    boolean unsubscribe(Member member, int oid, String paymentId) throws InteriorWrongException, OrderNotRefundableException, AlipayEntityNotExistException;
 
 //    /**
 //     * 预定计划

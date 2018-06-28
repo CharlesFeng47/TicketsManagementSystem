@@ -18,7 +18,7 @@ public interface AlipayService {
      * @param to_account   资金转入的账户
      * @param amount       金额
      * @return boolean
-     * @throws UserNotExistException 该银行账户不存在
+     * @throws UserNotExistException 该账户不存在
      * @throws WrongPwdException 密码不正确
      * @throws AlipayBalanceNotAdequateException 余额不足
      */

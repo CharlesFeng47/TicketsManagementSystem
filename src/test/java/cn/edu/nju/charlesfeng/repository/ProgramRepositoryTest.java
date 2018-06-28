@@ -4,26 +4,21 @@ import cn.edu.nju.charlesfeng.model.Program;
 import cn.edu.nju.charlesfeng.model.Venue;
 import cn.edu.nju.charlesfeng.model.id.ProgramID;
 import cn.edu.nju.charlesfeng.util.enums.ProgramType;
-import cn.edu.nju.charlesfeng.util.helper.AddressHelper;
-import cn.edu.nju.charlesfeng.util.helper.ImgHelper;
-import cn.edu.nju.charlesfeng.util.helper.TimeHelper;
+import cn.edu.nju.charlesfeng.util.helper.ImageHelper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.transaction.annotation.Transactional;
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
 import java.io.*;
 import java.time.*;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -635,6 +630,6 @@ public class ProgramRepositoryTest {
                 "PkwmqSBbYGJbY+yVKpHYCdw0mUP4LGDMUkkqELf4zhAAYAueSTMviIjBbAI1VBETbc+2VDWaJkrH\n" +
                 "BesEESIiQTM3ZRFS/kBQEpESOpxrKAlQgAyKWLRJJjT7FDcREYIiCJ1h2oJ8H2pUTIU9B3F//cv/\n" +
                 "2Q==";
-        ImgHelper.createImg(poster, path);
+        ImageHelper.createImg(poster, path);
     }
 }

@@ -3,7 +3,6 @@ package cn.edu.nju.charlesfeng.controller;
 import cn.edu.nju.charlesfeng.model.Order;
 import cn.edu.nju.charlesfeng.model.Program;
 import cn.edu.nju.charlesfeng.model.Ticket;
-import cn.edu.nju.charlesfeng.model.Venue;
 import cn.edu.nju.charlesfeng.model.id.OrderID;
 import cn.edu.nju.charlesfeng.model.id.ProgramID;
 import cn.edu.nju.charlesfeng.service.OrderService;
@@ -12,16 +11,17 @@ import cn.edu.nju.charlesfeng.service.ProgramService;
 import cn.edu.nju.charlesfeng.service.TicketService;
 import cn.edu.nju.charlesfeng.util.enums.OrderState;
 import cn.edu.nju.charlesfeng.util.enums.RequestReturnObjectState;
-import cn.edu.nju.charlesfeng.util.exceptions.TicketsNotAdequateException;
+import cn.edu.nju.charlesfeng.util.exceptions.*;
+import cn.edu.nju.charlesfeng.util.filter.order.OrderBrief;
+import cn.edu.nju.charlesfeng.util.filter.order.OrderDetail;
 import cn.edu.nju.charlesfeng.util.helper.RequestReturnObject;
 import cn.edu.nju.charlesfeng.util.helper.TimeHelper;
-import com.alibaba.fastjson.support.spring.annotation.FastJsonFilter;
-import com.alibaba.fastjson.support.spring.annotation.FastJsonView;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
@@ -51,7 +51,7 @@ public class OrderController {
     }
 
     /**
-     * 获取单个订单
+     * 获取单个订单详情
      */
     @PostMapping("/getOneOrder")
     public RequestReturnObject getOneOrder(@RequestParam("order_time") long time, @SessionAttribute("user_id") String userID) {
@@ -65,51 +65,44 @@ public class OrderController {
         orderID.setEmail(userID);
         orderID.setTime(TimeHelper.getLocalDateTime(time));
         Order order = orderService.checkOrderDetail(orderID);
-        return new RequestReturnObject(RequestReturnObjectState.OK, order);
+        return new RequestReturnObject(RequestReturnObjectState.OK, new OrderDetail(order));
     }
 
     /**
-     * 获取单个订单（确认订单操作时）TODO 暂时无法测试，底层尚未有订单
-     */
-    @PostMapping("/getOneOrderForConfirm")
-    @FastJsonView(include = {
-            @FastJsonFilter(clazz = Order.class, props = {"orderID", "totalPrice", "program", "tickets"}),
-            @FastJsonFilter(clazz = Program.class, props = {"name", "poster", "venue"}),
-            @FastJsonFilter(clazz = Venue.class, props = {"address"})
-    })
-    public @ResponseBody
-    Order getOneOrderForConfirm(@RequestParam("order_time") long time, @SessionAttribute("user_id") String userID) {
-        logger.debug("INTO /order/getOneOrder" + userID + time);
-        OrderID orderID = new OrderID();
-        orderID.setEmail(userID);
-        orderID.setTime(TimeHelper.getLocalDateTime(time));
-        return orderService.checkOrderDetail(orderID);
-    }
-
-    /**
-     * 获取指定类型订单（确认订单操作时）TODO 暂时无法测试，底层尚未有订单
+     * 获取指定类型订单
      */
     @PostMapping("/getMyOrdersByState")
-    @FastJsonView(include = {
-            @FastJsonFilter(clazz = Order.class, props = {"orderID", "totalPrice", "program", "tickets", "orderState"}),
-            @FastJsonFilter(clazz = Program.class, props = {"programID", "name", "venue"}),
-            @FastJsonFilter(clazz = Venue.class, props = {"venueName", "address"})
-    })
-    public @ResponseBody
-    List<Order> getMyOrdersByState(@RequestParam("orderType") String type, @SessionAttribute("user_id") String userID) {
+    public RequestReturnObject getMyOrdersByState(@RequestParam("orderType") String type, @SessionAttribute("user_id") String userID) {
         logger.debug("INTO /order/getMyOrdersByState" + userID + type);
         OrderState orderState = OrderState.valueOf(type);
-        return orderService.getMyOrders(userID, orderState);
+        List<OrderBrief> result = new ArrayList<>();
+        List<OrderID> orders = orderService.getMyOrders(userID, orderState);
+        for (OrderID orderID : orders) {
+            result.add(new OrderBrief(orderService.checkOrderDetail(orderID)));
+        }
+        return new RequestReturnObject(RequestReturnObjectState.OK, result);
     }
 
     /**
-     * 下订单（立即购买）TODO 暂时无法测试，底层尚未有订单
+     * 下订单（立即购买）
      */
     @PostMapping("/generateOrder")
-    public RequestReturnObject generateOrder(@RequestBody ProgramID programID, @RequestParam("seatType") String seatType, @RequestParam("ticket_num") int num, @SessionAttribute("user_id") String userID) {
+    public RequestReturnObject generateOrder(@RequestParam("programID") String program_id, @RequestParam("seatType") String seatType,
+                                             @RequestParam("programTime") LocalDateTime programTime, @RequestParam("ticket_num") int num,
+                                             @SessionAttribute("user_id") String userID) {
         logger.debug("INTO /order/generateOrder" + userID);
         try {
-            List<Ticket> tickets = ticketService.lock(programID, num, seatType); //进行锁票
+            //TODO 后面加拦截器单独对programID进行正确性检测,避免到处写
+
+            if (programTime.plusMinutes(15).isBefore(LocalDateTime.now())) {
+                return new RequestReturnObject(RequestReturnObjectState.ORDER_NOT_CREATE);
+            }
+
+            String ids[] = program_id.split("-");
+            ProgramID programID = new ProgramID();
+            programID.setVenueID(Integer.parseInt(ids[0]));
+            programID.setStartTime(TimeHelper.getLocalDateTime(Long.parseLong(ids[1])));
+            List<Ticket> tickets = ticketService.lock(programID, num, seatType); //进行锁票,后面加锁
             OrderID orderID = new OrderID();
             orderID.setTime(LocalDateTime.now());
             orderID.setEmail(userID);
@@ -120,11 +113,89 @@ public class OrderController {
             double price = parService.getSeatPrice(programID, seatType);
             order.setTotalPrice(price * num);
             order.setOrderState(OrderState.UNPAID);
+            for (Ticket ticket : tickets) {
+                ticket.setOrder(order);
+            }
             order.setTickets(new HashSet<>(tickets)); //关联订单
-            orderService.createOrder(order);
+            orderService.generateOrder(order);
             return new RequestReturnObject(RequestReturnObjectState.OK);
         } catch (TicketsNotAdequateException e) {
             return new RequestReturnObject(RequestReturnObjectState.OK, "余票不足");
+        }
+    }
+
+    /**
+     * 订单取消
+     */
+    @PostMapping("/cancelOrder")
+    public RequestReturnObject cancelOrder(@RequestParam("orderID") String order_id, @SessionAttribute("user_id") String userID) {
+        logger.debug("INTO /order/generateOrder" + userID);
+        try {
+            LocalDateTime orderTime = TimeHelper.getLocalDateTime(Long.parseLong(order_id));
+            OrderID orderID = new OrderID();
+            orderID.setTime(orderTime);
+            orderID.setEmail(userID);
+            orderService.cancelOrder(orderID);
+            return new RequestReturnObject(RequestReturnObjectState.OK);
+        } catch (OrderNotCancelException e) {
+            e.printStackTrace();
+            return new RequestReturnObject(RequestReturnObjectState.ORDER_NOT_CANCEL);
+        }
+    }
+
+    /**
+     * 订单退订
+     */
+    @PostMapping("/unsubscribeOrder")
+    public RequestReturnObject unsubscribeOrder(@RequestParam("orderID") String order_id, @SessionAttribute("user_id") String userID) {
+        logger.debug("INTO /order/generateOrder" + userID);
+        try {
+            LocalDateTime orderTime = TimeHelper.getLocalDateTime(Long.parseLong(order_id));
+            OrderID orderID = new OrderID();
+            orderID.setTime(orderTime);
+            orderID.setEmail(userID);
+            orderService.unsubscribe(orderID);
+            return new RequestReturnObject(RequestReturnObjectState.OK);
+        } catch (UserNotExistException e) {
+            e.printStackTrace();
+            return new RequestReturnObject(RequestReturnObjectState.USER_NOT_EXIST);
+        } catch (OrderNotRefundableException e) {
+            e.printStackTrace();
+            return new RequestReturnObject(RequestReturnObjectState.ORDER_NOT_REFUNDABLE);
+        } catch (WrongPwdException e) {
+            e.printStackTrace();
+            return new RequestReturnObject(RequestReturnObjectState.PAY_WRONG_PWD);
+        } catch (AlipayBalanceNotAdequateException e) {
+            e.printStackTrace();
+            return new RequestReturnObject(RequestReturnObjectState.PAY_BALANCE_NOT_ADEQUATE);
+        }
+    }
+
+    /**
+     * 订单支付
+     */
+    @PostMapping("/payOrder")
+    public RequestReturnObject payOrder(@RequestParam("orderID") String order_id, @SessionAttribute("user_id") String userID) {
+        logger.debug("INTO /order/generateOrder" + userID);
+        try {
+            LocalDateTime orderTime = TimeHelper.getLocalDateTime(Long.parseLong(order_id));
+            OrderID orderID = new OrderID();
+            orderID.setTime(orderTime);
+            orderID.setEmail(userID);
+            orderService.payOrder(orderID);
+            return new RequestReturnObject(RequestReturnObjectState.OK);
+        } catch (OrderNotPaymentException e) {
+            e.printStackTrace();
+            return new RequestReturnObject(RequestReturnObjectState.ORDER_NOT_PAYMENT);
+        } catch (UserNotExistException e) {
+            e.printStackTrace();
+            return new RequestReturnObject(RequestReturnObjectState.USER_NOT_EXIST);
+        } catch (WrongPwdException e) {
+            e.printStackTrace();
+            return new RequestReturnObject(RequestReturnObjectState.PAY_WRONG_PWD);
+        } catch (AlipayBalanceNotAdequateException e) {
+            e.printStackTrace();
+            return new RequestReturnObject(RequestReturnObjectState.PAY_BALANCE_NOT_ADEQUATE);
         }
     }
 

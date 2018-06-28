@@ -45,8 +45,12 @@ public enum RequestReturnObjectState implements Serializable {
     MEMBER_ACTIVATE_URL_WRONG(17),
     // 订单检票方不是订单中的场馆
     TICKET_CHECKER_WRONG(18),
-    // 新密码与原密码相同
-    PWD_SAME_ORIGINAL(19);
+    // 不可生成订单（生成时间晚于节目开始前15分钟）
+    ORDER_NOT_CREATE(19),
+    //订单不可支付
+    ORDER_NOT_PAYMENT(20),
+    //订单不可取消
+    ORDER_NOT_CANCEL(21);
 
     private int repre;
 

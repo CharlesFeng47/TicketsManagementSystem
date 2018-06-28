@@ -1,31 +1,54 @@
 package cn.edu.nju.charlesfeng.service.impl;
 
+import cn.edu.nju.charlesfeng.model.AlipayAccount;
 import cn.edu.nju.charlesfeng.model.Order;
+import cn.edu.nju.charlesfeng.model.Program;
+import cn.edu.nju.charlesfeng.model.Ticket;
 import cn.edu.nju.charlesfeng.model.id.OrderID;
+import cn.edu.nju.charlesfeng.model.id.ProgramID;
 import cn.edu.nju.charlesfeng.repository.AlipayRepository;
 import cn.edu.nju.charlesfeng.repository.OrderRepository;
+import cn.edu.nju.charlesfeng.repository.TicketRepository;
 import cn.edu.nju.charlesfeng.repository.UserRepository;
+import cn.edu.nju.charlesfeng.service.AlipayService;
 import cn.edu.nju.charlesfeng.service.OrderService;
+import cn.edu.nju.charlesfeng.service.ProgramService;
 import cn.edu.nju.charlesfeng.util.enums.OrderState;
+import cn.edu.nju.charlesfeng.util.exceptions.*;
+import cn.edu.nju.charlesfeng.util.helper.SystemAccountHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 @Service
 public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
 
+    private final TicketRepository ticketRepository;
+
     private final UserRepository userRepository;
 
     private final AlipayRepository alipayRepository;
 
+    private final AlipayService alipayService;
+
+    private final ProgramService programService;
+
     @Autowired
-    public OrderServiceImpl(OrderRepository orderRepository, UserRepository userRepository, AlipayRepository alipayRepository) {
+    public OrderServiceImpl(OrderRepository orderRepository, UserRepository userRepository, AlipayRepository alipayRepository, TicketRepository ticketRepository, AlipayService alipayService, ProgramService programService) {
         this.orderRepository = orderRepository;
         this.userRepository = userRepository;
         this.alipayRepository = alipayRepository;
+        this.ticketRepository = ticketRepository;
+        this.alipayService = alipayService;
+        this.programService = programService;
     }
 
     /**
@@ -34,7 +57,13 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     public Order checkOrderDetail(OrderID orderID) {
-        return orderRepository.findByOrderID(orderID);
+        Object[][] objects = orderRepository.findProgramID(orderID.getEmail(), orderID.getTime());
+        ProgramID programID = new ProgramID();
+        programID.setVenueID((Integer) objects[0][0]);
+        programID.setStartTime(((Timestamp) objects[0][1]).toLocalDateTime());
+        Order order = orderRepository.findByOrderID(orderID);
+        order.setProgram(programService.getOneProgram(programID));
+        return order;
     }
 
     /**
@@ -44,8 +73,119 @@ public class OrderServiceImpl implements OrderService {
      * @return 保存结果
      */
     @Override
-    public boolean createOrder(Order order) {
+    public boolean generateOrder(Order order) {
         orderRepository.save(order);
+        return true;
+    }
+
+    /**
+     * 取消订单(未支付->已取消)
+     *
+     * @param orderID 订单ID
+     * @return 是否成功取消
+     */
+    @Override
+    public boolean cancelOrder(OrderID orderID) throws OrderNotCancelException {
+        Order order = orderRepository.findByOrderID(orderID);
+        if (!order.getOrderState().equals(OrderState.UNPAID)) {
+            throw new OrderNotCancelException();
+        }
+
+        order.setOrderState(OrderState.CANCELLED);
+        Set<Ticket> tickets = new HashSet<>();
+        for (Ticket ticket : order.getTickets()) {
+            ticket.setOrder(null); //取消订单和票的关联
+            ticket.setLock(false);
+            tickets.add(ticket);
+        }
+        order.getTickets().clear();
+        order.setTickets(null); //取消订单和票的关联
+        ticketRepository.saveAll(tickets);
+        orderRepository.save(order);
+        orderRepository.deleteRelationOfTicket(orderID.getEmail(), orderID.getTime());//删除关联集合
+        return true;
+    }
+
+    /**
+     * 取消订单(系统调度取消)
+     *
+     * @param order 订单
+     * @return 是否成功取消
+     */
+    @Override
+    public boolean cancelOrderBySchedule(Order order) {
+        order.setOrderState(OrderState.CANCELLED);
+        Set<Ticket> tickets = new HashSet<>();
+        for (Ticket ticket : order.getTickets()) {
+            ticket.setOrder(null); //取消订单和票的关联
+            ticket.setLock(false);
+            tickets.add(ticket);
+        }
+        order.getTickets().clear();
+        order.setTickets(null); //取消订单和票的关联
+        ticketRepository.saveAll(tickets);
+        orderRepository.save(order);
+        orderRepository.deleteRelationOfTicket(order.getOrderID().getEmail(), order.getOrderID().getTime());//删除关联集合
+        return true;
+    }
+
+    /**
+     * 订单支付(未支付->已支付)
+     *
+     * @param orderID 订单ID
+     * @return 是否成功支付
+     */
+    @Override
+    public boolean payOrder(OrderID orderID) throws OrderNotPaymentException, UserNotExistException, WrongPwdException, AlipayBalanceNotAdequateException {
+        Order order = orderRepository.findByOrderID(orderID);
+        if (!order.getOrderState().equals(OrderState.UNPAID)) {
+            throw new OrderNotPaymentException();
+        }
+
+        AlipayAccount from = alipayService.getUserAccount(orderID.getEmail());
+        AlipayAccount to = SystemAccountHelper.getSystemAccount();
+        alipayService.transferAccounts(from.getId(), from.getPwd(), Objects.requireNonNull(to).getId(), order.getTotalPrice());
+        order.setOrderState(OrderState.PAYED);
+        orderRepository.save(order);
+        return true;
+    }
+
+    /**
+     * 订单退订(已支付->已退款)
+     *
+     * @param orderID 订单ID
+     * @return 是否成功退订
+     */
+    @Override
+    public boolean unsubscribe(OrderID orderID) throws OrderNotRefundableException, UserNotExistException, WrongPwdException, AlipayBalanceNotAdequateException {
+        Order order = orderRepository.findByOrderID(orderID);
+        Object[][] objects = orderRepository.findProgramID(orderID.getEmail(), orderID.getTime());
+        ProgramID programID = new ProgramID();
+        programID.setVenueID((Integer) objects[0][0]);
+        programID.setStartTime(((Timestamp) objects[0][1]).toLocalDateTime());
+        LocalDateTime programTime = programID.getStartTime().minusMinutes(15);
+        //在不是未支付状态下或者节目开始前15分钟，均不可退票
+        if (!order.getOrderState().equals(OrderState.PAYED) || programTime.isBefore(LocalDateTime.now())) {
+            throw new OrderNotRefundableException();
+        }
+
+        //退款操作
+        AlipayAccount to = alipayService.getUserAccount(orderID.getEmail());
+        AlipayAccount from = SystemAccountHelper.getSystemAccount();
+        alipayService.transferAccounts(Objects.requireNonNull(from).getId(), from.getPwd(), to.getId(), order.getTotalPrice());
+
+        order.setOrderState(OrderState.REFUND);
+        Set<Ticket> tickets = new HashSet<>();
+        for (Ticket ticket : order.getTickets()) {
+            ticket.setOrder(null); //取消订单和票的关联
+            ticket.setLock(false);
+            tickets.add(ticket);
+        }
+        order.getTickets().clear();
+        order.setTickets(null); //取消订单和票的关联
+        orderRepository.save(order);
+        ticketRepository.saveAll(tickets);
+        orderRepository.deleteRelationOfTicket(orderID.getEmail(), orderID.getTime());//删除关联集合
         return true;
     }
 
@@ -54,7 +194,7 @@ public class OrderServiceImpl implements OrderService {
      * @return 查看某一用户的全部订单
      */
     @Override
-    public List<Order> getMyOrders(String uid) {
+    public List<OrderID> getMyOrders(String uid) {
         return orderRepository.getMyOrders(uid);
     }
 
@@ -64,107 +204,20 @@ public class OrderServiceImpl implements OrderService {
      * @return 查看某一用户的全部订单
      */
     @Override
-    public List<Order> getMyOrders(String uid, OrderState orderState) {
+    public List<OrderID> getMyOrders(String uid, OrderState orderState) {
         return orderRepository.getMyOrders(uid, orderState);
     }
 
-//    @Override
-//    public boolean payOrder(Member member, int oid, String paymentId, String paymentPwd) throws AlipayWrongPwdException, AlipayBalanceNotAdequateException {
-//        AlipayAccount alipayAccount = alipayDao.getAlipayEntity(paymentId);
-//        if (alipayAccount != null && alipayAccount.getPwd().equals(paymentPwd)) {
-//            Order toPay = orderDao.getOrder(oid);
-//            final double payMoney = toPay.getTotalPrice();
-//
-//            // 检查支付宝余额是否充足
-//            final double remainBalance = alipayAccount.getBalance() - payMoney;
-//            if (remainBalance < 0) {
-//                throw new AlipayBalanceNotAdequateException();
-//            }
-//
-//            // 会员支付宝减少余额
-//            alipayAccount.setBalance(remainBalance);
-//            alipayDao.update(alipayAccount);
-//            // 场馆未结算部分余额增加，级联更新
-//            Schedule curSchedule = toPay.getSchedule();
-//            curSchedule.setBalance(curSchedule.getBalance() + payMoney);
-//
-//            // 增加一条消费记录
-//            consumptionDao.saveConsumption(new Consumption
-//                    (ConsumptionType.SUBSCRIBE, toPay.getMember().getId(), toPay.getSchedule().getSpot(), toPay.getTotalPrice()));
-//
-//            // 订单状态改变
-//            toPay.setOrderState(OrderState.PAYED);
-//            return orderDao.updateOrder(toPay);
-//        } else {
-//            throw new AlipayWrongPwdException();
-//        }
-//    }
-
-//    @Override
-//    public boolean unsubscribe(Member member, int oid, String paymentId) throws InteriorWrongException, OrderNotRefundableException, AlipayEntityNotExistException {
-//        Order toUnsubscribe = orderDao.getOrder(oid);
-//        if (!toUnsubscribe.getMember().getId().equals(member.getId())) throw new InteriorWrongException();
-//
-//        final LocalDateTime now = LocalDateTime.now();
-//        // 只有已支付和配票失败的订单可以退票
-//        final OrderState curOrderState = toUnsubscribe.getOrderState();
-//        if (curOrderState == OrderState.PAYED || curOrderState == OrderState.DISPATCH_FAIL) {
-//            // 已支付的订单只能在开始前退票
-//            if (curOrderState == OrderState.PAYED && now.isAfter(toUnsubscribe.getSchedule().getStartDateTime()))
-//                throw new OrderNotRefundableException();
-//        } else {
-//            throw new OrderNotRefundableException();
-//        }
-//
-//        // 可以退款
-//        toUnsubscribe.setOrderState(OrderState.REFUND);
-//
-//        AlipayAccount buyerAE = alipayDao.getAlipayEntity(paymentId);
-//        if (buyerAE == null) throw new AlipayEntityNotExistException();
-//
-//        // 会员款项增加
-//        final double unsubscribeMoney = toUnsubscribe.getTotalPrice() * getRefundPercent(now, toUnsubscribe.getSchedule().getStartDateTime());
-//        buyerAE.setBalance(buyerAE.getBalance() + unsubscribeMoney);
-//        alipayDao.update(buyerAE);
-//        // 场馆未结算部分余额减少，级联更新
-//        Schedule curSchedule = toUnsubscribe.getSchedule();
-//        curSchedule.setBalance(curSchedule.getBalance() - unsubscribeMoney);
-//
-//        // 增加一条消费记录
-//        consumptionDao.saveConsumption(new Consumption
-//                (ConsumptionType.UNSUBSCRIBE, toUnsubscribe.getMember().getId(), toUnsubscribe.getSchedule().getSpot(), toUnsubscribe.getTotalPrice()));
-//
-//
-//        // 对schedule进行处理，预定的座位被释放
-//        toUnsubscribe = OrderSeatHelper.releaseSeatsInOrder(toUnsubscribe);
-//        return orderDao.updateOrder(toUnsubscribe);
-//    }
-
-//    /**
-//     * 根据参数决定是否要更新买家的优惠券，如果需要就更新
-//     */
-//    private Order updateCouponOfBuyer(boolean didUseCoupon, Member buyer, Coupon usedCoupon, Order curOrder) {
-//        if (didUseCoupon) {
-//            List<Coupon> memberCoupons = buyer.getCoupons();
-//
-//            // 找到需要移除的
-//            Coupon neededToRemove = null;
-//            for (Coupon coupon : memberCoupons) {
-//                if (coupon.getId() == usedCoupon.getId()) {
-//                    neededToRemove = coupon;
-//                    break;
-//                }
-//            }
-//
-//            // 使用的优惠券一定可以被找到
-//            assert neededToRemove != null;
-//            curOrder.setUsedCoupon(neededToRemove);
-//
-//            memberCoupons.remove(neededToRemove);
-//            userDao.updateUser(buyer, UserType.MEMBER);
-//        }
-//        return curOrder;
-//    }
+    /**
+     * 跟据订单状态获取订单
+     *
+     * @param orderState 订单状态
+     * @return 订单
+     */
+    @Override
+    public List<OrderID> getOrderByState(OrderState orderState) {
+        return orderRepository.getOrderByState(orderState);
+    }
 
 //    /**
 //     * 根据据订单中计划开始的时间时限确定退款的比例
