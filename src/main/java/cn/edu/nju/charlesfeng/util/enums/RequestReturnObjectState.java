@@ -50,7 +50,9 @@ public enum RequestReturnObjectState implements Serializable {
     //订单不可支付
     ORDER_NOT_PAYMENT(20),
     //订单不可取消
-    ORDER_NOT_CANCEL(21);
+    ORDER_NOT_CANCEL(21),
+    //余票不足
+    TICKET_NOT_ADEQUATE(22);
 
     private int repre;
 

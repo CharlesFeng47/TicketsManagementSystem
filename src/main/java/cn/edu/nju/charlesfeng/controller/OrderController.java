@@ -118,9 +118,9 @@ public class OrderController {
             }
             order.setTickets(new HashSet<>(tickets)); //关联订单
             orderService.generateOrder(order);
-            return new RequestReturnObject(RequestReturnObjectState.OK);
+            return new RequestReturnObject(RequestReturnObjectState.OK, TimeHelper.getLong(order.getOrderID().getTime()));
         } catch (TicketsNotAdequateException e) {
-            return new RequestReturnObject(RequestReturnObjectState.OK, "余票不足");
+            return new RequestReturnObject(RequestReturnObjectState.OK, RequestReturnObjectState.TICKET_NOT_ADEQUATE);
         }
     }
 
