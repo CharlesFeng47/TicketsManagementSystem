@@ -73,8 +73,9 @@ public class OrderServiceImpl implements OrderService {
      * @return 保存结果
      */
     @Override
-    public Order generateOrder(Order order) {
-        return orderRepository.save(order);
+    public boolean generateOrder(Order order) {
+       orderRepository.save(order);
+        return true;
     }
 
     /**

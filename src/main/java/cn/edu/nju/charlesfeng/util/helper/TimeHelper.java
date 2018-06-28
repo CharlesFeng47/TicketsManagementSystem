@@ -45,4 +45,14 @@ public class TimeHelper {
         Duration duration = Duration.between(start, end);
         return ((Long) duration.toMinutes()).intValue();
     }
+
+    /**
+     * 标准化时间，去除纳秒
+     *
+     * @param localDateTime 标准化前的时间
+     * @return 时间
+     */
+    public static LocalDateTime standardTime(LocalDateTime localDateTime) {
+        return LocalDateTime.of(localDateTime.toLocalDate(), LocalTime.of(localDateTime.getHour(), localDateTime.getMinute(), localDateTime.getSecond()));
+    }
 }

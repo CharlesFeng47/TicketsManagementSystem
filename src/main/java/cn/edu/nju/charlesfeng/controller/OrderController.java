@@ -107,7 +107,7 @@ public class OrderController {
             programID.setStartTime(TimeHelper.getLocalDateTime(Long.parseLong(ids[1])));
             List<Ticket> tickets = ticketService.lock(programID, num, seatType); //进行锁票,后面加锁
             OrderID orderID = new OrderID();
-            orderID.setTime(LocalDateTime.now());
+            orderID.setTime(TimeHelper.standardTime(LocalDateTime.now()));
             orderID.setEmail(userID);
             Order order = new Order();
             Program program = programService.getOneProgram(programID);
@@ -120,8 +120,6 @@ public class OrderController {
                 ticket.setOrder(order);
             }
             order.setTickets(new HashSet<>(tickets)); //关联订单
-            Order newOrder = orderService.generateOrder(order);
-            order.setOrderID(newOrder.getOrderID());
             return new RequestReturnObject(RequestReturnObjectState.OK, TimeHelper.getLong(order.getOrderID().getTime()));
         } catch (TicketsNotAdequateException e) {
             return new RequestReturnObject(RequestReturnObjectState.OK, RequestReturnObjectState.TICKET_NOT_ADEQUATE);
