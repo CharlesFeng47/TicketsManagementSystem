@@ -96,7 +96,7 @@ public class OrderController {
         try {
             //TODO 后面加拦截器单独对programID进行正确性检测,避免到处写
             DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-            LocalDateTime time = LocalDateTime.parse(programTime,df);
+            LocalDateTime time = LocalDateTime.parse(programTime, df);
             if (time.plusMinutes(15).isBefore(LocalDateTime.now())) {
                 return new RequestReturnObject(RequestReturnObjectState.ORDER_NOT_CREATE);
             }
@@ -120,7 +120,8 @@ public class OrderController {
                 ticket.setOrder(order);
             }
             order.setTickets(new HashSet<>(tickets)); //关联订单
-            orderService.generateOrder(order);
+            Order newOrder = orderService.generateOrder(order);
+            order.setOrderID(newOrder.getOrderID());
             return new RequestReturnObject(RequestReturnObjectState.OK, TimeHelper.getLong(order.getOrderID().getTime()));
         } catch (TicketsNotAdequateException e) {
             return new RequestReturnObject(RequestReturnObjectState.OK, RequestReturnObjectState.TICKET_NOT_ADEQUATE);

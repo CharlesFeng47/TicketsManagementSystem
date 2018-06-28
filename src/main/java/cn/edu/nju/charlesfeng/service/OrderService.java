@@ -26,7 +26,7 @@ public interface OrderService {
      * @param order 订单实体
      * @return 保存结果
      */
-    boolean generateOrder(Order order);
+    Order generateOrder(Order order);
 
     /**
      * 取消订单
