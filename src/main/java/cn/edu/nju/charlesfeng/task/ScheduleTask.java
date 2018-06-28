@@ -4,7 +4,6 @@ import cn.edu.nju.charlesfeng.model.Order;
 import cn.edu.nju.charlesfeng.model.id.OrderID;
 import cn.edu.nju.charlesfeng.service.OrderService;
 import cn.edu.nju.charlesfeng.util.enums.OrderState;
-import cn.edu.nju.charlesfeng.util.exceptions.OrderNotCancelException;
 import cn.edu.nju.charlesfeng.util.helper.TimeHelper;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,18 +33,13 @@ public class ScheduleTask {
     //@Scheduled(fixedRate = 60000)
     public void ScheduleAutoComplete() {
         logger.info("ScheduleAutoComplete Task 开始工作");
-        try {
-            List<Order> orders = orderService.getOrderByState(OrderState.UNPAID);
-            for (Order order : orders) {
-                OrderID orderID = order.getOrderID();
-                if (TimeHelper.getDurationMinute(orderID.getTime(), LocalDateTime.now()) >= 15) {
-                    orderService.cancelOrder(orderID);
-                    logger.info("已取消" + orderID.getTime().toString() + "--" + orderID.getEmail() + "订单");
-                }
+        List<Order> orders = orderService.getOrderByState(OrderState.UNPAID);
+        for (Order order : orders) {
+            OrderID orderID = order.getOrderID();
+            if (TimeHelper.getDurationMinute(orderID.getTime(), LocalDateTime.now()) >= 15) {
+                orderService.cancelOrderBySchedule(order);
+                logger.info("已取消" + orderID.getTime().toString() + "--" + orderID.getEmail() + "订单");
             }
-        } catch (OrderNotCancelException e) {
-            e.printStackTrace();
-            logger.info("不可取消");
         }
     }
 }

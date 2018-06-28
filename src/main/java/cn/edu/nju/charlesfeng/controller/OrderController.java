@@ -77,8 +77,13 @@ public class OrderController {
     public RequestReturnObject getMyOrdersByState(@RequestParam("orderType") String type, @SessionAttribute("user_id") String userID) {
         logger.debug("INTO /order/getMyOrdersByState" + userID + type);
         OrderState orderState = OrderState.valueOf(type);
+        List<Order> orders = null;
+        if (orderState.equals(OrderState.ALL)) {
+            orders = orderService.getMyOrders(userID);
+        } else {
+            orders = orderService.getMyOrders(userID, orderState);
+        }
         List<OrderBrief> result = new ArrayList<>();
-        List<Order> orders = orderService.getMyOrders(userID, orderState);
         for (Order order : orders) {
             result.add(new OrderBrief(order));
         }
