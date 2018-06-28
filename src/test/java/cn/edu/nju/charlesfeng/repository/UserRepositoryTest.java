@@ -46,8 +46,8 @@ public class UserRepositoryTest {
     @Test
     public void testGet() {
         try {
-            User user = userRepository.getOne("1234567890@qq.com");
-            Assert.assertEquals("byron", user.getName());
+            User user = userRepository.getOne("151250043@smail.nju.edu.cn");
+            Assert.assertEquals("龚尘淼", user.getName());
         } catch (EntityNotFoundException e) {
             e.printStackTrace();
             System.out.println("未找到实体");

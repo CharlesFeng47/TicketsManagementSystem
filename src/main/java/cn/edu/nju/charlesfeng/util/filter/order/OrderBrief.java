@@ -2,6 +2,7 @@ package cn.edu.nju.charlesfeng.util.filter.order;
 
 import cn.edu.nju.charlesfeng.model.Order;
 import cn.edu.nju.charlesfeng.model.Program;
+import cn.edu.nju.charlesfeng.util.helper.SystemHelper;
 import cn.edu.nju.charlesfeng.util.helper.TimeHelper;
 
 import java.io.Serializable;
@@ -54,6 +55,11 @@ public class OrderBrief implements Serializable {
      */
     private String venueName;
 
+    /**
+     * 节目海报的url
+     */
+    private String imagesUrl;
+
     public OrderBrief(Order order) {
         orderID = String.valueOf(TimeHelper.getLong(order.getOrderID().getTime()));
         orderTime = order.getOrderID().getTime();
@@ -65,6 +71,7 @@ public class OrderBrief implements Serializable {
         orderState = order.getOrderState().toString();
         venueName = program.getVenue().getVenueName();
         num = order.getTickets().size();
+        imagesUrl = SystemHelper.getDomainName() + program.getProgramType().name() + "/" + programID + ".jpg";
     }
 
     public String getOrderID() {
@@ -101,5 +108,9 @@ public class OrderBrief implements Serializable {
 
     public String getVenueName() {
         return venueName;
+    }
+
+    public String getImagesUrl() {
+        return imagesUrl;
     }
 }

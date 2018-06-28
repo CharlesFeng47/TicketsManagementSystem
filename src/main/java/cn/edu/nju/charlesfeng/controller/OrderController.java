@@ -78,9 +78,9 @@ public class OrderController {
         logger.debug("INTO /order/getMyOrdersByState" + userID + type);
         OrderState orderState = OrderState.valueOf(type);
         List<OrderBrief> result = new ArrayList<>();
-        List<OrderID> orders = orderService.getMyOrders(userID, orderState);
-        for (OrderID orderID : orders) {
-            result.add(new OrderBrief(orderService.checkOrderDetail(orderID)));
+        List<Order> orders = orderService.getMyOrders(userID, orderState);
+        for (Order order : orders) {
+            result.add(new OrderBrief(order));
         }
         return new RequestReturnObject(RequestReturnObjectState.OK, result);
     }
@@ -113,6 +113,7 @@ public class OrderController {
             Program program = programService.getOneProgram(programID);
             order.setOrderID(orderID);
             order.setProgram(program);
+            order.setProgramID(program.getProgramID());
             double price = parService.getSeatPrice(programID, seatType);
             order.setTotalPrice(price * num);
             order.setOrderState(OrderState.UNPAID);

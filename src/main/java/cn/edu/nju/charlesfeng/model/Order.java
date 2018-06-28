@@ -1,6 +1,7 @@
 package cn.edu.nju.charlesfeng.model;
 
 import cn.edu.nju.charlesfeng.model.id.OrderID;
+import cn.edu.nju.charlesfeng.model.id.ProgramID;
 import cn.edu.nju.charlesfeng.util.enums.OrderState;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -24,6 +25,11 @@ public class Order implements Serializable {
     private OrderID orderID;
 
     /**
+     * 节目ID
+     */
+    private ProgramID programID;
+
+    /**
      * 订单状态
      */
     @Column(name = "order_state")
@@ -40,12 +46,10 @@ public class Order implements Serializable {
      * 订单所属的节目实体(N->1)
      */
     @ManyToOne(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
-    @JoinTable(name = "program_order",
-            joinColumns = {@JoinColumn(name = "order_email",referencedColumnName = "email"),
-                    @JoinColumn(name = "order_time",referencedColumnName = "time")},
-            inverseJoinColumns = {@JoinColumn(name = "program_vid", referencedColumnName = "vid"),
-                    @JoinColumn(name = "program_start_time", referencedColumnName = "start_time")
-            })
+    @JoinColumns({
+            @JoinColumn(name = "vid", referencedColumnName = "vid", insertable = false, updatable = false),
+            @JoinColumn(name = "start_time", referencedColumnName = "start_time", insertable = false, updatable = false),
+    })
     private Program program;
 
     /**
@@ -95,5 +99,13 @@ public class Order implements Serializable {
 
     public void setProgram(Program program) {
         this.program = program;
+    }
+
+    public ProgramID getProgramID() {
+        return programID;
+    }
+
+    public void setProgramID(ProgramID programID) {
+        this.programID = programID;
     }
 }

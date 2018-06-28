@@ -35,8 +35,9 @@ public class ScheduleTask {
     public void ScheduleAutoComplete() {
         logger.info("ScheduleAutoComplete Task 开始工作");
         try {
-            List<OrderID> orders = orderService.getOrderByState(OrderState.UNPAID);
-            for (OrderID orderID : orders) {
+            List<Order> orders = orderService.getOrderByState(OrderState.UNPAID);
+            for (Order order : orders) {
+                OrderID orderID = order.getOrderID();
                 if (TimeHelper.getDurationMinute(orderID.getTime(), LocalDateTime.now()) >= 15) {
                     orderService.cancelOrder(orderID);
                     logger.info("已取消" + orderID.getTime().toString() + "--" + orderID.getEmail() + "订单");

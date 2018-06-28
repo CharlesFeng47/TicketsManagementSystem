@@ -53,6 +53,16 @@ public class TimeHelper {
      * @return 时间
      */
     public static LocalDateTime standardTime(LocalDateTime localDateTime) {
-        return LocalDateTime.of(localDateTime.toLocalDate(), LocalTime.of(localDateTime.getHour(), localDateTime.getMinute(), localDateTime.getSecond()));
+        int hour = localDateTime.getHour();
+        int minute = localDateTime.getMinute();
+        int second = localDateTime.getSecond();
+        LocalDate localDate = localDateTime.toLocalDate();
+        LocalTime localTime = LocalTime.of(hour, minute, second);
+        LocalDateTime result = LocalDateTime.of(localDate, localTime);
+        int value = Integer.parseInt(String.valueOf(localDateTime.getNano()).substring(0, 1));
+        if (value >= 5) {
+            result = result.plusSeconds(1);
+        }
+        return result;
     }
 }

@@ -57,13 +57,7 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     public Order checkOrderDetail(OrderID orderID) {
-        Object[][] objects = orderRepository.findProgramID(orderID.getEmail(), orderID.getTime());
-        ProgramID programID = new ProgramID();
-        programID.setVenueID((Integer) objects[0][0]);
-        programID.setStartTime(((Timestamp) objects[0][1]).toLocalDateTime());
-        Order order = orderRepository.findByOrderID(orderID);
-        order.setProgram(programService.getOneProgram(programID));
-        return order;
+        return orderRepository.findByOrderID(orderID);
     }
 
     /**
@@ -74,7 +68,7 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     public boolean generateOrder(Order order) {
-       orderRepository.save(order);
+        orderRepository.save(order);
         return true;
     }
 
@@ -159,10 +153,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public boolean unsubscribe(OrderID orderID) throws OrderNotRefundableException, UserNotExistException, WrongPwdException, AlipayBalanceNotAdequateException {
         Order order = orderRepository.findByOrderID(orderID);
-        Object[][] objects = orderRepository.findProgramID(orderID.getEmail(), orderID.getTime());
-        ProgramID programID = new ProgramID();
-        programID.setVenueID((Integer) objects[0][0]);
-        programID.setStartTime(((Timestamp) objects[0][1]).toLocalDateTime());
+        ProgramID programID = order.getProgramID();
         LocalDateTime programTime = programID.getStartTime().minusMinutes(15);
         //在不是未支付状态下或者节目开始前15分钟，均不可退票
         if (!order.getOrderState().equals(OrderState.PAYED) || programTime.isBefore(LocalDateTime.now())) {
@@ -194,7 +185,7 @@ public class OrderServiceImpl implements OrderService {
      * @return 查看某一用户的全部订单
      */
     @Override
-    public List<OrderID> getMyOrders(String uid) {
+    public List<Order> getMyOrders(String uid) {
         return orderRepository.getMyOrders(uid);
     }
 
@@ -204,7 +195,7 @@ public class OrderServiceImpl implements OrderService {
      * @return 查看某一用户的全部订单
      */
     @Override
-    public List<OrderID> getMyOrders(String uid, OrderState orderState) {
+    public List<Order> getMyOrders(String uid, OrderState orderState) {
         return orderRepository.getMyOrders(uid, orderState);
     }
 
@@ -215,7 +206,7 @@ public class OrderServiceImpl implements OrderService {
      * @return 订单
      */
     @Override
-    public List<OrderID> getOrderByState(OrderState orderState) {
+    public List<Order> getOrderByState(OrderState orderState) {
         return orderRepository.getOrderByState(orderState);
     }
 

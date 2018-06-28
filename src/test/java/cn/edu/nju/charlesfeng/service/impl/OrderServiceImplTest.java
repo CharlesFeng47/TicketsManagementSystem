@@ -60,7 +60,8 @@ public class OrderServiceImplTest {
             programID.setStartTime(LocalDateTime.of(2017, 6, 14, 0, 0, 0));
             List<Ticket> tickets = ticketService.lock(programID, num, seatType);  //进行锁票,后面加锁
             OrderID orderID = new OrderID();
-            orderID.setTime(LocalDateTime.now());
+            orderID.setTime(TimeHelper.standardTime(LocalDateTime.now()));
+            System.out.println(TimeHelper.getLong(orderID.getTime()));
             orderID.setEmail(userID);
             Order order = new Order();
             order.setOrderID(orderID);
@@ -73,6 +74,7 @@ public class OrderServiceImplTest {
             Program program = programService.getOneProgram(programID);
             program.getOrders().add(order);
             order.setProgram(program);
+            order.setProgramID(program.getProgramID());
             order.setTickets(new HashSet<>(tickets)); //关联订单
             orderService.generateOrder(order);
         } catch (TicketsNotAdequateException e) {
@@ -145,7 +147,9 @@ public class OrderServiceImplTest {
     public void testGet() {
         String userID = "151250032@smail.nju.edu.cn";
         OrderID orderID = new OrderID();
-        orderID.setTime(LocalDateTime.of(2018, 6, 28, 16, 26, 13));
+        LocalDateTime localDateTime = TimeHelper.getLocalDateTime(Long.parseLong("1530201526000"));
+        LocalDateTime formate = TimeHelper.standardTime(localDateTime);
+        orderID.setTime(localDateTime);
         orderID.setEmail(userID);
         Order order = orderService.checkOrderDetail(orderID);
         System.out.println(order.getTickets().size());

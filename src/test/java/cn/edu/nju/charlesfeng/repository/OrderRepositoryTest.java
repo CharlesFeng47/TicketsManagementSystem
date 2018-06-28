@@ -6,6 +6,7 @@ import cn.edu.nju.charlesfeng.model.Ticket;
 import cn.edu.nju.charlesfeng.model.id.OrderID;
 import cn.edu.nju.charlesfeng.model.id.ProgramID;
 import cn.edu.nju.charlesfeng.util.enums.OrderState;
+import org.hibernate.Hibernate;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,20 +63,11 @@ public class OrderRepositoryTest {
 
     @Test
     public void testGet() {
-//        ProgramID programID = new ProgramID();
-//        programID.setVenueID(1);
-//        programID.setStartTime(LocalDateTime.of(2018, 7, 12, 18, 0, 0));
-//        Program program = programRepository.getOne(programID);
         OrderID orderID = new OrderID();
-        orderID.setEmail("1234567890@qq.com");
-        orderID.setTime(LocalDateTime.of(2018, 6, 6, 17, 0, 40));
-        Order order = orderRepository.getOne(orderID);
-//        Set<Ticket> tickets = program.getTickets();
-//        Ticket ticket = tickets.iterator().next();
-//
-//        ticket.setLock(true);
-//        ticket.setOrder(order);
-//        ticketRepository.save(ticket);
+        orderID.setEmail("151250032@smail.nju.edu.cn");
+        orderID.setTime(LocalDateTime.of(2017,5,4 ,4,50,51));
+        Order order = orderRepository.findByOrderID(orderID);
+        Hibernate.initialize(order);
         System.out.println(order.getTickets().size());
 
     }
@@ -87,8 +79,8 @@ public class OrderRepositoryTest {
     @Test
     public void testAddOrder() {
         List<String> users = Arrays.asList("151250032@smail.nju.edu.cn", "151250037@smail.nju.edu.cn", "151250040@smail.nju.edu.cn", "151250043@smail.nju.edu.cn");
-        List<Program> programList = programRepository.getBeforeProrgam("南京", LocalDateTime.of(2018, 5, 1, 0, 0, 0));
-        for (int i = 0; i < 2; i++) {
+        List<Program> programList = programRepository.getBeforeProrgam("上海", LocalDateTime.of(2018, 5, 1, 0, 0, 0));
+        for (int i = 0; i < 30; i++) {
             Program program = programList.get(randomIndex(programList.size()));
             List<Ticket> tickets = ticketRepository.getTickets(program.getProgramID(), false);
             String userID = users.get(randomIndex(users.size()));
@@ -106,6 +98,7 @@ public class OrderRepositoryTest {
             }
             Order order = new Order();
             order.setOrderID(orderID);
+            order.setProgramID(program.getProgramID());
             order.setOrderState(OrderState.PAYED);
             order.setProgram(program);
             order.setTotalPrice(ticket.getPrice());

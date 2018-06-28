@@ -4,6 +4,7 @@ import cn.edu.nju.charlesfeng.model.Address;
 import cn.edu.nju.charlesfeng.model.Order;
 import cn.edu.nju.charlesfeng.model.Program;
 import cn.edu.nju.charlesfeng.model.Ticket;
+import cn.edu.nju.charlesfeng.util.helper.SystemHelper;
 import cn.edu.nju.charlesfeng.util.helper.TimeHelper;
 
 import java.io.Serializable;
@@ -64,6 +65,11 @@ public class OrderDetail implements Serializable {
     private Address venueAddress;
 
     /**
+     * 节目海报的url
+     */
+    private String imagesUrl;
+
+    /**
      * 票的详细信息
      */
     private List<Ticket> tickets;
@@ -80,6 +86,7 @@ public class OrderDetail implements Serializable {
         venueName = program.getVenue().getVenueName();
         venueAddress = program.getVenue().getAddress();
         num = order.getTickets().size();
+        imagesUrl = SystemHelper.getDomainName() + program.getProgramType().name() + "/" + programID + ".jpg";
         tickets = new ArrayList<>();
         for (Ticket ticket : order.getTickets()) {
             tickets.add(new Ticket(ticket));
@@ -124,6 +131,10 @@ public class OrderDetail implements Serializable {
 
     public Address getVenueAddress() {
         return venueAddress;
+    }
+
+    public String getImagesUrl() {
+        return imagesUrl;
     }
 
     public List<Ticket> getTickets() {

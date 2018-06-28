@@ -64,14 +64,14 @@ public interface OrderService {
      * @param uid 查看订单的用户
      * @return 查看某一用户的全部订单
      */
-    List<OrderID> getMyOrders(String uid);
+    List<Order> getMyOrders(String uid);
 
     /**
      * @param uid        查看指定类型订单的用户
      * @param orderState 订单状态或订单类型
      * @return 查看某一用户的全部订单
      */
-    List<OrderID> getMyOrders(String uid, OrderState orderState);
+    List<Order> getMyOrders(String uid, OrderState orderState);
 
     /**
      * 跟据订单状态获取订单
@@ -79,7 +79,7 @@ public interface OrderService {
      * @param orderState
      * @return
      */
-    List<OrderID> getOrderByState(OrderState orderState);
+    List<Order> getOrderByState(OrderState orderState);
 
 //    /**
 //     * @param spot 检票登记的主动方场馆
