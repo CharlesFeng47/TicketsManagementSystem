@@ -2,6 +2,7 @@ package cn.edu.nju.charlesfeng.interceptor;
 
 import cn.edu.nju.charlesfeng.util.enums.RequestReturnObjectState;
 import cn.edu.nju.charlesfeng.util.helper.RequestReturnObject;
+import com.alibaba.fastjson.JSONObject;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -9,17 +10,22 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * 用于拦截需要传输token的接口
+ */
 @Component
 public class UserInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String token = request.getParameter("token");
+        JSONObject jsonObject = new JSONObject();
         if (token == null) { //请求没有传送token
             response.setStatus(200);
             response.setCharacterEncoding("UTF-8");
             response.setContentType("application/json; charset=utf-8");
-            response.getWriter().write(getInfoJson("TOKEN_IS_NULL"));
+            jsonObject.put("userInterceptorInfo", new RequestReturnObject(RequestReturnObjectState.TOKEN_IS_NULL));
+            response.getWriter().write(jsonObject.toJSONString());
             return false;
         }
 
@@ -28,7 +34,8 @@ public class UserInterceptor implements HandlerInterceptor {
             response.setStatus(200);
             response.setCharacterEncoding("UTF-8");
             response.setContentType("application/json; charset=utf-8");
-            response.getWriter().write(getInfoJson("USER_NOT_EXIST"));
+            jsonObject.put("userInterceptorInfo", new RequestReturnObject(RequestReturnObjectState.USER_NOT_EXIST));
+            response.getWriter().write(jsonObject.toJSONString());
             return false;
         }
         return true;
@@ -44,9 +51,5 @@ public class UserInterceptor implements HandlerInterceptor {
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
 
-    }
-
-    private String getInfoJson(String info) {
-        return new RequestReturnObject(RequestReturnObjectState.OK, info).getObject();
     }
 }

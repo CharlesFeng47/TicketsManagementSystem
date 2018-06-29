@@ -34,7 +34,7 @@ public interface OrderRepository extends JpaRepository<Order, OrderID> {
      * @param email 用户的邮箱（ID）
      * @return 所有订单实体
      */
-    @Query(value = "select o from Order as o where o.orderID.email=:email")
+    @Query(value = "select o from Order as o where o.orderID.email=:email order by o.orderID.time desc")
     List<Order> getMyOrders(@Param("email") String email);
 
     /**
@@ -43,7 +43,7 @@ public interface OrderRepository extends JpaRepository<Order, OrderID> {
      * @param email 用户的邮箱（ID）
      * @return 所有订单实体
      */
-    @Query(value = "select o from Order as o where o.orderID.email=:email and o.orderState=:orderState")
+    @Query(value = "select o from Order as o where o.orderID.email=:email and o.orderState=:orderState order by o.orderID.time desc")
     List<Order> getMyOrders(@Param("email") String email, @Param("orderState") OrderState orderState);
 
     /**
