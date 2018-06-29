@@ -86,10 +86,16 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
                 //order
                 .addPathPatterns("/order/getOneOrder")
                 .addPathPatterns("/order/getMyOrdersByState")
-                .addPathPatterns("/order/generateOrder");
+                .addPathPatterns("/order/generateOrder")
+                .addPathPatterns("/order/cancelOrder")
+                .addPathPatterns("/order/unsubscribeOrder")
+                .addPathPatterns("/order/payOrder")
+                //program
+                .addPathPatterns("/program/getProgramDetailByToken");
         //ProgramIDInterceptor
         registry.addInterceptor(new ProgramIDInterceptor())
                 .addPathPatterns("/program/getProgramDetail")
+                .addPathPatterns("/program/getProgramDetailByToken")
                 .addPathPatterns("/user/star")
                 .addPathPatterns("/user/cancelStar")
                 .addPathPatterns("/order/generateOrder");

@@ -1,6 +1,7 @@
 package cn.edu.nju.charlesfeng.controller;
 
 import cn.edu.nju.charlesfeng.model.Program;
+import cn.edu.nju.charlesfeng.model.User;
 import cn.edu.nju.charlesfeng.model.id.ProgramID;
 import cn.edu.nju.charlesfeng.service.ProgramService;
 import cn.edu.nju.charlesfeng.service.TicketService;
@@ -48,7 +49,6 @@ public class ProgramController {
      * @return 首页的节目推荐
      */
     @GetMapping("/recommend")
-    //@FastJsonView(exclude = @FastJsonFilter(clazz = ProgramBrief.class, props = {"scanVolume", "favoriteVolume", "saleType"}))
     public RequestReturnObject getRecommendPrograms(@RequestParam("city") String city) {
         logger.debug("INTO /program/recommend?city=" + city);
         Map<String, List<Program>> map = programService.recommendPrograms(LocalDateTime.now(), city, 5); //今天之后包括今天
@@ -68,8 +68,8 @@ public class ProgramController {
      * @return 根据节目类型获取节目列表
      */
     @GetMapping("/getProgramsByType")
-    public RequestReturnObject getProgramsByType(@RequestParam("city") String city, @RequestParam("programType") String programType) {
-        logger.debug("INTO /program/getProgramsByType?city=" + city + "&programType=" + programType);
+    public RequestReturnObject getProgramsByType(@RequestParam("city") String city, @RequestParam("program_type") String programType) {
+        logger.debug("INTO /program/getProgramsByType?city=" + city + "&program_type=" + programType);
         List<ProgramBrief> result = programService.getBriefPrograms(city, ProgramType.getEnum(programType), LocalDateTime.now()); //今天之后包括今天
         return new RequestReturnObject(RequestReturnObjectState.OK, result);
     }
@@ -78,21 +78,38 @@ public class ProgramController {
      * @return 根据节目ID获取节目详情
      */
     @GetMapping("/getProgramDetail")
-    public RequestReturnObject getProgramDetail(@RequestParam("program_id") String id, HttpServletRequest request) {
-        logger.debug("INTO /program/getProgramDetail?program_id" + id);
+    public RequestReturnObject getProgramDetail(@RequestParam("program_id") String programIDString) {
+        logger.debug("INTO /program/getProgramDetail?program_id" + programIDString);
 
-        String ids[] = id.split("-");
+        String ids[] = programIDString.split("-");
+        ProgramID programID = new ProgramID();
+        programID.setVenueID(Integer.parseInt(ids[0]));
+        programID.setStartTime(TimeHelper.getLocalDateTime(Long.parseLong(ids[1])));
+        Program program = programService.getOneProgram(programID);
+
+        SaleType saleType = ticketService.getProgramSaleType(programID);
+        Set<LocalDateTime> fields = programService.getAllProgramField(programID.getVenueID(), program.getName());
+        int number = ticketService.getProgramRemainTicketNumber(programID);
+        programService.addScanVolume(program.getProgramID()); //浏览量加1
+        return new RequestReturnObject(RequestReturnObjectState.OK, new ProgramDetail(program, saleType, fields, number, false));
+    }
+
+    /**
+     * @return 根据节目ID获取节目详情(根据用户个性化)
+     */
+    @GetMapping("/getProgramDetailByToken")
+    public RequestReturnObject getProgramDetail(@RequestParam("program_id") String programIDString, @RequestParam("token") String token, HttpServletRequest request) {
+        logger.debug("INTO /program/getProgramDetail?program_id" + programIDString);
+
+        String ids[] = programIDString.split("-");
         ProgramID programID = new ProgramID();
         programID.setVenueID(Integer.parseInt(ids[0]));
         programID.setStartTime(TimeHelper.getLocalDateTime(Long.parseLong(ids[1])));
         Program program = programService.getOneProgram(programID);
 
         HttpSession session = request.getSession();
-        String userID = (String) session.getAttribute("user_id");
-        boolean isLike = false;
-        if (userID != null) {
-            isLike = userService.isLike(userID, program);
-        }
+        User user = (User) session.getAttribute(token);
+        boolean isLike = userService.isLike(user.getEmail(), program);
 
         SaleType saleType = ticketService.getProgramSaleType(programID);
         Set<LocalDateTime> fields = programService.getAllProgramField(programID.getVenueID(), program.getName());
@@ -126,29 +143,6 @@ public class ProgramController {
         return new RequestReturnObject(RequestReturnObjectState.OK, programs);
     }
 
-//
-//    /**
-//     * 结算单条计划
-//     */
-//    @PostMapping("settle")
-//    public RequestReturnObject settleOneSchedule(@RequestParam("token") String token, @RequestParam("scheduleId") String scheduleId,
-//                                                 HttpServletRequest request) {
-//        logger.debug("INTO /schedule/settle: " + scheduleId);
-//
-//        HttpSession session = request.getSession();
-////        Manager manager = (Manager) session.getAttribute(token);
-//        Object o = session.getAttribute(token);
-//        assert o != null && o instanceof Manager;
-//
-//        try {
-//            boolean result = scheduleService.settleOneSchedule(scheduleId);
-//            if (result) return new RequestReturnObject(RequestReturnObjectState.OK);
-//            else return new RequestReturnObject(RequestReturnObjectState.SCHEDULE_NOT_SEETLABLE);
-//        } catch (ProgramNotSettlableException e) {
-//            return new RequestReturnObject(RequestReturnObjectState.SCHEDULE_NOT_SEETLABLE);
-//        }
-//    }
-//
 //    /**
 //     * 保存单条计划
 //     */
