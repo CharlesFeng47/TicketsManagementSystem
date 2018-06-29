@@ -1,7 +1,5 @@
 package cn.edu.nju.charlesfeng.interceptor;
 
-import cn.edu.nju.charlesfeng.util.enums.RequestReturnObjectState;
-import cn.edu.nju.charlesfeng.util.helper.RequestReturnObject;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;

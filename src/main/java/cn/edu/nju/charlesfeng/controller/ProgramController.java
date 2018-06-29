@@ -95,6 +95,7 @@ public class ProgramController {
     }
 
     /**
+     * TODO 觉得还是取两次好了，前端通过另一接口直接获取用户是否喜欢过，不需要此接口
      * @return 根据节目ID获取节目详情(根据用户个性化)
      */
     @GetMapping("/getProgramDetailByToken")

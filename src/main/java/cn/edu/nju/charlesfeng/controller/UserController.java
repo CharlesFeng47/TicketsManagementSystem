@@ -41,7 +41,7 @@ public class UserController {
      *
      * @return 系统服务状态
      */
-    @PostMapping("/user_login")
+    @PostMapping("/login")
     public RequestReturnObject login(@RequestParam("email") String email, @RequestParam("password") String password, HttpServletRequest request) {
         logger.debug("INTO /user/login");
         try {
@@ -67,7 +67,7 @@ public class UserController {
      *
      * @return 该用户对应的token
      */
-    @PostMapping("/user_sign_up")
+    @PostMapping("/signUp")
     public RequestReturnObject memberSignUp(@RequestParam("username") String username, @RequestParam("password") String password,
                                             @RequestParam("email") String email, HttpServletRequest request) {
 
@@ -95,9 +95,9 @@ public class UserController {
     /**
      * @return 邮箱链接验证
      */
-    @PostMapping("/user_active")
+    @PostMapping("/userActive")
     public RequestReturnObject verifyUserEmail(@RequestParam("active_url") String activeUrl) {
-        logger.debug("INTO /user/user_active");
+        logger.debug("INTO /user/userActive");
         System.out.println(activeUrl);
         try {
             userService.activateByMail(activeUrl);
