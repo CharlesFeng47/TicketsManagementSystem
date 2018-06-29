@@ -97,7 +97,7 @@ public class ProgramController {
     /**
      * @return 根据节目ID判断是否喜欢该节目
      */
-    @GetMapping("/isLikeProgram")
+    @PostMapping("/isLikeProgram")
     public RequestReturnObject isLikeProgram(@RequestParam("program_id") String programIDString, @RequestParam("token") String token, HttpServletRequest request) {
         logger.debug("INTO /program/isLikeProgram?program_id" + programIDString);
 
