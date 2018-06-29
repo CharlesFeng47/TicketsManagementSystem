@@ -5,7 +5,7 @@ import cn.edu.nju.charlesfeng.model.id.ProgramID;
 
 import java.io.Serializable;
 
-public class ParDto implements Serializable {
+public class ParDto implements Serializable, Comparable<ParDto> {
 
     /**
      * 节目的ID
@@ -58,5 +58,17 @@ public class ParDto implements Serializable {
 
     public String getSeatType() {
         return seatType;
+    }
+
+    @Override
+    public int compareTo(ParDto o) {
+        if (basePrice == o.getBasePrice()) {
+            return 0;
+        }
+
+        if (basePrice > o.getBasePrice()) {
+            return 1;
+        }
+        return -1;
     }
 }

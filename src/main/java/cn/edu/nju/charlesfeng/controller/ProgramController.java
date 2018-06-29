@@ -95,11 +95,10 @@ public class ProgramController {
     }
 
     /**
-     * TODO 觉得还是取两次好了，前端通过另一接口直接获取用户是否喜欢过，不需要此接口
-     * @return 根据节目ID获取节目详情(根据用户个性化)
+     * @return 根据节目ID判断是否喜欢该节目
      */
-    @GetMapping("/getProgramDetailByToken")
-    public RequestReturnObject getProgramDetail(@RequestParam("program_id") String programIDString, @RequestParam("token") String token, HttpServletRequest request) {
+    @GetMapping("/isLikeProgram")
+    public RequestReturnObject isLikeProgram(@RequestParam("program_id") String programIDString, @RequestParam("token") String token, HttpServletRequest request) {
         logger.debug("INTO /program/getProgramDetail?program_id" + programIDString);
 
         String ids[] = programIDString.split("-");
@@ -111,12 +110,7 @@ public class ProgramController {
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute(token);
         boolean isLike = userService.isLike(user.getEmail(), program);
-
-        SaleType saleType = ticketService.getProgramSaleType(programID);
-        Set<LocalDateTime> fields = programService.getAllProgramField(programID.getVenueID(), program.getName());
-        int number = ticketService.getProgramRemainTicketNumber(programID);
-        programService.addScanVolume(program.getProgramID()); //浏览量加1
-        return new RequestReturnObject(RequestReturnObjectState.OK, new ProgramDetail(program, saleType, fields, number, isLike));
+        return new RequestReturnObject(RequestReturnObjectState.OK, isLike);
     }
 
     /**

@@ -11,6 +11,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * 节目概览
@@ -98,7 +99,7 @@ public class ProgramDetail implements Serializable {
         imageUrl = SystemHelper.getDomainName() + program.getProgramType().name() + "/" + id + ".jpg";
         saleType = type.toString();
         this.fields = fields;
-        parIDs = new HashSet<>();
+        parIDs = new TreeSet<>();
         for (Par par : program.getPars()) {
             parIDs.add(new ParDto(par));
         }
