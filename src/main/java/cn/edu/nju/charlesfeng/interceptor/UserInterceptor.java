@@ -1,5 +1,7 @@
 package cn.edu.nju.charlesfeng.interceptor;
 
+import cn.edu.nju.charlesfeng.util.enums.RequestReturnObjectState;
+import cn.edu.nju.charlesfeng.util.helper.RequestReturnObject;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -22,7 +24,7 @@ public class UserInterceptor implements HandlerInterceptor {
             response.setStatus(200);
             response.setCharacterEncoding("UTF-8");
             response.setContentType("application/json; charset=utf-8");
-            jsonObject.put("userInterceptorInfo", "TOKEN_IS_NULL");
+            jsonObject.put("userInterceptorInfo", new RequestReturnObject(RequestReturnObjectState.TOKEN_IS_NULL));
             response.getWriter().write(jsonObject.toJSONString());
             return false;
         }
@@ -32,7 +34,7 @@ public class UserInterceptor implements HandlerInterceptor {
             response.setStatus(200);
             response.setCharacterEncoding("UTF-8");
             response.setContentType("application/json; charset=utf-8");
-            jsonObject.put("userInterceptorInfo", "USER_NOT_EXIST");
+            jsonObject.put("userInterceptorInfo", new RequestReturnObject(RequestReturnObjectState.USER_NOT_EXIST));
             response.getWriter().write(jsonObject.toJSONString());
             return false;
         }

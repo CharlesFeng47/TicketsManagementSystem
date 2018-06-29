@@ -1,5 +1,7 @@
 package cn.edu.nju.charlesfeng.interceptor;
 
+import cn.edu.nju.charlesfeng.util.enums.RequestReturnObjectState;
+import cn.edu.nju.charlesfeng.util.helper.RequestReturnObject;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -23,7 +25,7 @@ public class ProgramIDInterceptor implements HandlerInterceptor {
             response.setStatus(200);
             response.setCharacterEncoding("UTF-8");
             response.setContentType("application/json; charset=utf-8");
-            jsonObject.put("programIdInterceptorInfo", "WRONG_PROGRAM_ID");
+            jsonObject.put("programIdInterceptorInfo", new RequestReturnObject(RequestReturnObjectState.WRONG_PROGRAM_ID));
             response.getWriter().write(jsonObject.toJSONString());
             return false;
         }

@@ -52,7 +52,11 @@ public enum RequestReturnObjectState implements Serializable {
     //订单不可取消
     ORDER_NOT_CANCEL(21),
     //余票不足
-    TICKET_NOT_ADEQUATE(22);
+    TICKET_NOT_ADEQUATE(22),
+    //请求没有传送token
+    TOKEN_IS_NULL(23),
+    //节目ID格式不对
+    WRONG_PROGRAM_ID(24);
 
     private int repre;
 
