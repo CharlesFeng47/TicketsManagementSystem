@@ -119,17 +119,19 @@ public class OrderController {
             orderID.setTime(TimeHelper.standardTime(LocalDateTime.now()));
             orderID.setEmail(token);
             Order order = new Order();
-            Program program = programService.getOneProgram(programID);
             order.setOrderID(orderID);
-            order.setProgram(program);
-            order.setProgramID(program.getProgramID());
             double price = parService.getSeatPrice(programID, seatType);
             order.setTotalPrice(price * num);
             order.setOrderState(OrderState.UNPAID);
             for (Ticket ticket : tickets) {
                 ticket.setOrder(order);
             }
+            Program program = programService.getOneProgram(programID);
+            program.getOrders().add(order);
+            order.setProgramID(program.getProgramID());
+            order.setProgram(program);
             order.setTickets(new HashSet<>(tickets)); //关联订单
+            orderService.generateOrder(order);
             return new RequestReturnObject(RequestReturnObjectState.OK, TimeHelper.getLong(order.getOrderID().getTime()));
         } catch (TicketsNotAdequateException e) {
             return new RequestReturnObject(RequestReturnObjectState.OK, RequestReturnObjectState.TICKET_NOT_ADEQUATE);
