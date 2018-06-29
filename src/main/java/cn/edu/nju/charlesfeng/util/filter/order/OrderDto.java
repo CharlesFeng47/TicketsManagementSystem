@@ -1,5 +1,6 @@
 package cn.edu.nju.charlesfeng.util.filter.order;
 
+import cn.edu.nju.charlesfeng.model.Address;
 import cn.edu.nju.charlesfeng.model.Order;
 import cn.edu.nju.charlesfeng.model.Program;
 import cn.edu.nju.charlesfeng.model.Ticket;
@@ -13,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class OrderBrief implements Serializable {
+public class OrderDto implements Serializable {
 
     /**
      * 订单号
@@ -61,6 +62,11 @@ public class OrderBrief implements Serializable {
     private String venueName;
 
     /**
+     * 场馆的详细地址
+     */
+    private Address venueAddress;
+
+    /**
      * 节目海报的url
      */
     private String imagesUrl;
@@ -70,7 +76,7 @@ public class OrderBrief implements Serializable {
      */
     private Map<String, Double> ticketInfo;
 
-    public OrderBrief(Order order) {
+    public OrderDto(Order order) {
         orderID = String.valueOf(TimeHelper.getLong(order.getOrderID().getTime()));
         orderTime = order.getOrderID().getTime();
         Program program = order.getProgram();
@@ -80,6 +86,7 @@ public class OrderBrief implements Serializable {
         totalPrice = order.getTotalPrice();
         orderState = order.getOrderState().toString();
         venueName = program.getVenue().getVenueName();
+        venueAddress = program.getVenue().getAddress();
         num = order.getTickets().size();
         imagesUrl = SystemHelper.getDomainName() + program.getProgramType().name() + "/" + programID + ".jpg";
         ticketInfo = new TreeMap<>();
@@ -123,6 +130,10 @@ public class OrderBrief implements Serializable {
 
     public String getVenueName() {
         return venueName;
+    }
+
+    public Address getVenueAddress() {
+        return venueAddress;
     }
 
     public String getImagesUrl() {

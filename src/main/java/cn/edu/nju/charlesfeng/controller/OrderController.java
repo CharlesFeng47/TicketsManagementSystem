@@ -13,20 +13,21 @@ import cn.edu.nju.charlesfeng.service.TicketService;
 import cn.edu.nju.charlesfeng.util.enums.OrderState;
 import cn.edu.nju.charlesfeng.util.enums.RequestReturnObjectState;
 import cn.edu.nju.charlesfeng.util.exceptions.*;
-import cn.edu.nju.charlesfeng.util.filter.order.OrderBrief;
-import cn.edu.nju.charlesfeng.util.filter.order.OrderDetail;
+import cn.edu.nju.charlesfeng.util.filter.order.OrderDto;
 import cn.edu.nju.charlesfeng.util.helper.RequestReturnObject;
 import cn.edu.nju.charlesfeng.util.helper.TimeHelper;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
@@ -68,7 +69,7 @@ public class OrderController {
         orderID.setEmail(user.getEmail());
         orderID.setTime(TimeHelper.getLocalDateTime(time));
         Order order = orderService.checkOrderDetail(orderID);
-        return new RequestReturnObject(RequestReturnObjectState.OK, new OrderDetail(order));
+        return new RequestReturnObject(RequestReturnObjectState.OK, new OrderDto(order));
     }
 
     /**
@@ -86,9 +87,9 @@ public class OrderController {
         } else {
             orders = orderService.getMyOrders(user.getEmail(), orderState);
         }
-        List<OrderBrief> result = new ArrayList<>();
+        List<OrderDto> result = new ArrayList<>();
         for (Order order : orders) {
-            result.add(new OrderBrief(order));
+            result.add(new OrderDto(order));
         }
         return new RequestReturnObject(RequestReturnObjectState.OK, result);
     }
