@@ -127,7 +127,7 @@ public class UserController {
      */
     @PostMapping("/token")
     public RequestReturnObject getToken(@RequestParam("token") String token, HttpServletRequest request) {
-        logger.debug("INTO /user: " + token);
+        logger.debug("INTO /user/token, token: " + token);
         HttpSession session = request.getSession();
         Object o = session.getAttribute(token);
         assert o instanceof User;

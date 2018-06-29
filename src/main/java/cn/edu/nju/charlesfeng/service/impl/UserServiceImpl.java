@@ -138,7 +138,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean modifyUserPassword(String userID, String old_password, String new_password) throws WrongPwdException {
         User user = userRepository.findByEmail(userID);
-        if (user.getPassword().equals(MD5Task.encodeMD5(old_password))) {
+        if (!user.getPassword().equals(MD5Task.encodeMD5(old_password))) {
             throw new WrongPwdException();
         }
         userRepository.modifyUserPassword(userID, MD5Task.encodeMD5(new_password));

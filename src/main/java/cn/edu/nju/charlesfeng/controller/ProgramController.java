@@ -99,7 +99,7 @@ public class ProgramController {
      */
     @GetMapping("/isLikeProgram")
     public RequestReturnObject isLikeProgram(@RequestParam("program_id") String programIDString, @RequestParam("token") String token, HttpServletRequest request) {
-        logger.debug("INTO /program/getProgramDetail?program_id" + programIDString);
+        logger.debug("INTO /program/isLikeProgram?program_id" + programIDString);
 
         String ids[] = programIDString.split("-");
         ProgramID programID = new ProgramID();
