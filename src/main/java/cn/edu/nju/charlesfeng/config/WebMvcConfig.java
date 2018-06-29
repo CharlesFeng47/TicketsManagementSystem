@@ -22,7 +22,7 @@ import static org.springframework.web.cors.CorsConfiguration.ALL;
  * fastjson配置文件
  */
 @Configuration
-public class WebMvcConfig extends WebMvcConfigurationSupport {
+public class WebMvcConfig {
 
 
     /**
@@ -48,57 +48,5 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
         // 5. 将convert添加到converters中
         HttpMessageConverter<?> converter = fastConverter;
         return new HttpMessageConverters(converter);
-    }
-
-    /**
-     * 避免跨域访问被覆盖
-     *
-     * @param registry CorsRegistry
-     */
-    @Override
-    protected void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-                .allowedOrigins(ALL)
-                .allowedMethods(ALL)
-                .allowedHeaders(ALL)
-                .allowCredentials(true);
-        super.addCorsMappings(registry);
-    }
-
-    /**
-     * 拦截器配置
-     *
-     * @param registry InterceptorRegistry
-     */
-    @Override
-    protected void addInterceptors(InterceptorRegistry registry) {
-        //UserInterceptor
-        registry.addInterceptor(new UserInterceptor())
-                //user
-                .addPathPatterns("/user/logout")
-                .addPathPatterns("/user/token")
-                .addPathPatterns("/user/star")
-                .addPathPatterns("/user/cancelStar")
-                .addPathPatterns("/user/getStarPrograms")
-                .addPathPatterns("/user/modifyPortrait")
-                .addPathPatterns("/user/modifyPassword")
-                .addPathPatterns("/user/modifyName")
-                //order
-                .addPathPatterns("/order/getOneOrder")
-                .addPathPatterns("/order/getMyOrdersByState")
-                .addPathPatterns("/order/generateOrder")
-                .addPathPatterns("/order/cancelOrder")
-                .addPathPatterns("/order/unsubscribeOrder")
-                .addPathPatterns("/order/payOrder")
-                //program
-                .addPathPatterns("/program/getProgramDetailByToken");
-        //ProgramIDInterceptor
-        registry.addInterceptor(new ProgramIDInterceptor())
-                .addPathPatterns("/program/getProgramDetail")
-                .addPathPatterns("/program/getProgramDetailByToken")
-                .addPathPatterns("/user/star")
-                .addPathPatterns("/user/cancelStar")
-                .addPathPatterns("/order/generateOrder");
-        super.addInterceptors(registry);
     }
 }
