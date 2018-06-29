@@ -44,33 +44,6 @@ public class ProgramController {
         this.userService = userService;
     }
 
-//    /**
-//     * @return 所有用户可见的日程／某一场馆的所有日程的简介
-//     */
-//    @GetMapping("all")
-//    public RequestReturnObject getSchedules(String spotId) {
-//        List<Schedule> allSchedules;
-//        if (spotId == null || spotId.equals("")) {
-//            logger.debug("INTO /schedule/all");
-//            allSchedules = scheduleService.getAllAvailableSchedules();
-//        } else {
-//            logger.debug("INTO /schedule/all?spotId=" + spotId);
-//            allSchedules = scheduleService.getSchedulesOfOneSpot(spotId);
-//        }
-//        return new RequestReturnObject(RequestReturnObjectState.OK, getBrief(allSchedules));
-//    }
-
-//    /**
-//     * @return 所有用户可见的日程／某一场馆的所有日程的简介
-//     */
-//    @GetMapping("all_all")
-//    public RequestReturnObject getAllSchedules() {
-//        logger.debug("INTO /schedule/all_all");
-//
-//        List<Schedule> allSchedules = scheduleService.getAllSchedules();
-//        return new RequestReturnObject(RequestReturnObjectState.OK, getBrief(allSchedules));
-//    }
-
     /**
      * @return 首页的节目推荐
      */
@@ -105,18 +78,10 @@ public class ProgramController {
      * @return 根据节目ID获取节目详情
      */
     @GetMapping("/getProgramDetail")
-    public RequestReturnObject getProgramDetail(@RequestParam("briefProgramID") String id, HttpServletRequest request) {
-        logger.debug("INTO /program/getProgramDetail?briefProgramID" + id);
-
-        if (!id.contains("-")) {
-            return new RequestReturnObject(RequestReturnObjectState.INTERIOR_WRONG);
-        }
+    public RequestReturnObject getProgramDetail(@RequestParam("program_id") String id, HttpServletRequest request) {
+        logger.debug("INTO /program/getProgramDetail?program_id" + id);
 
         String ids[] = id.split("-");
-        if (ids.length != 2) {
-            return new RequestReturnObject(RequestReturnObjectState.INTERIOR_WRONG);
-        }
-
         ProgramID programID = new ProgramID();
         programID.setVenueID(Integer.parseInt(ids[0]));
         programID.setStartTime(TimeHelper.getLocalDateTime(Long.parseLong(ids[1])));
@@ -161,28 +126,6 @@ public class ProgramController {
         return new RequestReturnObject(RequestReturnObjectState.OK, programs);
     }
 
-//    /**
-//     * @return 某一条日程的详情
-//     */
-//    @GetMapping("/{id}")
-//    public RequestReturnObject getOneSchedule(@PathVariable("id") String id) {
-//        logger.debug("INTO /schedule/" + id);
-//        Schedule resultSchedule = scheduleService.getOneSchedule(id);
-//        return new RequestReturnObject(RequestReturnObjectState.OK, new ContentSchedule(resultSchedule));
-//    }
-
-//    /**
-//     * 删除单条计划
-//     */
-//    @PostMapping("delete")
-//    public RequestReturnObject deleteOneSchedule(@RequestParam("scheduleId") String scheduleId) {
-//        logger.debug("INTO /schedule/delete: " + scheduleId);
-//        if (scheduleService.deleteOneSchedule(scheduleId)) {
-//            return new RequestReturnObject(RequestReturnObjectState.OK);
-//        } else {
-//            return new RequestReturnObject(RequestReturnObjectState.INTERIOR_WRONG);
-//        }
-//    }
 //
 //    /**
 //     * 结算单条计划

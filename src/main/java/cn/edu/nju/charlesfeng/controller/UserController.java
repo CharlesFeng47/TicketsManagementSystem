@@ -48,7 +48,6 @@ public class UserController {
             User user = userService.logIn(email, pwd);
             String token = "USER:" + email;
             HttpSession session = request.getSession();
-            session.setAttribute("user_id", email);
             session.setAttribute(token, new User(user));
             return new RequestReturnObject(RequestReturnObjectState.OK, token);
         } catch (UserNotExistException e) {
@@ -58,7 +57,6 @@ public class UserController {
             e.printStackTrace();
             return new RequestReturnObject(RequestReturnObjectState.USER_PWD_WRONG);
         } catch (UserNotActivatedException e) {
-            // TODO 未激活是否可以登录
             e.printStackTrace();
             return new RequestReturnObject(RequestReturnObjectState.USER_INACTIVE);
         }
@@ -85,7 +83,6 @@ public class UserController {
             //TODO 注册后邮箱尚未验证，应该不需要把用户的实体置于session中吧
             String token = "USER: " + user.getEmail();
             HttpSession session = request.getSession();
-            session.setAttribute("user_id", email);
             session.setAttribute(token, new User(user));
             return new RequestReturnObject(RequestReturnObjectState.OK, token);
         } catch (UserHasBeenSignUpException e) {
@@ -99,7 +96,7 @@ public class UserController {
      * @return 邮箱链接验证
      */
     @PostMapping("/user_active")
-    public RequestReturnObject verifyUserEmail(@RequestParam("activeUrl") String activeUrl, HttpServletRequest request) {
+    public RequestReturnObject verifyUserEmail(@RequestParam("activeUrl") String activeUrl) {
         logger.debug("INTO /user/user_active");
         System.out.println(activeUrl);
         try {
@@ -132,78 +129,86 @@ public class UserController {
     public RequestReturnObject getToken(@RequestParam("token") String token, HttpServletRequest request) {
         logger.debug("INTO /user: " + token);
         HttpSession session = request.getSession();
-//        User curUser = (User) session.getAttribute(token);o-
         Object o = session.getAttribute(token);
-        // TODO token 不存在怎么办
         assert o instanceof User;
         User curUser = (User) o;
         return new RequestReturnObject(RequestReturnObjectState.OK, curUser);
     }
 
     /**
-     * 收藏节目 TODO ???
+     * 收藏节目
      */
     @PostMapping("/star")
-    public RequestReturnObject star(@RequestParam("programID") String programIDString, @SessionAttribute("user_id") String userID) {
-        logger.debug("INTO /user: " + userID);
+    public RequestReturnObject star(@RequestParam("program_id") String programIDString, @RequestParam("token") String token, HttpServletRequest request) {
+        logger.debug("INTO /user: " + token);
 
         String[] parts = programIDString.split("-");
         ProgramID programID = new ProgramID();
         programID.setVenueID(Integer.parseInt(parts[0]));
         programID.setStartTime(TimeHelper.getLocalDateTime(Long.parseLong(parts[1])));
 
-        int now_num = userService.star(programID, userID);
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute(token);
+        int now_num = userService.star(programID, user.getEmail());
         return new RequestReturnObject(RequestReturnObjectState.OK, now_num);
     }
 
     /**
-     * 收藏节目 TODO ???
+     * 取消收藏节目
      */
     @PostMapping("/cancelStar")
-    public RequestReturnObject cancelStar(@RequestParam("programID") String programIDString, @SessionAttribute("user_id") String userID) {
-        logger.debug("INTO /user: " + userID);
+    public RequestReturnObject cancelStar(@RequestParam("program_id") String programIDString, @RequestParam("token") String token, HttpServletRequest request) {
+        logger.debug("INTO /user: " + token);
 
         String[] parts = programIDString.split("-");
         ProgramID programID = new ProgramID();
         programID.setVenueID(Integer.parseInt(parts[0]));
         programID.setStartTime(TimeHelper.getLocalDateTime(Long.parseLong(parts[1])));
 
-        int now_num = userService.cancelStar(programID, userID);
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute(token);
+        int now_num = userService.cancelStar(programID, user.getEmail());
         return new RequestReturnObject(RequestReturnObjectState.OK, now_num);
     }
 
     /**
-     * 获取收藏节目 TODO ???
+     * 获取收藏节目
      */
     @PostMapping("/getStarPrograms")
-    public RequestReturnObject getStarPrograms(@SessionAttribute("user_id") String userID) {
-        logger.debug("INTO /user: " + userID);
-        List<ProgramBrief> result = userService.getUserStarPrograms(userID);
+    public RequestReturnObject getStarPrograms(@RequestParam("token") String token, HttpServletRequest request) {
+        logger.debug("INTO /user: " + token);
+
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute(token);
+        List<ProgramBrief> result = userService.getUserStarPrograms(user.getEmail());
         return new RequestReturnObject(RequestReturnObjectState.OK, result);
     }
 
     /**
-     * 修改头像 TODO ???
+     * 修改头像
      */
     @PostMapping("/modifyPortrait")
-    public RequestReturnObject modifyPortrait(@SessionAttribute("user_id") String userID,
-                                              @RequestParam("portrait") String newPortrait, @RequestParam("token") String token, HttpServletRequest request) {
-        logger.debug("INTO /user: " + userID);
-        userService.modifyUserPortrait(userID, newPortrait);
+    public RequestReturnObject modifyPortrait(@RequestParam("portrait") String newPortrait, @RequestParam("token") String token, HttpServletRequest request) {
+        logger.debug("INTO /user: " + token);
+
         HttpSession session = request.getSession();
-        session.setAttribute(token, new User(userService.getUser(userID)));
+        User user = (User) session.getAttribute(token);
+        userService.modifyUserPortrait(user.getEmail(), newPortrait);
+        session.setAttribute(token, new User(userService.getUser(user.getEmail())));
         return new RequestReturnObject(RequestReturnObjectState.OK);
     }
 
     /**
-     * 修改密码 TODO ???
+     * 修改密码
      */
     @PostMapping("/modifyPassword")
-    public RequestReturnObject modifyPassword(@SessionAttribute("user_id") String userID, @RequestParam("old_password") String old_password,
-                                              @RequestParam("new_password") String new_password) {
-        logger.debug("INTO /user: " + userID);
+    public RequestReturnObject modifyPassword(@RequestParam("old_password") String old_password, @RequestParam("new_password") String new_password,
+                                              @RequestParam("token") String token, HttpServletRequest request) {
+        logger.debug("INTO /user: " + token);
         try {
-            userService.modifyUserPassword(userID, old_password, new_password);
+            HttpSession session = request.getSession();
+            User user = (User) session.getAttribute(token);
+            userService.modifyUserPassword(user.getEmail(), old_password, new_password);
             return new RequestReturnObject(RequestReturnObjectState.OK);
         } catch (WrongPwdException e) {
             e.printStackTrace();
@@ -212,15 +217,15 @@ public class UserController {
     }
 
     /**
-     * 修改用户名 TODO ???
+     * 修改用户名
      */
     @PostMapping("/modifyName")
-    public RequestReturnObject modifyName(@SessionAttribute("user_id") String userID, @RequestParam("name") String name, @RequestParam("token") String token,
-                                          HttpServletRequest request) {
-        logger.debug("INTO /user: " + userID);
-        userService.modifyUserName(userID, name);
+    public RequestReturnObject modifyName(@RequestParam("name") String name, @RequestParam("token") String token, HttpServletRequest request) {
+        logger.debug("INTO /user: " + token);
         HttpSession session = request.getSession();
-        session.setAttribute(token, new User(userService.getUser(userID)));
+        User user = (User) session.getAttribute(token);
+        userService.modifyUserName(user.getEmail(), name);
+        session.setAttribute(token, new User(userService.getUser(user.getEmail())));
         return new RequestReturnObject(RequestReturnObjectState.OK);
     }
 

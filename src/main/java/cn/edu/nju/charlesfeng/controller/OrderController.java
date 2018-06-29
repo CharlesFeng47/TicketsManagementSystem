@@ -3,6 +3,7 @@ package cn.edu.nju.charlesfeng.controller;
 import cn.edu.nju.charlesfeng.model.Order;
 import cn.edu.nju.charlesfeng.model.Program;
 import cn.edu.nju.charlesfeng.model.Ticket;
+import cn.edu.nju.charlesfeng.model.User;
 import cn.edu.nju.charlesfeng.model.id.OrderID;
 import cn.edu.nju.charlesfeng.model.id.ProgramID;
 import cn.edu.nju.charlesfeng.service.OrderService;
@@ -20,6 +21,8 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -56,15 +59,13 @@ public class OrderController {
      * 获取单个订单详情
      */
     @PostMapping("/getOneOrder")
-    public RequestReturnObject getOneOrder(@RequestParam("order_time") long time, @SessionAttribute("user_id") String userID) {
-        logger.debug("INTO /order/getOneOrder" + userID + time);
+    public RequestReturnObject getOneOrder(@RequestParam("order_time") long time, @RequestParam("token") String token, HttpServletRequest request) {
+        logger.debug("INTO /order/getOneOrder" + token + time);
 
-        if (userID == null) { //用户未登录， userID为null
-            return new RequestReturnObject(RequestReturnObjectState.INTERIOR_WRONG);
-        }
-
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute(token);
         OrderID orderID = new OrderID();
-        orderID.setEmail(userID);
+        orderID.setEmail(user.getEmail());
         orderID.setTime(TimeHelper.getLocalDateTime(time));
         Order order = orderService.checkOrderDetail(orderID);
         return new RequestReturnObject(RequestReturnObjectState.OK, new OrderDetail(order));
@@ -74,14 +75,16 @@ public class OrderController {
      * 获取指定类型订单
      */
     @PostMapping("/getMyOrdersByState")
-    public RequestReturnObject getMyOrdersByState(@RequestParam("orderType") String type, @SessionAttribute("user_id") String userID) {
-        logger.debug("INTO /order/getMyOrdersByState" + userID + type);
-        OrderState orderState = OrderState.valueOf(type);
+    public RequestReturnObject getMyOrdersByState(@RequestParam("orderType") String type, @RequestParam("token") String token, HttpServletRequest request) {
+        logger.debug("INTO /order/getMyOrdersByState" + token + type);
+        OrderState orderState = OrderState.getEnum(type);
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute(token);
         List<Order> orders = null;
         if (orderState.equals(OrderState.ALL)) {
-            orders = orderService.getMyOrders(userID);
+            orders = orderService.getMyOrders(user.getEmail());
         } else {
-            orders = orderService.getMyOrders(userID, orderState);
+            orders = orderService.getMyOrders(user.getEmail(), orderState);
         }
         List<OrderBrief> result = new ArrayList<>();
         for (Order order : orders) {
@@ -94,18 +97,19 @@ public class OrderController {
      * 下订单（立即购买）
      */
     @PostMapping("/generateOrder")
-    public RequestReturnObject generateOrder(@RequestParam("programID") String program_id, @RequestParam("seatType") String seatType,
+    public RequestReturnObject generateOrder(@RequestParam("program_id") String program_id, @RequestParam("seatType") String seatType,
                                              @RequestParam("programTime") String programTime, @RequestParam("ticket_num") int num,
-                                             @SessionAttribute("user_id") String userID) {
-        logger.debug("INTO /order/generateOrder" + userID);
+                                             @RequestParam("token") String token, HttpServletRequest request) {
+        logger.debug("INTO /order/generateOrder" + token);
         try {
-            //TODO 后面加拦截器单独对programID进行正确性检测,避免到处写
             DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             LocalDateTime time = LocalDateTime.parse(programTime, df);
             if (time.plusMinutes(15).isBefore(LocalDateTime.now())) {
                 return new RequestReturnObject(RequestReturnObjectState.ORDER_NOT_CREATE);
             }
 
+            HttpSession session = request.getSession();
+            User user = (User) session.getAttribute(token);
             String ids[] = program_id.split("-");
             ProgramID programID = new ProgramID();
             programID.setVenueID(Integer.parseInt(ids[0]));
@@ -113,7 +117,7 @@ public class OrderController {
             List<Ticket> tickets = ticketService.lock(programID, num, seatType); //进行锁票,后面加锁
             OrderID orderID = new OrderID();
             orderID.setTime(TimeHelper.standardTime(LocalDateTime.now()));
-            orderID.setEmail(userID);
+            orderID.setEmail(token);
             Order order = new Order();
             Program program = programService.getOneProgram(programID);
             order.setOrderID(orderID);
@@ -206,44 +210,6 @@ public class OrderController {
             return new RequestReturnObject(RequestReturnObjectState.PAY_BALANCE_NOT_ADEQUATE);
         }
     }
-
-
-//    /**
-//     * 下达订单订购
-//     *
-//     * @param token             用户标志
-//     * @param orderType         订购类型
-//     * @param notChoseSeats     不选座时订座信息
-//     * @param choseSeatListJson 选座时的座位具体情况JSON串
-//     */
-//    @PostMapping("/save")
-//    public RequestReturnObject order(@RequestParam("token") String token,
-//                                     @RequestParam("scheduleId") String scheduleId,
-//                                     @RequestParam("order_type") OrderType orderType,
-//                                     @RequestParam("not_chose_seats") NotChoseSeats notChoseSeats,
-//                                     @RequestParam(value = "choose_seats_json", required = false, defaultValue = "") String choseSeatListJson,
-//                                     @RequestParam("order_way") OrderWay orderWay,
-//                                     @RequestParam("on_spot_is_member") boolean onSpotIsMember,
-//                                     @RequestParam("on_spot_member_id") String onSpotMemberId,
-//                                     @RequestParam(value = "order_did_use_coupon") boolean didUseCoupon,
-//                                     @RequestParam(value = "order_used_coupon") Coupon usedCoupon,
-//                                     @RequestParam("order_cal_process") String calProcess,
-//                                     @RequestParam("order_total_price") double totalPrice,
-//                                     HttpServletRequest request) {
-//        logger.debug("INTO /order/save");
-//        HttpSession session = request.getSession();
-////        User curUser = (User) session.getAttribute(token);
-//        Object o = session.getAttribute(token);
-//        assert o != null && o instanceof User;
-//        User curUser = (User) o;
-//        try {
-//            int orderId = orderService.subscribe(curUser, scheduleId, orderType, notChoseSeats, choseSeatListJson,
-//                    orderWay, onSpotIsMember, onSpotMemberId, didUseCoupon, usedCoupon, calProcess, totalPrice);
-//            return new RequestReturnObject(RequestReturnObjectState.OK, orderId);
-//        } catch (UserNotExistException | InteriorWrongException e) {
-//            return new RequestReturnObject(RequestReturnObjectState.INTERIOR_WRONG);
-//        }
-//    }
 
 //    /**
 //     * 获取所有订单的简历
