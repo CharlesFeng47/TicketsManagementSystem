@@ -9,8 +9,8 @@ import cn.edu.nju.charlesfeng.service.UserService;
 import cn.edu.nju.charlesfeng.task.MD5Task;
 import cn.edu.nju.charlesfeng.task.MailTask;
 import cn.edu.nju.charlesfeng.util.enums.ExceptionCode;
-import cn.edu.nju.charlesfeng.util.exceptions.*;
 import cn.edu.nju.charlesfeng.util.exceptions.member.*;
+import cn.edu.nju.charlesfeng.util.exceptions.unknown.InteriorWrongException;
 import cn.edu.nju.charlesfeng.util.filter.program.ProgramBrief;
 import cn.edu.nju.charlesfeng.util.helper.ImageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,7 +56,7 @@ public class UserServiceImpl implements UserService {
             mailTask.sendMail(user);
         } catch (IOException | MessagingException e1) {
             e1.printStackTrace();
-            throw new InteriorWrongException();
+            throw new InteriorWrongException(ExceptionCode.INTERIOR_WRONG);
         }
         return true;
     }
@@ -76,11 +76,11 @@ public class UserServiceImpl implements UserService {
         }
 
         if (!user.getPassword().equals(MD5Task.encodeMD5(pwd))) {
-            throw new WrongPwdException();
+            throw new WrongPwdException(ExceptionCode.USER_PWD_WRONG);
         }
 
         if (!user.isActivated()) {
-            throw new UserNotActivatedException();
+            throw new UserNotActivatedException(ExceptionCode.USER_INACTIVE);
         }
         return user;
     }
@@ -102,7 +102,7 @@ public class UserServiceImpl implements UserService {
         }
 
         if (toActivate.isActivated()) {
-            throw new UserActiveUrlExpiredException();
+            throw new UserActiveUrlExpiredException(ExceptionCode.MEMBER_ACTIVATE_URL_EXPIRE);
         }
 
         toActivate.setActivated(true);
@@ -145,7 +145,7 @@ public class UserServiceImpl implements UserService {
     public boolean modifyUserPassword(String userID, String old_password, String new_password) throws WrongPwdException {
         User user = userRepository.findByEmail(userID);
         if (!user.getPassword().equals(MD5Task.encodeMD5(old_password))) {
-            throw new WrongPwdException();
+            throw new WrongPwdException(ExceptionCode.USER_PWD_WRONG);
         }
         userRepository.modifyUserPassword(userID, MD5Task.encodeMD5(new_password));
         return true;

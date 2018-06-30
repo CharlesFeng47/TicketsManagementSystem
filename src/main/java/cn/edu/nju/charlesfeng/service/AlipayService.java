@@ -22,7 +22,7 @@ public interface AlipayService {
      * @throws WrongPwdException 密码不正确
      * @throws AlipayBalanceNotAdequateException 余额不足
      */
-    boolean transferAccounts(String from_account, String password, String to_account, double amount) throws UserNotExistException, WrongPwdException, AlipayBalanceNotAdequateException;
+    void transferAccounts(String from_account, String password, String to_account, double amount) throws UserNotExistException, WrongPwdException, AlipayBalanceNotAdequateException;
 
     /**
      * 获取用户的支付宝账户

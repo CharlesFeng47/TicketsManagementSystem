@@ -12,6 +12,7 @@ import cn.edu.nju.charlesfeng.repository.UserRepository;
 import cn.edu.nju.charlesfeng.service.AlipayService;
 import cn.edu.nju.charlesfeng.service.OrderService;
 import cn.edu.nju.charlesfeng.service.ProgramService;
+import cn.edu.nju.charlesfeng.util.enums.ExceptionCode;
 import cn.edu.nju.charlesfeng.util.enums.OrderState;
 import cn.edu.nju.charlesfeng.util.exceptions.order.OrderNotCancelException;
 import cn.edu.nju.charlesfeng.util.exceptions.order.OrderNotPaymentException;
@@ -85,7 +86,7 @@ public class OrderServiceImpl implements OrderService {
     public boolean cancelOrder(OrderID orderID) throws OrderNotCancelException {
         Order order = orderRepository.findByOrderID(orderID);
         if (!order.getOrderState().equals(OrderState.UNPAID)) {
-            throw new OrderNotCancelException();
+            throw new OrderNotCancelException(ExceptionCode.ORDER_NOT_CANCEL);
         }
 
         order.setOrderState(OrderState.CANCELLED);
@@ -136,7 +137,7 @@ public class OrderServiceImpl implements OrderService {
     public boolean payOrder(OrderID orderID) throws OrderNotPaymentException, UserNotExistException, WrongPwdException, AlipayBalanceNotAdequateException {
         Order order = orderRepository.findByOrderID(orderID);
         if (!order.getOrderState().equals(OrderState.UNPAID)) {
-            throw new OrderNotPaymentException();
+            throw new OrderNotPaymentException(ExceptionCode.ORDER_NOT_PAYMENT);
         }
 
         AlipayAccount from = alipayService.getUserAccount(orderID.getEmail());
@@ -160,7 +161,7 @@ public class OrderServiceImpl implements OrderService {
         LocalDateTime programTime = programID.getStartTime().minusMinutes(15);
         //在不是未支付状态下或者节目开始前15分钟，均不可退票
         if (!order.getOrderState().equals(OrderState.PAYED) || programTime.isBefore(LocalDateTime.now())) {
-            throw new OrderNotRefundableException();
+            throw new OrderNotRefundableException(ExceptionCode.ORDER_NOT_REFUNDABLE);
         }
 
         //退款操作

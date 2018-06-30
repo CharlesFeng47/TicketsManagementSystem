@@ -36,7 +36,7 @@ public class AlipayServiceImpl implements AlipayService {
      */
     @Override
     //@Transactional
-    public boolean transferAccounts(String from_account, String password, String to_account, double amount) throws UserNotExistException, WrongPwdException, AlipayBalanceNotAdequateException {
+    public void transferAccounts(String from_account, String password, String to_account, double amount) throws UserNotExistException, WrongPwdException, AlipayBalanceNotAdequateException {
         AlipayAccount from_externalBalance = null;
         try {
             from_externalBalance = alipayRepository.getOne(from_account);
@@ -47,11 +47,11 @@ public class AlipayServiceImpl implements AlipayService {
 
 
         if (!password.equals(from_externalBalance.getPwd())) {
-            throw new WrongPwdException();
+            throw new WrongPwdException(ExceptionCode.USER_PWD_WRONG);
         }
 
         if (Double.doubleToLongBits(amount) > Double.doubleToLongBits(from_externalBalance.getBalance())) {
-            throw new AlipayBalanceNotAdequateException();
+            throw new AlipayBalanceNotAdequateException(ExceptionCode.PAY_BALANCE_NOT_ADEQUATE);
         }
 
         AlipayAccount to_externalBalance = null;
@@ -66,7 +66,6 @@ public class AlipayServiceImpl implements AlipayService {
         to_externalBalance.setBalance(to_externalBalance.getBalance() + amount);
         alipayRepository.save(from_externalBalance);
         alipayRepository.save(to_externalBalance);
-        return true;
     }
 
     /**

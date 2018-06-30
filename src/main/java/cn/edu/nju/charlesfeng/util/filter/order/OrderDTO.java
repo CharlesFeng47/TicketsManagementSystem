@@ -14,7 +14,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class OrderDto implements Serializable {
+/**
+ * @author Dong
+ */
+public class OrderDTO implements Serializable {
 
     /**
      * 订单号
@@ -76,7 +79,7 @@ public class OrderDto implements Serializable {
      */
     private Map<String, Double> ticketInfo;
 
-    public OrderDto(Order order) {
+    public OrderDTO(Order order) {
         orderID = String.valueOf(TimeHelper.getLong(order.getOrderID().getTime()));
         orderTime = order.getOrderID().getTime();
         Program program = order.getProgram();

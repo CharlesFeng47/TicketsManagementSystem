@@ -7,12 +7,10 @@ import cn.edu.nju.charlesfeng.service.ProgramService;
 import cn.edu.nju.charlesfeng.service.TicketService;
 import cn.edu.nju.charlesfeng.service.UserService;
 import cn.edu.nju.charlesfeng.util.enums.ProgramType;
-import cn.edu.nju.charlesfeng.util.enums.ExceptionCode;
 import cn.edu.nju.charlesfeng.util.enums.SaleType;
 import cn.edu.nju.charlesfeng.util.filter.program.PreviewSearchResult;
 import cn.edu.nju.charlesfeng.util.filter.program.ProgramBrief;
 import cn.edu.nju.charlesfeng.util.filter.program.ProgramDetail;
-import cn.edu.nju.charlesfeng.util.helper.RequestReturnObject;
 import cn.edu.nju.charlesfeng.util.helper.TimeHelper;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,9 +47,10 @@ public class ProgramController {
      * @return 首页的节目推荐
      */
     @GetMapping("/recommend")
-    public RequestReturnObject getRecommendPrograms(@RequestParam("city") String city) {
+    public Map<String, List<ProgramBrief>> getRecommendPrograms(@RequestParam("city") String city) {
         logger.debug("INTO /program/recommend?city=" + city);
-        Map<String, List<Program>> map = programService.recommendPrograms(LocalDateTime.now(), city, 5); //今天之后包括今天
+        //今天之后包括今天
+        Map<String, List<Program>> map = programService.recommendPrograms(LocalDateTime.now(), city, 5);
         Map<String, List<ProgramBrief>> result = new HashMap<>();
         for (String key : map.keySet()) {
             List<Program> programs = map.get(key);
@@ -61,24 +60,25 @@ public class ProgramController {
             }
             result.put(key, programBriefs);
         }
-        return new RequestReturnObject(ExceptionCode.OK, result);
+        return result;
     }
 
     /**
      * @return 根据节目类型获取节目列表
      */
     @GetMapping("/getProgramsByType")
-    public RequestReturnObject getProgramsByType(@RequestParam("city") String city, @RequestParam("program_type") String programType) {
+    public List<ProgramBrief> getProgramsByType(@RequestParam("city") String city, @RequestParam("program_type") String programType) {
         logger.debug("INTO /program/getProgramsByType?city=" + city + "&program_type=" + programType);
-        List<ProgramBrief> result = programService.getBriefPrograms(city, ProgramType.getEnum(programType), LocalDateTime.now()); //今天之后包括今天
-        return new RequestReturnObject(ExceptionCode.OK, result);
+        //今天之后包括今天
+        List<ProgramBrief> result = programService.getBriefPrograms(city, ProgramType.getEnum(programType), LocalDateTime.now());
+        return result;
     }
 
     /**
      * @return 根据节目ID获取节目详情
      */
     @GetMapping("/getProgramDetail")
-    public RequestReturnObject getProgramDetail(@RequestParam("program_id") String programIDString) {
+    public ProgramDetail getProgramDetail(@RequestParam("program_id") String programIDString) {
         logger.debug("INTO /program/getProgramDetail?program_id" + programIDString);
 
         String ids[] = programIDString.split("-");
@@ -91,14 +91,14 @@ public class ProgramController {
         Set<LocalDateTime> fields = programService.getAllProgramField(programID.getVenueID(), program.getName());
         int number = ticketService.getProgramRemainTicketNumber(programID);
         programService.addScanVolume(program.getProgramID()); //浏览量加1
-        return new RequestReturnObject(ExceptionCode.OK, new ProgramDetail(program, saleType, fields, number, false));
+        return new ProgramDetail(program, saleType, fields, number, false);
     }
 
     /**
      * @return 根据节目ID判断是否喜欢该节目
      */
     @PostMapping("/isLikeProgram")
-    public RequestReturnObject isLikeProgram(@RequestParam("program_id") String programIDString, @RequestParam("token") String token, HttpServletRequest request) {
+    public Boolean isLikeProgram(@RequestParam("program_id") String programIDString, @RequestParam("token") String token, HttpServletRequest request) {
         logger.debug("INTO /program/isLikeProgram?program_id" + programIDString);
 
         String ids[] = programIDString.split("-");
@@ -109,15 +109,14 @@ public class ProgramController {
 
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute(token);
-        boolean isLike = userService.isLike(user.getEmail(), program);
-        return new RequestReturnObject(ExceptionCode.OK, isLike);
+        return userService.isLike(user.getEmail(), program);
     }
 
     /**
      * @return 模糊搜索（支持空格）
      */
     @GetMapping("/search")
-    public RequestReturnObject search(@RequestParam("conditions") String conditions) {
+    public List<ProgramBrief> search(@RequestParam("conditions") String conditions) {
         logger.debug("INTO /program/search?conditions=" + conditions);
         Set<Program> programs = programService.search(conditions);
         List<ProgramBrief> result = new ArrayList<>();
@@ -125,17 +124,16 @@ public class ProgramController {
             SaleType saleType = ticketService.getProgramSaleType(program.getProgramID());
             result.add(new ProgramBrief(program, saleType));
         }
-        return new RequestReturnObject(ExceptionCode.OK, result);
+        return result;
     }
 
     /**
      * @return 预搜索
      */
     @GetMapping("/previewSearch")
-    public RequestReturnObject previewSearch(@RequestParam("conditions") String conditions) {
+    public List<PreviewSearchResult> previewSearch(@RequestParam("conditions") String conditions) {
         logger.debug("INTO /program/previewSearch?conditions=" + conditions);
-        List<PreviewSearchResult> programs = programService.previewSearch(conditions, 10);
-        return new RequestReturnObject(ExceptionCode.OK, programs);
+        return programService.previewSearch(conditions, 10);
     }
 
 //    /**

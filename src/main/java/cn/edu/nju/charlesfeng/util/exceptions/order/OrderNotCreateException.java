@@ -4,11 +4,13 @@ import cn.edu.nju.charlesfeng.util.enums.ExceptionCode;
 import cn.edu.nju.charlesfeng.util.exceptions.MyException;
 
 /**
- * 订单不可被取消的异常
  * @author Shenmiu
+ * @date 2018/06/30
+ *
+ * 不可生成订单（生成时间晚于节目开始前15分钟）
  */
-public class OrderNotCancelException extends MyException {
-    public OrderNotCancelException(ExceptionCode exceptionCode) {
+public class OrderNotCreateException extends MyException {
+    public OrderNotCreateException(ExceptionCode exceptionCode) {
         super(exceptionCode);
     }
 }

@@ -5,6 +5,7 @@ import cn.edu.nju.charlesfeng.model.id.ProgramID;
 import cn.edu.nju.charlesfeng.model.id.TicketID;
 import cn.edu.nju.charlesfeng.repository.TicketRepository;
 import cn.edu.nju.charlesfeng.service.TicketService;
+import cn.edu.nju.charlesfeng.util.enums.ExceptionCode;
 import cn.edu.nju.charlesfeng.util.enums.SaleType;
 import cn.edu.nju.charlesfeng.util.exceptions.ticket.TicketsNotAdequateException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,7 +61,7 @@ public class TicketServiceImpl implements TicketService {
     public List<Ticket> lock(ProgramID programID, int num, String seatType) throws TicketsNotAdequateException {
         List<Ticket> unlockTickets = ticketRepository.getUnLockTickets(programID, seatType, false);
         if (unlockTickets.size() < num) {
-            throw new TicketsNotAdequateException();
+            throw new TicketsNotAdequateException(ExceptionCode.TICKET_NOT_ADEQUATE);
         }
         List<Ticket> result = unlockTickets.subList(0, num);
         for (Ticket ticket : result) {

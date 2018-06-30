@@ -12,13 +12,13 @@ import cn.edu.nju.charlesfeng.service.ParService;
 import cn.edu.nju.charlesfeng.service.ProgramService;
 import cn.edu.nju.charlesfeng.service.TicketService;
 import cn.edu.nju.charlesfeng.util.enums.OrderState;
+import cn.edu.nju.charlesfeng.util.exceptions.member.UserNotExistException;
+import cn.edu.nju.charlesfeng.util.exceptions.member.WrongPwdException;
 import cn.edu.nju.charlesfeng.util.exceptions.order.OrderNotCancelException;
 import cn.edu.nju.charlesfeng.util.exceptions.order.OrderNotPaymentException;
 import cn.edu.nju.charlesfeng.util.exceptions.order.OrderNotRefundableException;
 import cn.edu.nju.charlesfeng.util.exceptions.pay.AlipayBalanceNotAdequateException;
 import cn.edu.nju.charlesfeng.util.exceptions.ticket.TicketsNotAdequateException;
-import cn.edu.nju.charlesfeng.util.exceptions.member.UserNotExistException;
-import cn.edu.nju.charlesfeng.util.exceptions.member.WrongPwdException;
 import cn.edu.nju.charlesfeng.util.helper.TimeHelper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -104,7 +104,7 @@ public class OrderServiceImplTest {
     }
 
     @Test
-    public void payOrder() {
+    public void payOrder() throws WrongPwdException {
         String userID = "151250032@smail.nju.edu.cn";
         OrderID orderID = new OrderID();
         orderID.setTime(LocalDateTime.of(2018, 6, 28, 16, 42, 10));
@@ -116,15 +116,13 @@ public class OrderServiceImplTest {
             e.printStackTrace();
         } catch (UserNotExistException e) {
             e.printStackTrace();
-        } catch (WrongPwdException e) {
-            e.printStackTrace();
         } catch (AlipayBalanceNotAdequateException e) {
             e.printStackTrace();
         }
     }
 
     @Test
-    public void unsubscribe() {
+    public void unsubscribe() throws WrongPwdException {
         String userID = "151250032@smail.nju.edu.cn";
         OrderID orderID = new OrderID();
         orderID.setTime(LocalDateTime.of(2018, 6, 28, 16, 42, 10));
@@ -134,8 +132,6 @@ public class OrderServiceImplTest {
         } catch (OrderNotRefundableException e) {
             e.printStackTrace();
         } catch (UserNotExistException e) {
-            e.printStackTrace();
-        } catch (WrongPwdException e) {
             e.printStackTrace();
         } catch (AlipayBalanceNotAdequateException e) {
             e.printStackTrace();

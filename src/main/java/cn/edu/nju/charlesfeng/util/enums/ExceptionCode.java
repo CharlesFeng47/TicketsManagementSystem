@@ -7,8 +7,6 @@ import java.io.Serializable;
  */
 public enum ExceptionCode implements Serializable {
 
-    // 成功
-    OK(200, "成功"),
     // 用户未注册
     USER_NOT_EXIST(1, "用户未注册"),
     // 用户密码错误
@@ -39,8 +37,8 @@ public enum ExceptionCode implements Serializable {
     ALIPAY_ENTITY_NOT_EXIST(14, "支付宝账号不存在"),
     // 订单不可被退款
     ORDER_NOT_REFUNDABLE(15, "订单不可被退款"),
-    // 用户链接错误
-    MEMBER_ACTIVATE_URL_EXPIRE(16, "用户链接错误"),
+    // 用户链接失效
+    MEMBER_ACTIVATE_URL_EXPIRE(16, "用户链接失效"),
     // 用户链接错误
     MEMBER_ACTIVATE_URL_WRONG(17, "用户链接错误"),
     // 订单检票方不是订单中的场馆
