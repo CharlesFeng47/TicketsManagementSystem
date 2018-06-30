@@ -1,4 +1,4 @@
-package cn.edu.nju.charlesfeng.controller.exceptionHandler;
+package cn.edu.nju.charlesfeng.handler;
 
 import cn.edu.nju.charlesfeng.util.enums.ExceptionCode;
 import cn.edu.nju.charlesfeng.util.exceptions.ErrorInfo;
@@ -7,8 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Shenmiu
@@ -25,6 +23,4 @@ public class GlobalExceptionHandler {
         ExceptionCode exceptionCode = e.getExceptionCode();
         return new ErrorInfo(exceptionCode.getRepre(), exceptionCode.getMessage());
     }
-
-
 }

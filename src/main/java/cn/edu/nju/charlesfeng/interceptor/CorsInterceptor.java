@@ -1,11 +1,16 @@
 package cn.edu.nju.charlesfeng.interceptor;
 
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * 拦截器的跨域访问
+ */
+@Component
 public class CorsInterceptor implements HandlerInterceptor {
 
     @Override
