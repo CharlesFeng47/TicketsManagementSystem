@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSON;
 
 /**
  * 在 RESTful 风格下，后端系统为服务提供返回对象封装
+ * @author Dong
  */
 public class RequestReturnObject {
 

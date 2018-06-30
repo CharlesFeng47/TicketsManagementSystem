@@ -1,4 +1,4 @@
-package cn.edu.nju.charlesfeng.util.filter.program;
+package cn.edu.nju.charlesfeng.dto.program;
 
 import cn.edu.nju.charlesfeng.model.Par;
 import cn.edu.nju.charlesfeng.model.Program;
@@ -6,6 +6,7 @@ import cn.edu.nju.charlesfeng.model.Venue;
 import cn.edu.nju.charlesfeng.util.enums.SaleType;
 import cn.edu.nju.charlesfeng.util.helper.SystemHelper;
 import cn.edu.nju.charlesfeng.util.helper.TimeHelper;
+import com.alibaba.fastjson.annotation.JSONField;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -13,8 +14,9 @@ import java.util.Iterator;
 
 /**
  * 节目概览
+ * @author Dong
  */
-public class ProgramBrief implements Serializable {
+public class ProgramBriefDTO implements Serializable {
 
     /**
      * 界面需要的ID定位
@@ -24,6 +26,7 @@ public class ProgramBrief implements Serializable {
     /**
      * 节目开始时间
      */
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime time;
 
     /**
@@ -39,7 +42,7 @@ public class ProgramBrief implements Serializable {
     /**
      * 最低价
      */
-    private double lowPrice;
+    private Double lowPrice;
 
     /**
      * 界面所在城市
@@ -54,12 +57,12 @@ public class ProgramBrief implements Serializable {
     /**
      * 浏览量
      */
-    private int scanVolume;
+    private Integer scanVolume;
 
     /**
      * 喜爱量
      */
-    private int favoriteVolume;
+    private Integer favoriteVolume;
 
     /**
      * 当前节目的售票状态
@@ -71,7 +74,7 @@ public class ProgramBrief implements Serializable {
      */
     private String imageUrl;
 
-    public ProgramBrief(Program program) {
+    public ProgramBriefDTO(Program program) {
         id = String.valueOf(program.getProgramID().getVenueID()) + "-" + String.valueOf(TimeHelper.getLong(program.getProgramID().getStartTime()));
         programName = program.getName();
         description = program.getDescription();
@@ -90,7 +93,7 @@ public class ProgramBrief implements Serializable {
         }
     }
 
-    public ProgramBrief(Program program, SaleType type) {
+    public ProgramBriefDTO(Program program, SaleType type) {
         id = String.valueOf(program.getProgramID().getVenueID()) + "-" + String.valueOf(TimeHelper.getLong(program.getProgramID().getStartTime()));
         programName = program.getName();
         description = program.getDescription();
@@ -124,7 +127,7 @@ public class ProgramBrief implements Serializable {
         return description;
     }
 
-    public double getLowPrice() {
+    public Double getLowPrice() {
         return lowPrice;
     }
 
@@ -140,11 +143,11 @@ public class ProgramBrief implements Serializable {
         return time;
     }
 
-    public int getScanVolume() {
+    public Integer getScanVolume() {
         return scanVolume;
     }
 
-    public int getFavoriteVolume() {
+    public Integer getFavoriteVolume() {
         return favoriteVolume;
     }
 

@@ -8,9 +8,9 @@ import cn.edu.nju.charlesfeng.service.TicketService;
 import cn.edu.nju.charlesfeng.service.UserService;
 import cn.edu.nju.charlesfeng.util.enums.ProgramType;
 import cn.edu.nju.charlesfeng.util.enums.SaleType;
-import cn.edu.nju.charlesfeng.util.filter.program.PreviewSearchResult;
-import cn.edu.nju.charlesfeng.util.filter.program.ProgramBrief;
-import cn.edu.nju.charlesfeng.util.filter.program.ProgramDetail;
+import cn.edu.nju.charlesfeng.dto.program.PreviewSearchResultDTO;
+import cn.edu.nju.charlesfeng.dto.program.ProgramBriefDTO;
+import cn.edu.nju.charlesfeng.dto.program.ProgramDetailDTO;
 import cn.edu.nju.charlesfeng.util.helper.TimeHelper;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +23,7 @@ import java.util.*;
 
 /**
  * 有关计划／日程的前端控制器
+ * @author Dong
  */
 @RestController
 @RequestMapping("/program")
@@ -47,18 +48,18 @@ public class ProgramController {
      * @return 首页的节目推荐
      */
     @GetMapping("/recommend")
-    public Map<String, List<ProgramBrief>> getRecommendPrograms(@RequestParam("city") String city) {
+    public Map<String, List<ProgramBriefDTO>> getRecommendPrograms(@RequestParam("city") String city) {
         logger.debug("INTO /program/recommend?city=" + city);
         //今天之后包括今天
         Map<String, List<Program>> map = programService.recommendPrograms(LocalDateTime.now(), city, 5);
-        Map<String, List<ProgramBrief>> result = new HashMap<>();
+        Map<String, List<ProgramBriefDTO>> result = new HashMap<>();
         for (String key : map.keySet()) {
             List<Program> programs = map.get(key);
-            List<ProgramBrief> programBriefs = new ArrayList<>();
+            List<ProgramBriefDTO> programBriefDTOS = new ArrayList<>();
             for (Program program : programs) {
-                programBriefs.add(new ProgramBrief(program));
+                programBriefDTOS.add(new ProgramBriefDTO(program));
             }
-            result.put(key, programBriefs);
+            result.put(key, programBriefDTOS);
         }
         return result;
     }
@@ -67,21 +68,20 @@ public class ProgramController {
      * @return 根据节目类型获取节目列表
      */
     @GetMapping("/getProgramsByType")
-    public List<ProgramBrief> getProgramsByType(@RequestParam("city") String city, @RequestParam("program_type") String programType) {
+    public List<ProgramBriefDTO> getProgramsByType(@RequestParam("city") String city, @RequestParam("program_type") String programType) {
         logger.debug("INTO /program/getProgramsByType?city=" + city + "&program_type=" + programType);
         //今天之后包括今天
-        List<ProgramBrief> result = programService.getBriefPrograms(city, ProgramType.getEnum(programType), LocalDateTime.now());
-        return result;
+        return programService.getBriefPrograms(city, ProgramType.getEnum(programType), LocalDateTime.now());
     }
 
     /**
      * @return 根据节目ID获取节目详情
      */
     @GetMapping("/getProgramDetail")
-    public ProgramDetail getProgramDetail(@RequestParam("program_id") String programIDString) {
+    public ProgramDetailDTO getProgramDetail(@RequestParam("program_id") String programIDString) {
         logger.debug("INTO /program/getProgramDetail?program_id" + programIDString);
 
-        String ids[] = programIDString.split("-");
+        String[] ids = programIDString.split("-");
         ProgramID programID = new ProgramID();
         programID.setVenueID(Integer.parseInt(ids[0]));
         programID.setStartTime(TimeHelper.getLocalDateTime(Long.parseLong(ids[1])));
@@ -90,8 +90,9 @@ public class ProgramController {
         SaleType saleType = ticketService.getProgramSaleType(programID);
         Set<LocalDateTime> fields = programService.getAllProgramField(programID.getVenueID(), program.getName());
         int number = ticketService.getProgramRemainTicketNumber(programID);
-        programService.addScanVolume(program.getProgramID()); //浏览量加1
-        return new ProgramDetail(program, saleType, fields, number, false);
+        //浏览量加1
+        programService.addScanVolume(program.getProgramID());
+        return new ProgramDetailDTO(program, saleType, fields, number, false);
     }
 
     /**
@@ -116,13 +117,13 @@ public class ProgramController {
      * @return 模糊搜索（支持空格）
      */
     @GetMapping("/search")
-    public List<ProgramBrief> search(@RequestParam("conditions") String conditions) {
+    public List<ProgramBriefDTO> search(@RequestParam("conditions") String conditions) {
         logger.debug("INTO /program/search?conditions=" + conditions);
         Set<Program> programs = programService.search(conditions);
-        List<ProgramBrief> result = new ArrayList<>();
+        List<ProgramBriefDTO> result = new ArrayList<>();
         for (Program program : programs) {
             SaleType saleType = ticketService.getProgramSaleType(program.getProgramID());
-            result.add(new ProgramBrief(program, saleType));
+            result.add(new ProgramBriefDTO(program, saleType));
         }
         return result;
     }
@@ -131,7 +132,7 @@ public class ProgramController {
      * @return 预搜索
      */
     @GetMapping("/previewSearch")
-    public List<PreviewSearchResult> previewSearch(@RequestParam("conditions") String conditions) {
+    public List<PreviewSearchResultDTO> previewSearch(@RequestParam("conditions") String conditions) {
         logger.debug("INTO /program/previewSearch?conditions=" + conditions);
         return programService.previewSearch(conditions, 10);
     }

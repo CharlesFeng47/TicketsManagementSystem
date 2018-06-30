@@ -1,4 +1,4 @@
-package cn.edu.nju.charlesfeng.util.filter.program;
+package cn.edu.nju.charlesfeng.dto.program;
 
 import cn.edu.nju.charlesfeng.model.id.ProgramID;
 import cn.edu.nju.charlesfeng.util.helper.TimeHelper;
@@ -8,8 +8,9 @@ import java.util.Objects;
 
 /**
  * 用于封装预搜索的结果
+ * @author Dong
  */
-public class PreviewSearchResult implements Serializable {
+public class PreviewSearchResultDTO implements Serializable {
 
     private String id;
 
@@ -17,7 +18,7 @@ public class PreviewSearchResult implements Serializable {
 
     private String programName;
 
-    public PreviewSearchResult(Object[] program) {
+    public PreviewSearchResultDTO(Object[] program) {
         this.programID = (ProgramID) program[0];
         this.programName = String.valueOf(program[1]);
         id = String.valueOf(programID.getVenueID()) + "-" + String.valueOf(TimeHelper.getLong(programID.getStartTime()));
@@ -49,9 +50,13 @@ public class PreviewSearchResult implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        PreviewSearchResult that = (PreviewSearchResult) o;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        PreviewSearchResultDTO that = (PreviewSearchResultDTO) o;
         return Objects.equals(id, that.id) &&
                 Objects.equals(programID, that.programID) &&
                 Objects.equals(programName, that.programName);

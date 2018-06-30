@@ -1,11 +1,11 @@
 package cn.edu.nju.charlesfeng.controller;
 
+import cn.edu.nju.charlesfeng.dto.program.ProgramBriefDTO;
 import cn.edu.nju.charlesfeng.model.User;
 import cn.edu.nju.charlesfeng.model.id.ProgramID;
 import cn.edu.nju.charlesfeng.service.UserService;
 import cn.edu.nju.charlesfeng.util.exceptions.member.*;
 import cn.edu.nju.charlesfeng.util.exceptions.unknown.InteriorWrongException;
-import cn.edu.nju.charlesfeng.util.filter.program.ProgramBrief;
 import cn.edu.nju.charlesfeng.util.helper.TimeHelper;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +21,8 @@ import java.util.List;
 
 /**
  * 对用户信息访问的控制器
+ *
+ * @author Dong
  */
 @RestController
 @RequestMapping("/user")
@@ -98,8 +100,7 @@ public class UserController {
         HttpSession session = request.getSession();
         Object o = session.getAttribute(token);
         assert o instanceof User;
-        User curUser = (User) o;
-        return curUser;
+        return (User) o;
     }
 
     /**
@@ -116,18 +117,17 @@ public class UserController {
 
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute(token);
-        int nowNum = userService.star(programID, user.getEmail());
-        return nowNum;
+        return userService.star(programID, user.getEmail());
     }
 
     /**
      * 取消收藏节目
      */
     @PostMapping("/cancelStar")
-    public Integer cancelStar(@RequestParam("program_id") String programIDString, @RequestParam("token") String token, HttpServletRequest request) {
+    public Integer cancelStar(@RequestParam("program_id") String programIDStr, @RequestParam("token") String token, HttpServletRequest request) {
         logger.debug("INTO /member: " + token);
 
-        String[] parts = programIDString.split("-");
+        String[] parts = programIDStr.split("-");
         ProgramID programID = new ProgramID();
         programID.setVenueID(Integer.parseInt(parts[0]));
         programID.setStartTime(TimeHelper.getLocalDateTime(Long.parseLong(parts[1])));
@@ -141,13 +141,12 @@ public class UserController {
      * 获取收藏节目
      */
     @PostMapping("/getStarPrograms")
-    public List<ProgramBrief> getStarPrograms(@RequestParam("token") String token, HttpServletRequest request) {
+    public List<ProgramBriefDTO> getStarPrograms(@RequestParam("token") String token, HttpServletRequest request) {
         logger.debug("INTO /member: " + token);
 
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute(token);
-        List<ProgramBrief> result = userService.getUserStarPrograms(user.getEmail());
-        return result;
+        return userService.getUserStarPrograms(user.getEmail());
     }
 
     /**

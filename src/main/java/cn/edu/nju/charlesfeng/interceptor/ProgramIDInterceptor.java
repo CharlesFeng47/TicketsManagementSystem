@@ -20,7 +20,8 @@ public class ProgramIDInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String id = request.getParameter("program_id");
         String ids[] = id.split("-");
-        if (!id.contains("-") || ids.length != 2) { //不符合系统指定id格式
+        //不符合系统指定id格式
+        if (!id.contains("-") || ids.length != 2) {
             JSONObject jsonObject = new JSONObject();
             response.setStatus(200);
             response.setCharacterEncoding("UTF-8");

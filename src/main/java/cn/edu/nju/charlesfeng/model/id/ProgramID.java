@@ -1,11 +1,16 @@
 package cn.edu.nju.charlesfeng.model.id;
 
+import com.alibaba.fastjson.annotation.JSONField;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+/**
+ * @author Dong
+ */
 @Embeddable
 public class ProgramID implements Serializable {
 
@@ -18,6 +23,7 @@ public class ProgramID implements Serializable {
     /**
      * 节目开始时间
      */
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     @Column(name = "start_time")
     private LocalDateTime startTime;
 
@@ -42,8 +48,12 @@ public class ProgramID implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         ProgramID programID = (ProgramID) o;
         return venueID == programID.venueID &&
                 Objects.equals(startTime, programID.startTime);

@@ -1,16 +1,17 @@
-package cn.edu.nju.charlesfeng.util.filter.order;
+package cn.edu.nju.charlesfeng.dto.order;
 
 import cn.edu.nju.charlesfeng.model.Address;
 import cn.edu.nju.charlesfeng.model.Order;
 import cn.edu.nju.charlesfeng.model.Program;
 import cn.edu.nju.charlesfeng.model.Ticket;
+import cn.edu.nju.charlesfeng.util.enums.OrderState;
 import cn.edu.nju.charlesfeng.util.helper.SystemHelper;
 import cn.edu.nju.charlesfeng.util.helper.TimeHelper;
+import cn.edu.nju.charlesfeng.util.serializer.OrderStateSerializer;
+import com.alibaba.fastjson.annotation.JSONField;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -27,6 +28,7 @@ public class OrderDTO implements Serializable {
     /**
      * 订单生成时间
      */
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime orderTime;
 
     /**
@@ -37,6 +39,7 @@ public class OrderDTO implements Serializable {
     /**
      * 节目的开始时间
      */
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime programTime;
 
     /**
@@ -47,17 +50,18 @@ public class OrderDTO implements Serializable {
     /**
      * 订单总价
      */
-    private double totalPrice;
+    private Double totalPrice;
 
     /**
      * 订单票数
      */
-    private int num;
+    private Integer num;
 
     /**
      * 订单的类型（状态）
      */
-    private String orderState;
+    @JSONField(serializeUsing = OrderStateSerializer.class)
+    private OrderState orderState;
 
     /**
      * 场馆的名称
@@ -87,7 +91,7 @@ public class OrderDTO implements Serializable {
         programTime = program.getProgramID().getStartTime();
         programName = program.getName();
         totalPrice = order.getTotalPrice();
-        orderState = order.getOrderState().toString();
+        orderState = order.getOrderState();
         venueName = program.getVenue().getVenueName();
         venueAddress = program.getVenue().getAddress();
         num = order.getTickets().size();
@@ -119,15 +123,15 @@ public class OrderDTO implements Serializable {
         return programName;
     }
 
-    public double getTotalPrice() {
+    public Double getTotalPrice() {
         return totalPrice;
     }
 
-    public int getNum() {
+    public Integer getNum() {
         return num;
     }
 
-    public String getOrderState() {
+    public OrderState getOrderState() {
         return orderState;
     }
 

@@ -1,22 +1,23 @@
-package cn.edu.nju.charlesfeng.util.filter.program;
+package cn.edu.nju.charlesfeng.dto.program;
 
 import cn.edu.nju.charlesfeng.model.Par;
 import cn.edu.nju.charlesfeng.model.Program;
-import cn.edu.nju.charlesfeng.model.id.ParID;
 import cn.edu.nju.charlesfeng.util.enums.SaleType;
 import cn.edu.nju.charlesfeng.util.helper.SystemHelper;
 import cn.edu.nju.charlesfeng.util.helper.TimeHelper;
+import com.alibaba.fastjson.annotation.JSONField;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
 
 /**
  * 节目概览
+ *
+ * @author Dong
  */
-public class ProgramDetail implements Serializable {
+public class ProgramDetailDTO implements Serializable {
 
     /**
      * 界面需要的ID定位
@@ -26,6 +27,7 @@ public class ProgramDetail implements Serializable {
     /**
      * 节目开始时间
      */
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime time;
 
     /**
@@ -41,12 +43,12 @@ public class ProgramDetail implements Serializable {
     /**
      * 浏览量
      */
-    private int scanVolume;
+    private Integer scanVolume;
 
     /**
      * 喜爱量
      */
-    private int favoriteVolume;
+    private Integer favoriteVolume;
 
     /**
      * 当前节目的售票状态
@@ -61,7 +63,7 @@ public class ProgramDetail implements Serializable {
     /**
      * 票面ID集合
      */
-    private Set<ParDto> parIDs;
+    private Set<ParDTO> parIDs;
 
     /**
      * 场馆名
@@ -76,19 +78,19 @@ public class ProgramDetail implements Serializable {
     /**
      * 剩余票的数量
      */
-    private int remainTicketsNumber;
+    private Integer remainTicketsNumber;
 
     /**
      * 当前登陆用户对该节目是否喜爱
      */
-    private boolean isLike;
+    private Boolean isLike;
 
     /**
      * 海报的图片url
      */
     private String imageUrl;
 
-    public ProgramDetail(Program program, SaleType type, Set<LocalDateTime> fields, int remainNumber, boolean isLike) {
+    public ProgramDetailDTO(Program program, SaleType type, Set<LocalDateTime> fields, int remainNumber, boolean isLike) {
         id = String.valueOf(program.getProgramID().getVenueID()) + "-" + String.valueOf(TimeHelper.getLong(program.getProgramID().getStartTime()));
         programName = program.getName();
         time = program.getProgramID().getStartTime();
@@ -101,7 +103,7 @@ public class ProgramDetail implements Serializable {
         this.fields = fields;
         parIDs = new TreeSet<>();
         for (Par par : program.getPars()) {
-            parIDs.add(new ParDto(par));
+            parIDs.add(new ParDTO(par));
         }
         programType = program.getProgramType().toString();
         remainTicketsNumber = remainNumber;
@@ -124,11 +126,11 @@ public class ProgramDetail implements Serializable {
         return programType;
     }
 
-    public int getScanVolume() {
+    public Integer getScanVolume() {
         return scanVolume;
     }
 
-    public int getFavoriteVolume() {
+    public Integer getFavoriteVolume() {
         return favoriteVolume;
     }
 
@@ -140,7 +142,7 @@ public class ProgramDetail implements Serializable {
         return fields;
     }
 
-    public Set<ParDto> getParIDs() {
+    public Set<ParDTO> getParIDs() {
         return parIDs;
     }
 
@@ -152,7 +154,7 @@ public class ProgramDetail implements Serializable {
         return address;
     }
 
-    public int getRemainTicketsNumber() {
+    public Integer getRemainTicketsNumber() {
         return remainTicketsNumber;
     }
 

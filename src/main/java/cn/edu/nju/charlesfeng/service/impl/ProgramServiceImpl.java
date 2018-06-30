@@ -8,8 +8,8 @@ import cn.edu.nju.charlesfeng.service.ProgramService;
 import cn.edu.nju.charlesfeng.util.enums.ProgramType;
 import cn.edu.nju.charlesfeng.util.enums.SaleType;
 import cn.edu.nju.charlesfeng.util.exceptions.venue.ProgramNotSettlableException;
-import cn.edu.nju.charlesfeng.util.filter.program.PreviewSearchResult;
-import cn.edu.nju.charlesfeng.util.filter.program.ProgramBrief;
+import cn.edu.nju.charlesfeng.dto.program.PreviewSearchResultDTO;
+import cn.edu.nju.charlesfeng.dto.program.ProgramBriefDTO;
 import cn.edu.nju.charlesfeng.util.helper.AddressHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -89,17 +89,17 @@ public class ProgramServiceImpl implements ProgramService {
      * @return 节目列表
      */
     @Override
-    public List<ProgramBrief> getBriefPrograms(String city, ProgramType programType, LocalDateTime localDateTime) {
+    public List<ProgramBriefDTO> getBriefPrograms(String city, ProgramType programType, LocalDateTime localDateTime) {
         List<Program> programs = programRepository.getAvailablePrograms(localDateTime, programType, city);
-        List<ProgramBrief> result = new ArrayList<>();
+        List<ProgramBriefDTO> result = new ArrayList<>();
         for (Program program : programs) {
             int judge = ticketRepository.hasTickets(program.getProgramID(), false);
             SaleType type = SaleType.TICKETING;
             if (judge == 0) {
                 type = SaleType.REPLACEMENTTICKETING;
             }
-            ProgramBrief programBrief = new ProgramBrief(program, type);
-            result.add(programBrief);
+            ProgramBriefDTO programBriefDTO = new ProgramBriefDTO(program, type);
+            result.add(programBriefDTO);
         }
         return result;
     }
@@ -179,8 +179,8 @@ public class ProgramServiceImpl implements ProgramService {
      * @return 节目简介列表
      */
     @Override
-    public List<PreviewSearchResult> previewSearch(String condition, int result_num) {
-        List<PreviewSearchResult> result = new ArrayList<>();
+    public List<PreviewSearchResultDTO> previewSearch(String condition, int result_num) {
+        List<PreviewSearchResultDTO> result = new ArrayList<>();
         String conditions[] = null;
         if (condition.contains(" ")) {
             conditions = condition.split("\\s");
@@ -250,10 +250,10 @@ public class ProgramServiceImpl implements ProgramService {
      * @param list 查询的结果
      * @return
      */
-    private List<PreviewSearchResult> convert(List<Object[]> list) {
-        List<PreviewSearchResult> result = new ArrayList<>();
+    private List<PreviewSearchResultDTO> convert(List<Object[]> list) {
+        List<PreviewSearchResultDTO> result = new ArrayList<>();
         for (Object[] need : list) {
-            result.add(new PreviewSearchResult(need));
+            result.add(new PreviewSearchResultDTO(need));
         }
         return result;
     }

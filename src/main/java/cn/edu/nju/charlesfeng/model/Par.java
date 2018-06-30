@@ -8,6 +8,7 @@ import java.io.Serializable;
 
 /**
  * 指定节目下的票面
+ * @author Dong
  */
 @Entity
 public class Par implements Serializable {

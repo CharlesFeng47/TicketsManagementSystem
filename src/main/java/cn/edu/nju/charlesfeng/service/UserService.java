@@ -5,7 +5,7 @@ import cn.edu.nju.charlesfeng.model.User;
 import cn.edu.nju.charlesfeng.model.id.ProgramID;
 import cn.edu.nju.charlesfeng.util.exceptions.member.*;
 import cn.edu.nju.charlesfeng.util.exceptions.unknown.InteriorWrongException;
-import cn.edu.nju.charlesfeng.util.filter.program.ProgramBrief;
+import cn.edu.nju.charlesfeng.dto.program.ProgramBriefDTO;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;
@@ -94,7 +94,7 @@ public interface UserService {
      * @param userID 用户ID
      * @return 节目列表
      */
-    List<ProgramBrief> getUserStarPrograms(String userID);
+    List<ProgramBriefDTO> getUserStarPrograms(String userID);
 
     /**
      * 判断用户是否喜欢指定的节目

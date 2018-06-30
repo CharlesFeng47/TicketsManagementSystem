@@ -11,6 +11,7 @@ import java.util.Set;
 
 /**
  * 订单实体
+ * @author Dong
  */
 @Entity
 @Table(name = "orders")

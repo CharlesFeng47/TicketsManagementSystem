@@ -20,7 +20,8 @@ public class UserInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String token = request.getParameter("token");
         JSONObject jsonObject = new JSONObject();
-        if (token == null) { //请求没有传送token
+        //请求没有传送token
+        if (token == null) {
             response.setStatus(200);
             response.setCharacterEncoding("UTF-8");
             response.setContentType("application/json; charset=utf-8");
@@ -30,7 +31,8 @@ public class UserInterceptor implements HandlerInterceptor {
         }
 
         Object user = request.getSession().getAttribute(token);
-        if (user == null) { //指定token没有登录
+        //指定token没有登录
+        if (user == null) {
             response.setStatus(200);
             response.setCharacterEncoding("UTF-8");
             response.setContentType("application/json; charset=utf-8");

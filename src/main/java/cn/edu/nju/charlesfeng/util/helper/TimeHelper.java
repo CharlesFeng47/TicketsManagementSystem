@@ -3,6 +3,9 @@ package cn.edu.nju.charlesfeng.util.helper;
 import java.time.*;
 import java.util.Date;
 
+/**
+ * @author Dong
+ */
 public class TimeHelper {
 
     private TimeHelper() {
@@ -30,8 +33,8 @@ public class TimeHelper {
     public static LocalDateTime getLocalDateTime(long time) {
         Date result = new Date(time);
         Instant instant = result.toInstant();
-        ZoneId zoneId_result = ZoneId.systemDefault();
-        return instant.atZone(zoneId_result).toLocalDateTime();
+        ZoneId zoneidResult = ZoneId.systemDefault();
+        return instant.atZone(zoneidResult).toLocalDateTime();
     }
 
     /**

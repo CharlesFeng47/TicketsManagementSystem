@@ -4,20 +4,25 @@ import cn.edu.nju.charlesfeng.model.Program;
 import cn.edu.nju.charlesfeng.model.id.ProgramID;
 import cn.edu.nju.charlesfeng.util.enums.ProgramType;
 import cn.edu.nju.charlesfeng.util.exceptions.venue.ProgramNotSettlableException;
-import cn.edu.nju.charlesfeng.util.filter.program.PreviewSearchResult;
-import cn.edu.nju.charlesfeng.util.filter.program.ProgramBrief;
+import cn.edu.nju.charlesfeng.dto.program.PreviewSearchResultDTO;
+import cn.edu.nju.charlesfeng.dto.program.ProgramBriefDTO;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * @author Dong
+ */
 public interface ProgramService {
 
     /**
      * 获取首页的每种类型的5个推荐节目
-     *
-     * @return Map<ProgramType                                                                                                                               ,                                                                                                                                                                                                                                                               List                                                                                                                               <                                                                                                                               Program>>
+     * @param localDateTime 时间
+     * @param city 城市
+     * @param num 数量
+     * @return 推荐节目单
      */
     Map<String, List<Program>> recommendPrograms(LocalDateTime localDateTime, String city, int num);
 
@@ -29,7 +34,7 @@ public interface ProgramService {
      * @param localDateTime 指定时间
      * @return 节目列表
      */
-    List<ProgramBrief> getBriefPrograms(String city, ProgramType programType, LocalDateTime localDateTime);
+    List<ProgramBriefDTO> getBriefPrograms(String city, ProgramType programType, LocalDateTime localDateTime);
 
     /**
      * @return 所有日程
@@ -76,7 +81,7 @@ public interface ProgramService {
      * @param condition 条件
      * @return 节目简介列表
      */
-    List<PreviewSearchResult> previewSearch(String condition, int result_num);
+    List<PreviewSearchResultDTO> previewSearch(String condition, int result_num);
 
     /**
      * 对节目的浏览量加1

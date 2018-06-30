@@ -1,11 +1,14 @@
-package cn.edu.nju.charlesfeng.util.filter.program;
+package cn.edu.nju.charlesfeng.dto.program;
 
 import cn.edu.nju.charlesfeng.model.Par;
 import cn.edu.nju.charlesfeng.model.id.ProgramID;
 
 import java.io.Serializable;
 
-public class ParDto implements Serializable, Comparable<ParDto> {
+/**
+ * @author Dong
+ */
+public class ParDTO implements Serializable, Comparable<ParDTO> {
 
     /**
      * 节目的ID
@@ -15,7 +18,7 @@ public class ParDto implements Serializable, Comparable<ParDto> {
     /**
      * 当前类型票面的底价
      */
-    private double basePrice;
+    private Double basePrice;
 
     /**
      * 该种票面的提示
@@ -25,14 +28,14 @@ public class ParDto implements Serializable, Comparable<ParDto> {
     /**
      * 当前票面使用的折扣
      */
-    private double discount;
+    private Double discount;
 
     /**
      * 该种票面对应的座位类型
      */
     private String seatType;
 
-    public ParDto(Par par) {
+    public ParDTO(Par par) {
         programID = par.getParID().getProgramID();
         basePrice = par.getParID().getBasePrice();
         comments = par.getParID().getComments();
@@ -44,7 +47,7 @@ public class ParDto implements Serializable, Comparable<ParDto> {
         return programID;
     }
 
-    public double getBasePrice() {
+    public Double getBasePrice() {
         return basePrice;
     }
 
@@ -52,7 +55,7 @@ public class ParDto implements Serializable, Comparable<ParDto> {
         return comments;
     }
 
-    public double getDiscount() {
+    public Double getDiscount() {
         return discount;
     }
 
@@ -61,8 +64,8 @@ public class ParDto implements Serializable, Comparable<ParDto> {
     }
 
     @Override
-    public int compareTo(ParDto o) {
-        if (basePrice == o.getBasePrice()) {
+    public int compareTo(ParDTO o) {
+        if (basePrice.equals(o.getBasePrice())) {
             return 0;
         }
 
