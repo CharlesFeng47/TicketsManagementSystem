@@ -77,7 +77,7 @@ public class OrderServiceImplTest {
             Program program = programService.getOneProgram(programID);
             program.getOrders().add(order);
             order.setProgram(program);
-            order.setProgramID(program.getProgramID());
+            order.setProgramID(programID);
             order.setTickets(new HashSet<>(tickets)); //关联订单
             orderService.generateOrder(order);
         } catch (TicketsNotAdequateException e) {
