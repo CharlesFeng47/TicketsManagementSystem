@@ -1,5 +1,6 @@
 package cn.edu.nju.charlesfeng.service.impl;
 
+import cn.edu.nju.charlesfeng.model.User;
 import cn.edu.nju.charlesfeng.model.id.ProgramID;
 import cn.edu.nju.charlesfeng.service.UserService;
 import org.junit.Test;
@@ -25,8 +26,11 @@ public class UserServiceImplTest {
         programID.setVenueID(15);
         programID.setStartTime(LocalDateTime.of(2017, 6, 14, 0, 0, 0));
 
-        int num = userService.star(programID, "151250032@smail.nju.edu.cn");
+        int num = userService.star(programID, "151250043@smail.nju.edu.cn");
         System.out.println(num);
+
+        User user = userService.getUser("151250043@smail.nju.edu.cn");
+        System.out.println("--------------------------");
     }
 
     @Test

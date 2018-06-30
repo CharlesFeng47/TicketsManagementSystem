@@ -47,6 +47,7 @@ public class UserRepositoryTest {
     public void testGet() {
         try {
             User user = userRepository.getOne("151250043@smail.nju.edu.cn");
+            System.out.println(user.getPrograms().size());
             Assert.assertEquals("龚尘淼", user.getName());
         } catch (EntityNotFoundException e) {
             e.printStackTrace();

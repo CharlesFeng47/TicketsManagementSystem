@@ -14,6 +14,7 @@ import java.util.Iterator;
 
 /**
  * 节目概览
+ *
  * @author Dong
  */
 public class ProgramBriefDTO implements Serializable {
@@ -75,25 +76,16 @@ public class ProgramBriefDTO implements Serializable {
     private String imageUrl;
 
     public ProgramBriefDTO(Program program) {
-        id = String.valueOf(program.getProgramID().getVenueID()) + "-" + String.valueOf(TimeHelper.getLong(program.getProgramID().getStartTime()));
-        programName = program.getName();
-        description = program.getDescription();
-        time = program.getProgramID().getStartTime();
-        Venue venue = program.getVenue();
-        city = venue.getAddress().getCity();
-        venueName = venue.getVenueName();
-        imageUrl = SystemHelper.getDomainName() + program.getProgramType().name() + "/" + id + ".jpg";
-        Iterator<Par> iterator = program.getPars().iterator();
-        lowPrice = iterator.next().getParID().getBasePrice();
-        while (iterator.hasNext()) {
-            Par par = iterator.next();
-            if (Double.doubleToLongBits(par.getParID().getBasePrice()) < Double.doubleToLongBits(lowPrice)) {
-                lowPrice = par.getParID().getBasePrice();
-            }
-        }
+        init(program);
     }
 
     public ProgramBriefDTO(Program program, SaleType type) {
+        init(program);
+        saleType = type.toString();
+
+    }
+
+    private void init(Program program) {
         id = String.valueOf(program.getProgramID().getVenueID()) + "-" + String.valueOf(TimeHelper.getLong(program.getProgramID().getStartTime()));
         programName = program.getName();
         description = program.getDescription();
@@ -102,9 +94,8 @@ public class ProgramBriefDTO implements Serializable {
         city = venue.getAddress().getCity();
         venueName = venue.getVenueName();
         scanVolume = program.getScanVolume();
-        favoriteVolume = program.getFavoriteVolume();
+        favoriteVolume = program.getFavoriteVolume() + program.getUsers().size();
         imageUrl = SystemHelper.getDomainName() + program.getProgramType().name() + "/" + id + ".jpg";
-        saleType = type.toString();
         Iterator<Par> iterator = program.getPars().iterator();
         lowPrice = iterator.next().getParID().getBasePrice();
         while (iterator.hasNext()) {
