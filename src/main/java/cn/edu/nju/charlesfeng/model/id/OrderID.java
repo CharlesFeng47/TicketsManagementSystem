@@ -1,5 +1,7 @@
 package cn.edu.nju.charlesfeng.model.id;
 
+import com.alibaba.fastjson.annotation.JSONField;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.io.Serializable;
@@ -18,6 +20,7 @@ public class OrderID implements Serializable {
     /**
      * 订单生成时间
      */
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     @Column
     private LocalDateTime time;
 

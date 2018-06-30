@@ -1,10 +1,7 @@
 package cn.edu.nju.charlesfeng.model;
 
-import org.hibernate.annotations.GenericGenerator;
-
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.List;
 import java.util.Set;
 
 /**

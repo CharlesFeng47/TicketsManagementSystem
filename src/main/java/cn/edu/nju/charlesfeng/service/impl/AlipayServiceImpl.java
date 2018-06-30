@@ -4,9 +4,9 @@ import cn.edu.nju.charlesfeng.model.AlipayAccount;
 import cn.edu.nju.charlesfeng.repository.AlipayRepository;
 import cn.edu.nju.charlesfeng.service.AlipayService;
 import cn.edu.nju.charlesfeng.util.enums.ExceptionCode;
-import cn.edu.nju.charlesfeng.util.exceptions.pay.AlipayBalanceNotAdequateException;
 import cn.edu.nju.charlesfeng.util.exceptions.member.UserNotExistException;
 import cn.edu.nju.charlesfeng.util.exceptions.member.WrongPwdException;
+import cn.edu.nju.charlesfeng.util.exceptions.pay.AlipayBalanceNotAdequateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

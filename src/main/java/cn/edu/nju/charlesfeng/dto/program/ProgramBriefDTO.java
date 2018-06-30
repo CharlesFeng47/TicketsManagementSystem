@@ -68,7 +68,7 @@ public class ProgramBriefDTO implements Serializable {
     /**
      * 当前节目的售票状态
      */
-    private String saleType;
+    private SaleType saleType;
 
     /**
      * 海报的图片url
@@ -81,7 +81,7 @@ public class ProgramBriefDTO implements Serializable {
 
     public ProgramBriefDTO(Program program, SaleType type) {
         init(program);
-        saleType = type.toString();
+        saleType = type;
 
     }
 
@@ -142,7 +142,7 @@ public class ProgramBriefDTO implements Serializable {
         return favoriteVolume;
     }
 
-    public String getSaleType() {
+    public SaleType getSaleType() {
         return saleType;
     }
 
