@@ -44,7 +44,7 @@ public class UserController {
      */
     @PostMapping("/login")
     public String login(@RequestParam("email") String email, @RequestParam("password") String password, HttpServletRequest request) throws UserNotExistException, WrongPwdException, UserNotActivatedException {
-        logger.debug("INTO /member/login");
+        logger.debug("INTO /user/login");
         User user = userService.logIn(email, password);
         String token = "USER:" + email;
         HttpSession session = request.getSession();
@@ -61,7 +61,7 @@ public class UserController {
     public String memberSignUp(@RequestParam("username") String username, @RequestParam("password") String password,
                                @RequestParam("email") String email, HttpServletRequest request) throws UserHasBeenSignUpException, InteriorWrongException {
 
-        logger.debug("INTO /member/user_sign_up");
+        logger.debug("INTO /user/user_sign_up");
         User user = new User(username, password, email);
         userService.register(user);
         //TODO 注册后邮箱尚未验证，应该不需要把用户的实体置于session中吧
@@ -76,7 +76,7 @@ public class UserController {
      */
     @PostMapping("/userActive")
     public void verifyUserEmail(@RequestParam("active_url") String activeUrl) throws UserNotExistException, UnsupportedEncodingException, UserActiveUrlExpiredException {
-        logger.debug("INTO /member/userActive");
+        logger.debug("INTO /user/userActive");
         System.out.println(activeUrl);
         userService.activateByMail(activeUrl);
     }
@@ -86,7 +86,7 @@ public class UserController {
      */
     @PostMapping("/logout")
     public void logout(@RequestParam("token") String token, HttpServletRequest request) {
-        logger.debug("INTO /member/logout");
+        logger.debug("INTO /user/logout");
         HttpSession session = request.getSession();
         session.setAttribute(token, null);
     }
@@ -96,7 +96,7 @@ public class UserController {
      */
     @PostMapping("/token")
     public User getToken(@RequestParam("token") String token, HttpServletRequest request) {
-        logger.debug("INTO /member/token, token: " + token);
+        logger.debug("INTO /user/token, token: " + token);
         HttpSession session = request.getSession();
         Object o = session.getAttribute(token);
         assert o instanceof User;
@@ -108,7 +108,7 @@ public class UserController {
      */
     @PostMapping("/star")
     public Integer star(@RequestParam("program_id") String programIDStr, @RequestParam("token") String token, HttpServletRequest request) {
-        logger.debug("INTO /member: " + token);
+        logger.debug("INTO /user/star: " + token);
 
         String[] parts = programIDStr.split("-");
         ProgramID programID = new ProgramID();
@@ -125,7 +125,7 @@ public class UserController {
      */
     @PostMapping("/cancelStar")
     public Integer cancelStar(@RequestParam("program_id") String programIDStr, @RequestParam("token") String token, HttpServletRequest request) {
-        logger.debug("INTO /member: " + token);
+        logger.debug("INTO /user/cancelStar: " + token);
 
         String[] parts = programIDStr.split("-");
         ProgramID programID = new ProgramID();
@@ -142,7 +142,7 @@ public class UserController {
      */
     @PostMapping("/getStarPrograms")
     public List<ProgramBriefDTO> getStarPrograms(@RequestParam("token") String token, HttpServletRequest request) {
-        logger.debug("INTO /member: " + token);
+        logger.debug("INTO /user/getStarPrograms: " + token);
 
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute(token);
@@ -154,7 +154,7 @@ public class UserController {
      */
     @PostMapping("/modifyPortrait")
     public void modifyPortrait(@RequestParam("portrait") String newPortrait, @RequestParam("token") String token, HttpServletRequest request) {
-        logger.debug("INTO /member: " + token);
+        logger.debug("INTO /user/modifyPortrait: " + token);
 
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute(token);
@@ -168,7 +168,7 @@ public class UserController {
     @PostMapping("/modifyPassword")
     public void modifyPassword(@RequestParam("old_password") String oldPassword, @RequestParam("new_password") String newPassword,
                                @RequestParam("token") String token, HttpServletRequest request) throws WrongPwdException {
-        logger.debug("INTO /member: " + token);
+        logger.debug("INTO /user/modifyPassword: " + token);
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute(token);
         userService.modifyUserPassword(user.getEmail(), oldPassword, newPassword);
@@ -179,7 +179,7 @@ public class UserController {
      */
     @PostMapping("/modifyName")
     public void modifyName(@RequestParam("name") String name, @RequestParam("token") String token, HttpServletRequest request) {
-        logger.debug("INTO /member: " + token);
+        logger.debug("INTO /user/modifyName: " + token);
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute(token);
         userService.modifyUserName(user.getEmail(), name);

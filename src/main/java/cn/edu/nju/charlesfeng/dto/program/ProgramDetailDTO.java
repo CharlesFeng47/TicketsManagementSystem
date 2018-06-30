@@ -5,6 +5,7 @@ import cn.edu.nju.charlesfeng.model.Program;
 import cn.edu.nju.charlesfeng.util.enums.SaleType;
 import cn.edu.nju.charlesfeng.util.helper.SystemHelper;
 import cn.edu.nju.charlesfeng.util.helper.TimeHelper;
+import cn.edu.nju.charlesfeng.util.serializer.SaleTypeSerializer;
 import com.alibaba.fastjson.annotation.JSONField;
 
 import java.io.Serializable;
@@ -53,7 +54,8 @@ public class ProgramDetailDTO implements Serializable {
     /**
      * 当前节目的售票状态
      */
-    private String saleType;
+    @JSONField(serializeUsing = SaleTypeSerializer.class)
+    private SaleType saleType;
 
     /**
      * 场次
@@ -99,7 +101,7 @@ public class ProgramDetailDTO implements Serializable {
         scanVolume = program.getScanVolume();
         favoriteVolume = program.getFavoriteVolume() + program.getUsers().size();
         imageUrl = SystemHelper.getDomainName() + program.getProgramType().name() + "/" + id + ".jpg";
-        saleType = type.toString();
+        saleType = type;
         this.fields = fields;
         parIDs = new TreeSet<>();
         for (Par par : program.getPars()) {
@@ -134,7 +136,7 @@ public class ProgramDetailDTO implements Serializable {
         return favoriteVolume;
     }
 
-    public String getSaleType() {
+    public SaleType getSaleType() {
         return saleType;
     }
 
