@@ -8,8 +8,11 @@ import cn.edu.nju.charlesfeng.service.ProgramService;
 import cn.edu.nju.charlesfeng.service.UserService;
 import cn.edu.nju.charlesfeng.task.MD5Task;
 import cn.edu.nju.charlesfeng.task.MailTask;
+import cn.edu.nju.charlesfeng.util.enums.ExceptionCode;
 import cn.edu.nju.charlesfeng.util.exceptions.*;
+import cn.edu.nju.charlesfeng.util.exceptions.member.*;
 import cn.edu.nju.charlesfeng.util.filter.program.ProgramBrief;
+import cn.edu.nju.charlesfeng.util.helper.ImageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -38,9 +41,12 @@ public class UserServiceImpl implements UserService {
     @Override
     //@Transactional
     public boolean register(User user) throws UserHasBeenSignUpException, InteriorWrongException {
+        user.setPassword(MD5Task.encodeMD5(user.getPassword()));
+        user.setPortrait(ImageHelper.getBaseImg(Objects.requireNonNull(this.getClass().getClassLoader().getResource("default.png")).getPath()));
+
         User verifyUser = userRepository.findByEmail(user.getEmail());
         if (verifyUser != null) {
-            throw new UserHasBeenSignUpException();
+            throw new UserHasBeenSignUpException(ExceptionCode.USER_HAS_BEEN_SIGN_UP);
         }
         userRepository.save(user);
 
@@ -66,7 +72,7 @@ public class UserServiceImpl implements UserService {
     public User logIn(String id, String pwd) throws UserNotExistException, WrongPwdException, UserNotActivatedException {
         User user = userRepository.findByEmail(id);
         if (user == null) {
-            throw new UserNotExistException();
+            throw new UserNotExistException(ExceptionCode.USER_NOT_EXIST);
         }
 
         if (!user.getPassword().equals(MD5Task.encodeMD5(pwd))) {
@@ -92,7 +98,7 @@ public class UserServiceImpl implements UserService {
         String toActivateUserId = new String(base64decodedBytes, "utf-8");
         User toActivate = userRepository.findByEmail(toActivateUserId);
         if (toActivate == null) {
-            throw new UserNotExistException();
+            throw new UserNotExistException(ExceptionCode.USER_NOT_EXIST);
         }
 
         if (toActivate.isActivated()) {
@@ -112,7 +118,7 @@ public class UserServiceImpl implements UserService {
     public boolean modifyUser(User user) throws UserNotExistException {
         User verifyUser = userRepository.findByEmail(user.getEmail());
         if (verifyUser == null) {
-            throw new UserNotExistException();
+            throw new UserNotExistException(ExceptionCode.USER_NOT_EXIST);
         }
         userRepository.save(user);
         return true;

@@ -8,7 +8,7 @@
 //import cn.edu.nju.charlesfeng.service.ScheduleService;
 //import cn.edu.nju.charlesfeng.util.enums.ProgramType;
 //import cn.edu.nju.charlesfeng.util.enums.ScheduleState;
-//import cn.edu.nju.charlesfeng.util.exceptions.ProgramNotSettlableException;
+//import cn.edu.nju.charlesfeng.util.exceptions.venue.ProgramNotSettlableException;
 //import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.stereotype.Service;
 //

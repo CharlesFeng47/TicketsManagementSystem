@@ -7,7 +7,7 @@ import cn.edu.nju.charlesfeng.repository.TicketRepository;
 import cn.edu.nju.charlesfeng.service.ProgramService;
 import cn.edu.nju.charlesfeng.util.enums.ProgramType;
 import cn.edu.nju.charlesfeng.util.enums.SaleType;
-import cn.edu.nju.charlesfeng.util.exceptions.ProgramNotSettlableException;
+import cn.edu.nju.charlesfeng.util.exceptions.venue.ProgramNotSettlableException;
 import cn.edu.nju.charlesfeng.util.filter.program.PreviewSearchResult;
 import cn.edu.nju.charlesfeng.util.filter.program.ProgramBrief;
 import cn.edu.nju.charlesfeng.util.helper.AddressHelper;

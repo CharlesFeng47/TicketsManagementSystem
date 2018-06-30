@@ -1,6 +1,6 @@
 package cn.edu.nju.charlesfeng.util.helper;
 
-import cn.edu.nju.charlesfeng.util.enums.RequestReturnObjectState;
+import cn.edu.nju.charlesfeng.util.enums.ExceptionCode;
 import com.alibaba.fastjson.JSON;
 
 /**
@@ -11,14 +11,14 @@ public class RequestReturnObject {
     /**
      * 此次请求的状态
      */
-    private RequestReturnObjectState state;
+    private ExceptionCode state;
 
     /**
      * 状态则为此次请求返回的结果对象的JSON字符串
      */
     private String object;
 
-    public RequestReturnObject(RequestReturnObjectState state, Object object) {
+    public RequestReturnObject(ExceptionCode state, Object object) {
         this.state = state;
         this.object = JSON.toJSONString(object);
         System.out.println("已转化为：" + this.object);
@@ -29,15 +29,15 @@ public class RequestReturnObject {
      *
      * @param state 错误的原因
      */
-    public RequestReturnObject(RequestReturnObjectState state) {
+    public RequestReturnObject(ExceptionCode state) {
         this.state = state;
     }
 
-    public RequestReturnObjectState getState() {
+    public ExceptionCode getState() {
         return state;
     }
 
-    public void setState(RequestReturnObjectState state) {
+    public void setState(ExceptionCode state) {
         this.state = state;
     }
 

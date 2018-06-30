@@ -52,7 +52,7 @@ public class UserRepositoryTest {
             e.printStackTrace();
             System.out.println("未找到实体");
         }
-        //createImg(user.getPortrait());
+        //createImg(member.getPortrait());
     }
 
     @Test

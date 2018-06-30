@@ -1,4 +1,4 @@
-package cn.edu.nju.charlesfeng.util.exceptions;
+package cn.edu.nju.charlesfeng.util.exceptions.ticket;
 
 /**
  * 余票数量不足

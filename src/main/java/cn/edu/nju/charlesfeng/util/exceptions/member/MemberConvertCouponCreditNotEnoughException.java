@@ -1,4 +1,4 @@
-package cn.edu.nju.charlesfeng.util.exceptions;
+package cn.edu.nju.charlesfeng.util.exceptions.member;
 
 /**
  * 会员兑换优惠券时剩余积分不足导致的一场

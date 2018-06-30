@@ -4,7 +4,7 @@ import cn.edu.nju.charlesfeng.model.Ticket;
 import cn.edu.nju.charlesfeng.model.id.ProgramID;
 import cn.edu.nju.charlesfeng.model.id.TicketID;
 import cn.edu.nju.charlesfeng.util.enums.SaleType;
-import cn.edu.nju.charlesfeng.util.exceptions.TicketsNotAdequateException;
+import cn.edu.nju.charlesfeng.util.exceptions.ticket.TicketsNotAdequateException;
 
 import java.util.List;
 

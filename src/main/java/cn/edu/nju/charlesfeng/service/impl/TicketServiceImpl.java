@@ -6,11 +6,9 @@ import cn.edu.nju.charlesfeng.model.id.TicketID;
 import cn.edu.nju.charlesfeng.repository.TicketRepository;
 import cn.edu.nju.charlesfeng.service.TicketService;
 import cn.edu.nju.charlesfeng.util.enums.SaleType;
-import cn.edu.nju.charlesfeng.util.exceptions.TicketsNotAdequateException;
-import org.hibernate.annotations.Synchronize;
+import cn.edu.nju.charlesfeng.util.exceptions.ticket.TicketsNotAdequateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 

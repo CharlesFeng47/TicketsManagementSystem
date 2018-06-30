@@ -1,4 +1,4 @@
-package cn.edu.nju.charlesfeng.util.exceptions;
+package cn.edu.nju.charlesfeng.util.exceptions.member;
 
 /**
  * 用户激活链接已失效

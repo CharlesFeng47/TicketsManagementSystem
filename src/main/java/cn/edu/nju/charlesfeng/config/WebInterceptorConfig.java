@@ -34,15 +34,15 @@ public class WebInterceptorConfig extends WebMvcConfigurationSupport {
         registry.addInterceptor(new CorsInterceptor()).addPathPatterns("/**");
         //UserInterceptor
         registry.addInterceptor(new UserInterceptor())
-                //user
-                .addPathPatterns("/user/logout")
-                .addPathPatterns("/user/token")
-                .addPathPatterns("/user/star")
-                .addPathPatterns("/user/cancelStar")
-                .addPathPatterns("/user/getStarPrograms")
-                .addPathPatterns("/user/modifyPortrait")
-                .addPathPatterns("/user/modifyPassword")
-                .addPathPatterns("/user/modifyName")
+                //member
+                .addPathPatterns("/member/logout")
+                .addPathPatterns("/member/token")
+                .addPathPatterns("/member/star")
+                .addPathPatterns("/member/cancelStar")
+                .addPathPatterns("/member/getStarPrograms")
+                .addPathPatterns("/member/modifyPortrait")
+                .addPathPatterns("/member/modifyPassword")
+                .addPathPatterns("/member/modifyName")
                 //order
                 .addPathPatterns("/order/getOneOrder")
                 .addPathPatterns("/order/getMyOrdersByState")
@@ -56,8 +56,8 @@ public class WebInterceptorConfig extends WebMvcConfigurationSupport {
         registry.addInterceptor(new ProgramIDInterceptor())
                 .addPathPatterns("/program/getProgramDetail")
                 .addPathPatterns("/program/getProgramDetailByToken")
-                .addPathPatterns("/user/star")
-                .addPathPatterns("/user/cancelStar")
+                .addPathPatterns("/member/star")
+                .addPathPatterns("/member/cancelStar")
                 .addPathPatterns("/order/generateOrder");
         super.addInterceptors(registry);
     }

@@ -3,12 +3,12 @@ package cn.edu.nju.charlesfeng.service.impl;
 import cn.edu.nju.charlesfeng.model.AlipayAccount;
 import cn.edu.nju.charlesfeng.repository.AlipayRepository;
 import cn.edu.nju.charlesfeng.service.AlipayService;
-import cn.edu.nju.charlesfeng.util.exceptions.AlipayBalanceNotAdequateException;
-import cn.edu.nju.charlesfeng.util.exceptions.UserNotExistException;
-import cn.edu.nju.charlesfeng.util.exceptions.WrongPwdException;
+import cn.edu.nju.charlesfeng.util.enums.ExceptionCode;
+import cn.edu.nju.charlesfeng.util.exceptions.pay.AlipayBalanceNotAdequateException;
+import cn.edu.nju.charlesfeng.util.exceptions.member.UserNotExistException;
+import cn.edu.nju.charlesfeng.util.exceptions.member.WrongPwdException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 
@@ -42,7 +42,7 @@ public class AlipayServiceImpl implements AlipayService {
             from_externalBalance = alipayRepository.getOne(from_account);
         } catch (EntityNotFoundException e) {
             e.printStackTrace();
-            throw new UserNotExistException(from_account);
+            throw new UserNotExistException(ExceptionCode.USER_NOT_EXIST, from_account);
         }
 
 
@@ -59,7 +59,7 @@ public class AlipayServiceImpl implements AlipayService {
             to_externalBalance = alipayRepository.getOne(to_account);
         } catch (EntityNotFoundException e) {
             e.printStackTrace();
-            throw new UserNotExistException(to_account);
+            throw new UserNotExistException(ExceptionCode.USER_NOT_EXIST, to_account);
         }
 
         from_externalBalance.setBalance(from_externalBalance.getBalance() - amount);

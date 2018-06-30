@@ -1,4 +1,4 @@
-package cn.edu.nju.charlesfeng.util.exceptions;
+package cn.edu.nju.charlesfeng.util.exceptions.order;
 
 /**
  * 订单不存在

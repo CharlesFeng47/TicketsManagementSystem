@@ -1,4 +1,4 @@
-package cn.edu.nju.charlesfeng.util.exceptions;
+package cn.edu.nju.charlesfeng.util.exceptions.venue;
 
 /**
  * 场馆座位顺序错乱导致的异常

@@ -11,8 +11,14 @@ import cn.edu.nju.charlesfeng.service.ParService;
 import cn.edu.nju.charlesfeng.service.ProgramService;
 import cn.edu.nju.charlesfeng.service.TicketService;
 import cn.edu.nju.charlesfeng.util.enums.OrderState;
-import cn.edu.nju.charlesfeng.util.enums.RequestReturnObjectState;
-import cn.edu.nju.charlesfeng.util.exceptions.*;
+import cn.edu.nju.charlesfeng.util.enums.ExceptionCode;
+import cn.edu.nju.charlesfeng.util.exceptions.order.OrderNotCancelException;
+import cn.edu.nju.charlesfeng.util.exceptions.order.OrderNotPaymentException;
+import cn.edu.nju.charlesfeng.util.exceptions.order.OrderNotRefundableException;
+import cn.edu.nju.charlesfeng.util.exceptions.pay.AlipayBalanceNotAdequateException;
+import cn.edu.nju.charlesfeng.util.exceptions.ticket.TicketsNotAdequateException;
+import cn.edu.nju.charlesfeng.util.exceptions.member.UserNotExistException;
+import cn.edu.nju.charlesfeng.util.exceptions.member.WrongPwdException;
 import cn.edu.nju.charlesfeng.util.filter.order.OrderDto;
 import cn.edu.nju.charlesfeng.util.helper.RequestReturnObject;
 import cn.edu.nju.charlesfeng.util.helper.TimeHelper;
@@ -69,7 +75,7 @@ public class OrderController {
         orderID.setEmail(user.getEmail());
         orderID.setTime(TimeHelper.getLocalDateTime(time));
         Order order = orderService.checkOrderDetail(orderID);
-        return new RequestReturnObject(RequestReturnObjectState.OK, new OrderDto(order));
+        return new RequestReturnObject(ExceptionCode.OK, new OrderDto(order));
     }
 
     /**
@@ -91,7 +97,7 @@ public class OrderController {
         for (Order order : orders) {
             result.add(new OrderDto(order));
         }
-        return new RequestReturnObject(RequestReturnObjectState.OK, result);
+        return new RequestReturnObject(ExceptionCode.OK, result);
     }
 
     /**
@@ -106,7 +112,7 @@ public class OrderController {
             DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             LocalDateTime time = LocalDateTime.parse(programTime, df);
             if (time.plusMinutes(15).isBefore(LocalDateTime.now())) {
-                return new RequestReturnObject(RequestReturnObjectState.ORDER_NOT_CREATE);
+                return new RequestReturnObject(ExceptionCode.ORDER_NOT_CREATE);
             }
 
             HttpSession session = request.getSession();
@@ -133,9 +139,9 @@ public class OrderController {
             order.setProgram(program);
             order.setTickets(new HashSet<>(tickets)); //关联订单
             orderService.generateOrder(order);
-            return new RequestReturnObject(RequestReturnObjectState.OK, TimeHelper.getLong(order.getOrderID().getTime()));
+            return new RequestReturnObject(ExceptionCode.OK, TimeHelper.getLong(order.getOrderID().getTime()));
         } catch (TicketsNotAdequateException e) {
-            return new RequestReturnObject(RequestReturnObjectState.OK, RequestReturnObjectState.TICKET_NOT_ADEQUATE);
+            return new RequestReturnObject(ExceptionCode.OK, ExceptionCode.TICKET_NOT_ADEQUATE);
         }
     }
 
@@ -153,10 +159,10 @@ public class OrderController {
             orderID.setTime(orderTime);
             orderID.setEmail(user.getEmail());
             orderService.cancelOrder(orderID);
-            return new RequestReturnObject(RequestReturnObjectState.OK);
+            return new RequestReturnObject(ExceptionCode.OK);
         } catch (OrderNotCancelException e) {
             e.printStackTrace();
-            return new RequestReturnObject(RequestReturnObjectState.ORDER_NOT_CANCEL);
+            return new RequestReturnObject(ExceptionCode.ORDER_NOT_CANCEL);
         }
     }
 
@@ -174,19 +180,19 @@ public class OrderController {
             orderID.setTime(orderTime);
             orderID.setEmail(user.getEmail());
             orderService.unsubscribe(orderID);
-            return new RequestReturnObject(RequestReturnObjectState.OK);
+            return new RequestReturnObject(ExceptionCode.OK);
         } catch (UserNotExistException e) {
             e.printStackTrace();
-            return new RequestReturnObject(RequestReturnObjectState.USER_NOT_EXIST);
+            return new RequestReturnObject(ExceptionCode.USER_NOT_EXIST);
         } catch (OrderNotRefundableException e) {
             e.printStackTrace();
-            return new RequestReturnObject(RequestReturnObjectState.ORDER_NOT_REFUNDABLE);
+            return new RequestReturnObject(ExceptionCode.ORDER_NOT_REFUNDABLE);
         } catch (WrongPwdException e) {
             e.printStackTrace();
-            return new RequestReturnObject(RequestReturnObjectState.PAY_WRONG_PWD);
+            return new RequestReturnObject(ExceptionCode.PAY_WRONG_PWD);
         } catch (AlipayBalanceNotAdequateException e) {
             e.printStackTrace();
-            return new RequestReturnObject(RequestReturnObjectState.PAY_BALANCE_NOT_ADEQUATE);
+            return new RequestReturnObject(ExceptionCode.PAY_BALANCE_NOT_ADEQUATE);
         }
     }
 
@@ -204,19 +210,19 @@ public class OrderController {
             orderID.setTime(orderTime);
             orderID.setEmail(user.getEmail());
             orderService.payOrder(orderID);
-            return new RequestReturnObject(RequestReturnObjectState.OK);
+            return new RequestReturnObject(ExceptionCode.OK);
         } catch (OrderNotPaymentException e) {
             e.printStackTrace();
-            return new RequestReturnObject(RequestReturnObjectState.ORDER_NOT_PAYMENT);
+            return new RequestReturnObject(ExceptionCode.ORDER_NOT_PAYMENT);
         } catch (UserNotExistException e) {
             e.printStackTrace();
-            return new RequestReturnObject(RequestReturnObjectState.USER_NOT_EXIST);
+            return new RequestReturnObject(ExceptionCode.USER_NOT_EXIST);
         } catch (WrongPwdException e) {
             e.printStackTrace();
-            return new RequestReturnObject(RequestReturnObjectState.PAY_WRONG_PWD);
+            return new RequestReturnObject(ExceptionCode.PAY_WRONG_PWD);
         } catch (AlipayBalanceNotAdequateException e) {
             e.printStackTrace();
-            return new RequestReturnObject(RequestReturnObjectState.PAY_BALANCE_NOT_ADEQUATE);
+            return new RequestReturnObject(ExceptionCode.PAY_BALANCE_NOT_ADEQUATE);
         }
     }
 }

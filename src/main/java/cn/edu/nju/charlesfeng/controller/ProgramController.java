@@ -7,7 +7,7 @@ import cn.edu.nju.charlesfeng.service.ProgramService;
 import cn.edu.nju.charlesfeng.service.TicketService;
 import cn.edu.nju.charlesfeng.service.UserService;
 import cn.edu.nju.charlesfeng.util.enums.ProgramType;
-import cn.edu.nju.charlesfeng.util.enums.RequestReturnObjectState;
+import cn.edu.nju.charlesfeng.util.enums.ExceptionCode;
 import cn.edu.nju.charlesfeng.util.enums.SaleType;
 import cn.edu.nju.charlesfeng.util.filter.program.PreviewSearchResult;
 import cn.edu.nju.charlesfeng.util.filter.program.ProgramBrief;
@@ -61,7 +61,7 @@ public class ProgramController {
             }
             result.put(key, programBriefs);
         }
-        return new RequestReturnObject(RequestReturnObjectState.OK, result);
+        return new RequestReturnObject(ExceptionCode.OK, result);
     }
 
     /**
@@ -71,7 +71,7 @@ public class ProgramController {
     public RequestReturnObject getProgramsByType(@RequestParam("city") String city, @RequestParam("program_type") String programType) {
         logger.debug("INTO /program/getProgramsByType?city=" + city + "&program_type=" + programType);
         List<ProgramBrief> result = programService.getBriefPrograms(city, ProgramType.getEnum(programType), LocalDateTime.now()); //今天之后包括今天
-        return new RequestReturnObject(RequestReturnObjectState.OK, result);
+        return new RequestReturnObject(ExceptionCode.OK, result);
     }
 
     /**
@@ -91,7 +91,7 @@ public class ProgramController {
         Set<LocalDateTime> fields = programService.getAllProgramField(programID.getVenueID(), program.getName());
         int number = ticketService.getProgramRemainTicketNumber(programID);
         programService.addScanVolume(program.getProgramID()); //浏览量加1
-        return new RequestReturnObject(RequestReturnObjectState.OK, new ProgramDetail(program, saleType, fields, number, false));
+        return new RequestReturnObject(ExceptionCode.OK, new ProgramDetail(program, saleType, fields, number, false));
     }
 
     /**
@@ -110,7 +110,7 @@ public class ProgramController {
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute(token);
         boolean isLike = userService.isLike(user.getEmail(), program);
-        return new RequestReturnObject(RequestReturnObjectState.OK, isLike);
+        return new RequestReturnObject(ExceptionCode.OK, isLike);
     }
 
     /**
@@ -125,7 +125,7 @@ public class ProgramController {
             SaleType saleType = ticketService.getProgramSaleType(program.getProgramID());
             result.add(new ProgramBrief(program, saleType));
         }
-        return new RequestReturnObject(RequestReturnObjectState.OK, result);
+        return new RequestReturnObject(ExceptionCode.OK, result);
     }
 
     /**
@@ -135,7 +135,7 @@ public class ProgramController {
     public RequestReturnObject previewSearch(@RequestParam("conditions") String conditions) {
         logger.debug("INTO /program/previewSearch?conditions=" + conditions);
         List<PreviewSearchResult> programs = programService.previewSearch(conditions, 10);
-        return new RequestReturnObject(RequestReturnObjectState.OK, programs);
+        return new RequestReturnObject(ExceptionCode.OK, programs);
     }
 
 //    /**

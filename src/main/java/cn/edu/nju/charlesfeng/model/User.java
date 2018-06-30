@@ -1,5 +1,6 @@
 package cn.edu.nju.charlesfeng.model;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -31,6 +32,7 @@ public class User implements Serializable, Comparable<User> {
      * 用户名
      */
     @Column(nullable = false)
+    @JSONField(name = "username")
     private String name;
 
     /**
@@ -44,7 +46,7 @@ public class User implements Serializable, Comparable<User> {
      * 是否激活
      */
     @Column(nullable = false, columnDefinition = "bit default 0")
-    private boolean activated;
+    private boolean activated = false;
 
     /**
      * 该用户收藏的节目（设为喜欢的节目）(N->N)
@@ -65,6 +67,12 @@ public class User implements Serializable, Comparable<User> {
         name = u.getName();
         portrait = u.getPortrait();
         activated = u.isActivated();
+    }
+
+    public User(String username, String password, String email) {
+        this.name = username;
+        this.password = password;
+        this.email = email;
     }
 
     public String getEmail() {

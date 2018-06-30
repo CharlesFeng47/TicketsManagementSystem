@@ -48,8 +48,8 @@
 //
 //    @Override
 //    public User logIn(String id, String pwd, UserType userType) throws UserNotExistException, WrongPwdException {
-//        User user = userDao.getUser(id, userType);
-//        if (user.getPwd().equals(pwd)) return user;
+//        User member = userDao.getUser(id, userType);
+//        if (member.getPwd().equals(pwd)) return member;
 //        else throw new WrongPwdException();
 //    }
 //
@@ -58,8 +58,8 @@
 //     */
 //    private List<String> getAllIds(List<User> users) {
 //        List<String> ids = new LinkedList<>();
-//        for (User user : users) {
-//            ids.add(user.getId());
+//        for (User member : users) {
+//            ids.add(member.getId());
 //        }
 //        return ids;
 //    }

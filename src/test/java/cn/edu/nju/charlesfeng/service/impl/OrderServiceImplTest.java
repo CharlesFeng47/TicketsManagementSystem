@@ -12,9 +12,14 @@ import cn.edu.nju.charlesfeng.service.ParService;
 import cn.edu.nju.charlesfeng.service.ProgramService;
 import cn.edu.nju.charlesfeng.service.TicketService;
 import cn.edu.nju.charlesfeng.util.enums.OrderState;
-import cn.edu.nju.charlesfeng.util.exceptions.*;
+import cn.edu.nju.charlesfeng.util.exceptions.order.OrderNotCancelException;
+import cn.edu.nju.charlesfeng.util.exceptions.order.OrderNotPaymentException;
+import cn.edu.nju.charlesfeng.util.exceptions.order.OrderNotRefundableException;
+import cn.edu.nju.charlesfeng.util.exceptions.pay.AlipayBalanceNotAdequateException;
+import cn.edu.nju.charlesfeng.util.exceptions.ticket.TicketsNotAdequateException;
+import cn.edu.nju.charlesfeng.util.exceptions.member.UserNotExistException;
+import cn.edu.nju.charlesfeng.util.exceptions.member.WrongPwdException;
 import cn.edu.nju.charlesfeng.util.helper.TimeHelper;
-import org.hibernate.Hibernate;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +29,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
-
-import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
