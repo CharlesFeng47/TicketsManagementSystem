@@ -7,11 +7,11 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="TicketsManagementSystem" />
+        <module name="charlesfeng" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="TicketsManagementSystem" target="1.8" />
+      <module name="charlesfeng" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>
