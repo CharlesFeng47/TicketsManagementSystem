@@ -7,7 +7,6 @@ import cn.edu.nju.charlesfeng.model.Ticket;
 import cn.edu.nju.charlesfeng.util.enums.OrderState;
 import cn.edu.nju.charlesfeng.util.helper.SystemHelper;
 import cn.edu.nju.charlesfeng.util.helper.TimeHelper;
-import cn.edu.nju.charlesfeng.util.serializer.OrderStateSerializer;
 import com.alibaba.fastjson.annotation.JSONField;
 
 import java.io.Serializable;
@@ -60,7 +59,6 @@ public class OrderDTO implements Serializable {
     /**
      * 订单的类型（状态）
      */
-    @JSONField(serializeUsing = OrderStateSerializer.class)
     private OrderState orderState;
 
     /**

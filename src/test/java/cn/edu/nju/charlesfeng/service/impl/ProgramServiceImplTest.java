@@ -1,12 +1,12 @@
 package cn.edu.nju.charlesfeng.service.impl;
 
+import cn.edu.nju.charlesfeng.dto.program.PreviewSearchResultDTO;
+import cn.edu.nju.charlesfeng.dto.program.ProgramBriefDTO;
 import cn.edu.nju.charlesfeng.model.Program;
 import cn.edu.nju.charlesfeng.model.id.ProgramID;
 import cn.edu.nju.charlesfeng.service.ProgramService;
 import cn.edu.nju.charlesfeng.service.TicketService;
 import cn.edu.nju.charlesfeng.util.enums.SaleType;
-import cn.edu.nju.charlesfeng.dto.program.PreviewSearchResultDTO;
-import cn.edu.nju.charlesfeng.dto.program.ProgramBriefDTO;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

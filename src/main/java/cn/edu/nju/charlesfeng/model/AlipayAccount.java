@@ -7,6 +7,7 @@ import java.io.Serializable;
 
 /**
  * 对支付宝的模拟
+ * @author Dong
  */
 @Entity
 @Table(name = "alipay_mock")

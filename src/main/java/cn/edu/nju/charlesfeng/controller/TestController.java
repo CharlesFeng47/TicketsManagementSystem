@@ -1,10 +1,6 @@
 package cn.edu.nju.charlesfeng.controller;
 
-import cn.edu.nju.charlesfeng.model.Address;
-import com.alibaba.fastjson.support.spring.annotation.FastJsonFilter;
-import com.alibaba.fastjson.support.spring.annotation.FastJsonView;
 import org.apache.log4j.Logger;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -48,20 +44,5 @@ public class TestController {
         counter++;
         System.out.println("被第" + counter + "次访问！");
         return "test success delete";
-    }
-
-    @GetMapping(path = "address")
-    @FastJsonView(include = @FastJsonFilter(clazz = Address.class, props = {"city"}))
-    public Address testFastJsonView() {
-
-        Address address = new Address();
-        address.setCity("city");
-        address.setStreet("street");
-        address.setDistrict("district");
-        address.setNumber("number");
-        address.setComment("comment");
-
-        return address;
-
     }
 }

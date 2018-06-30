@@ -50,4 +50,10 @@ public enum OrderState {
     public void setVal(String val) {
         this.val = val;
     }
+
+
+    @Override
+    public String toString() {
+        return val;
+    }
 }

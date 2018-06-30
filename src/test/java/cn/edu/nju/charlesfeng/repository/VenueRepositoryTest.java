@@ -2,7 +2,6 @@ package cn.edu.nju.charlesfeng.repository;
 
 import cn.edu.nju.charlesfeng.model.Address;
 import cn.edu.nju.charlesfeng.model.Program;
-import cn.edu.nju.charlesfeng.model.Seat;
 import cn.edu.nju.charlesfeng.model.Venue;
 import cn.edu.nju.charlesfeng.model.id.ProgramID;
 import org.junit.Assert;

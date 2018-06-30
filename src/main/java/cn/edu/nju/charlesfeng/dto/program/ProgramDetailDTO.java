@@ -2,10 +2,10 @@ package cn.edu.nju.charlesfeng.dto.program;
 
 import cn.edu.nju.charlesfeng.model.Par;
 import cn.edu.nju.charlesfeng.model.Program;
+import cn.edu.nju.charlesfeng.util.enums.ProgramType;
 import cn.edu.nju.charlesfeng.util.enums.SaleType;
 import cn.edu.nju.charlesfeng.util.helper.SystemHelper;
 import cn.edu.nju.charlesfeng.util.helper.TimeHelper;
-import cn.edu.nju.charlesfeng.util.serializer.SaleTypeSerializer;
 import com.alibaba.fastjson.annotation.JSONField;
 
 import java.io.Serializable;
@@ -39,7 +39,7 @@ public class ProgramDetailDTO implements Serializable {
     /**
      * 节目类型
      */
-    private String programType;
+    private ProgramType programType;
 
     /**
      * 浏览量
@@ -54,7 +54,6 @@ public class ProgramDetailDTO implements Serializable {
     /**
      * 当前节目的售票状态
      */
-    @JSONField(serializeUsing = SaleTypeSerializer.class)
     private SaleType saleType;
 
     /**
@@ -107,7 +106,7 @@ public class ProgramDetailDTO implements Serializable {
         for (Par par : program.getPars()) {
             parIDs.add(new ParDTO(par));
         }
-        programType = program.getProgramType().toString();
+        programType = program.getProgramType();
         remainTicketsNumber = remainNumber;
         this.isLike = isLike;
     }
@@ -124,7 +123,7 @@ public class ProgramDetailDTO implements Serializable {
         return programName;
     }
 
-    public String getProgramType() {
+    public ProgramType getProgramType() {
         return programType;
     }
 

@@ -1,12 +1,7 @@
 package cn.edu.nju.charlesfeng;
 
-import com.alibaba.fastjson.support.spring.FastJsonViewResponseBodyAdvice;
-import com.alibaba.fastjson.support.spring.FastJsonpResponseBodyAdvice;
-import com.alibaba.fastjson.support.spring.JSONPResponseBodyAdvice;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
