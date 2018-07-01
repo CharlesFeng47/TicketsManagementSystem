@@ -36,7 +36,7 @@ public interface UserService {
      * @param activeUrl 验证的连接参数
      * @return 邮箱验证结果
      */
-    boolean activateByMail(String activeUrl) throws UnsupportedEncodingException, UserNotExistException, UserActiveUrlExpiredException;
+    boolean activateByMail(String activeUrl) throws UnsupportedEncodingException, UserActivateUrlExpiredException, UserActivateUrlWrongException;
 
     /**
      * @param user 欲修改用户的实体

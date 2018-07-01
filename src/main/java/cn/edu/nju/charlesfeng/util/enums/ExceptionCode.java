@@ -8,13 +8,13 @@ import java.io.Serializable;
 public enum ExceptionCode implements Serializable {
 
     // 用户未注册
-    USER_NOT_EXIST(1, "用户未注册"),
+    USER_NOT_EXIST(1, "该邮箱尚未注册哦～"),
     // 用户密码错误
     USER_PWD_WRONG(2, "用户密码错误"),
     // 内部计算错误
     INTERIOR_WRONG(3, "内部计算错误"),
     // 该邮箱已被注册
-    USER_HAS_BEEN_SIGN_UP(4, "该邮箱已被注册"),
+    USER_HAS_BEEN_SIGN_UP(4, "该邮箱已被注册哦～可以直接登录哦"),
     // 参数缺失
     ORDER_MEMBER_ID_MISS(5, "参数缺失"),
     // 优惠券兑换时积分余额不足
@@ -30,17 +30,17 @@ public enum ExceptionCode implements Serializable {
     // 订单不存在
     TICKET_NOT_EXIST(11, "订单不存在"),
     // 用户账号未激活
-    USER_INACTIVE(12, "用户账号未激活"),
+    USER_INACTIVE(12, "该用户账号尚未激活，请先查看邮箱激活哦～"),
     // 计划不能被结算
     SCHEDULE_NOT_SEETLABLE(13, "计划不能被结算"),
     // 支付宝账号不存在
     ALIPAY_ENTITY_NOT_EXIST(14, "支付宝账号不存在"),
     // 订单不可被退款
-    ORDER_NOT_REFUNDABLE(15, "订单不可被退款"),
-    // 用户链接失效
-    MEMBER_ACTIVATE_URL_EXPIRE(16, "用户链接失效"),
+    ORDER_NOT_REFUNDABLE(15, "该订单不可被退款"),
+    // 用户链接已失效
+    USER_ACTIVATE_URL_EXPIRE(16, "用户链接已失效"),
     // 用户链接错误
-    MEMBER_ACTIVATE_URL_WRONG(17, "用户链接错误"),
+    USER_ACTIVATE_URL_WRONG(17, "用户链接错误"),
     // 订单检票方不是订单中的场馆
     TICKET_CHECKER_WRONG(18, "订单检票方不是订单中的场馆"),
     // 不可生成订单（生成时间晚于节目开始前15分钟）
@@ -54,10 +54,18 @@ public enum ExceptionCode implements Serializable {
     // 请求没有传送token
     TOKEN_IS_NULL(23, "请求没有传送token"),
     // 节目ID格式不对
-    WRONG_PROGRAM_ID(24, "节目ID格式不对");
+    WRONG_PROGRAM_ID(24, "节目ID格式不对"),
+    // 用户token已失效
+    USER_TOKEN_EXPIRED(25, "当前登录状态已过期，请重新登录！");
 
+    /**
+     * 错误码
+     */
     private int repre;
 
+    /**
+     * 提示给用户的信息
+     */
     private String message;
 
     ExceptionCode(int repre, String message) {

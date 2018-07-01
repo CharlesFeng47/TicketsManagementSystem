@@ -7,8 +7,8 @@ import cn.edu.nju.charlesfeng.util.exceptions.MyException;
  * 用户激活链接已失效
  * @author Shenmiu
  */
-public class UserActiveUrlExpiredException extends MyException {
-    public UserActiveUrlExpiredException(ExceptionCode exceptionCode) {
+public class UserActivateUrlExpiredException extends MyException {
+    public UserActivateUrlExpiredException(ExceptionCode exceptionCode) {
         super(exceptionCode);
     }
 }

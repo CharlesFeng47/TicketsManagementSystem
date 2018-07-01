@@ -4,6 +4,7 @@ import cn.edu.nju.charlesfeng.dto.program.ProgramBriefDTO;
 import cn.edu.nju.charlesfeng.model.User;
 import cn.edu.nju.charlesfeng.model.id.ProgramID;
 import cn.edu.nju.charlesfeng.service.UserService;
+import cn.edu.nju.charlesfeng.util.enums.ExceptionCode;
 import cn.edu.nju.charlesfeng.util.exceptions.member.*;
 import cn.edu.nju.charlesfeng.util.exceptions.unknown.InteriorWrongException;
 import cn.edu.nju.charlesfeng.util.helper.TimeHelper;
@@ -75,7 +76,7 @@ public class UserController {
      * @return 邮箱链接验证
      */
     @PostMapping("/userActive")
-    public void verifyUserEmail(@RequestParam("active_url") String activeUrl) throws UserNotExistException, UnsupportedEncodingException, UserActiveUrlExpiredException {
+    public void verifyUserEmail(@RequestParam("active_url") String activeUrl) throws UnsupportedEncodingException, UserActivateUrlExpiredException, UserActivateUrlWrongException {
         logger.debug("INTO /user/userActive");
         System.out.println(activeUrl);
         userService.activateByMail(activeUrl);
@@ -95,10 +96,13 @@ public class UserController {
      * 根据Token获取当前用户
      */
     @PostMapping("/token")
-    public User getToken(@RequestParam("token") String token, HttpServletRequest request) {
+    public User getToken(@RequestParam("token") String token, HttpServletRequest request) throws UserTokenExpiredException {
         logger.debug("INTO /user/token, token: " + token);
         HttpSession session = request.getSession();
         Object o = session.getAttribute(token);
+
+        if (o == null) throw new UserTokenExpiredException(ExceptionCode.USER_TOKEN_EXPIRED);
+
         assert o instanceof User;
         return (User) o;
     }

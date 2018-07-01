@@ -4,11 +4,11 @@ import cn.edu.nju.charlesfeng.util.enums.ExceptionCode;
 import cn.edu.nju.charlesfeng.util.exceptions.MyException;
 
 /**
- * 会员名已经被注册过
- * @author Shenmiu
+ * 用户的 token 已经失效
  */
-public class UserHasBeenSignUpException extends MyException {
-    public UserHasBeenSignUpException(ExceptionCode exceptionCode) {
+public class UserTokenExpiredException extends MyException {
+
+    public UserTokenExpiredException(ExceptionCode exceptionCode) {
         super(exceptionCode);
     }
 }

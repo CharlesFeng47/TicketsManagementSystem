@@ -4,11 +4,11 @@ import cn.edu.nju.charlesfeng.util.enums.ExceptionCode;
 import cn.edu.nju.charlesfeng.util.exceptions.MyException;
 
 /**
- * 会员名已经被注册过
- * @author Shenmiu
+ * 用户激活链接错误
  */
-public class UserHasBeenSignUpException extends MyException {
-    public UserHasBeenSignUpException(ExceptionCode exceptionCode) {
+public class UserActivateUrlWrongException extends MyException {
+
+    public UserActivateUrlWrongException(ExceptionCode exceptionCode) {
         super(exceptionCode);
     }
 }

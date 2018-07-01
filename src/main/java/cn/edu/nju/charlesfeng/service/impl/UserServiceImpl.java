@@ -93,16 +93,16 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     //@Transactional
-    public boolean activateByMail(String activeUrl) throws UnsupportedEncodingException, UserNotExistException, UserActiveUrlExpiredException {
+    public boolean activateByMail(String activeUrl) throws UnsupportedEncodingException, UserActivateUrlExpiredException, UserActivateUrlWrongException {
         byte[] base64decodedBytes = Base64.getUrlDecoder().decode(activeUrl);
         String toActivateUserId = new String(base64decodedBytes, "utf-8");
         User toActivate = userRepository.findByEmail(toActivateUserId);
         if (toActivate == null) {
-            throw new UserNotExistException(ExceptionCode.USER_NOT_EXIST);
+            throw new UserActivateUrlWrongException(ExceptionCode.USER_ACTIVATE_URL_WRONG);
         }
 
         if (toActivate.isActivated()) {
-            throw new UserActiveUrlExpiredException(ExceptionCode.MEMBER_ACTIVATE_URL_EXPIRE);
+            throw new UserActivateUrlExpiredException(ExceptionCode.USER_ACTIVATE_URL_EXPIRE);
         }
 
         toActivate.setActivated(true);
