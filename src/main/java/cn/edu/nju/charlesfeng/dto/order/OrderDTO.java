@@ -69,7 +69,7 @@ public class OrderDTO implements Serializable {
     /**
      * 场馆的详细地址
      */
-    private Address venueAddress;
+    private String venueAddress;
 
     /**
      * 节目海报的url
@@ -91,7 +91,14 @@ public class OrderDTO implements Serializable {
         totalPrice = order.getTotalPrice();
         orderState = order.getOrderState();
         venueName = program.getVenue().getVenueName();
-        venueAddress = program.getVenue().getAddress();
+        Address address = program.getVenue().getAddress();
+        StringBuilder builder = new StringBuilder();
+        builder.append(address.getCity()).append("市").append(address.getDistrict()).append("区").append(address.getStreet()).append(address.getNumber());
+        if (!address.getNumber().equals("")) {
+            builder.append("号");
+        }
+        builder.append(address.getComment());
+        venueAddress = builder.toString();
         num = order.getTickets().size();
         imagesUrl = SystemHelper.getDomainName() + program.getProgramType().name() + "/" + programID + ".jpg";
         ticketInfo = new TreeMap<>();
@@ -137,7 +144,7 @@ public class OrderDTO implements Serializable {
         return venueName;
     }
 
-    public Address getVenueAddress() {
+    public String getVenueAddress() {
         return venueAddress;
     }
 
