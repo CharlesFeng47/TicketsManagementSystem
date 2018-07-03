@@ -51,4 +51,7 @@ public interface ProgramRepository extends JpaRepository<Program, ProgramID> {
      */
     @Query(value = "select p from Program p where p.venue.address.city=:city and p.programID.startTime<:start_time")
     List<Program> getBeforeProrgam(@Param("city") String city, @Param("start_time") LocalDateTime localDateTime);
+
+//    @Query(value = "select p from Program p where p.programID in (select p1.programID from Program p1 group by p1.programID.venueID, p1.name having p1.programID.startTime=)")
+//    List<Program> getAvailablePrograms2(@Param("today") LocalDateTime today, @Param("programType") ProgramType programType, @Param("city") String city);
 }

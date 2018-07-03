@@ -12,11 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.io.*;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -116,6 +114,48 @@ public class TicketRepositoryTest {
     }
 
     @Test
+    //@Rollback
+    public void testAddNewProgramTicket() {
+        List<ProgramID> programIDS = readUnGetProgram();
+        for (ProgramID programID : programIDS) {
+            Program program = programRepository.findByProgramID(programID);
+            System.out.println("----------------------------------------");
+            System.out.println("开始生成节目票：" + program.getName());
+            Venue venue = program.getVenue();
+            Set<Seat> seats = venue.getSeats();
+            if (seats.isEmpty()) {
+                System.out.println(venue.getVenueID() + "--" + venue.getVenueName());
+                System.out.println("该节目为空");
+            }
+            System.out.println(program.getProgramID().getVenueID()+"-"+program.getProgramID().getStartTime().toString());
+            Iterable<Ticket> tickets = new HashSet<>();
+            for (Seat seat : seats) {
+                Ticket ticket = new Ticket();
+                TicketID ticketID = new TicketID();
+                ticketID.setProgramID(program.getProgramID());
+                ticketID.setRow(seat.getSeatID().getRow());
+                ticketID.setCol(seat.getSeatID().getCol());
+                ticket.setLock(false);
+                ticket.setTicketID(ticketID);
+                ticket.setProgram(program);
+                Double price = parRepository.findPrice(program.getProgramID(), seat.getType());
+                if(price == null){
+                    System.out.println("not find:"+program.getProgramID().getVenueID()+"-"+program.getProgramID().getStartTime().toString()+seat.getType());
+                }
+                ticket.setPrice(price);
+                ticket.setSeatType(seat.getType());
+                ((HashSet<Ticket>) tickets).add(ticket);
+                System.out.println(ticket.getTicketID().getRow() + "--" + ticket.getTicketID().getCol() + "--" + ticket.getPrice());
+            }
+            //seats.clear();
+            ticketRepository.saveAll(tickets);
+            program.setTickets((Set<Ticket>) tickets);
+            programRepository.save(program);
+        }
+
+    }
+
+    @Test
     public void testModifyType() {
 
     }
@@ -123,5 +163,28 @@ public class TicketRepositoryTest {
     @Test
     public void lock() {
 
+    }
+
+    public List<ProgramID> readUnGetProgram() {
+        String path = "C:\\Users\\Byron Dong\\Desktop\\1.txt";
+        File file = new File(path);
+        List<ProgramID> programIDS = new ArrayList<>();
+        try {
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
+            String line = null;
+            while ((line = bufferedReader.readLine()) != null) {
+                String info[] = line.split(";");
+                ProgramID programID = new ProgramID();
+                programID.setVenueID(Integer.parseInt(info[0]));
+                programID.setStartTime(LocalDateTime.parse(info[1]));
+                programIDS.add(programID);
+            }
+            bufferedReader.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return programIDS;
     }
 }

@@ -5,6 +5,8 @@ import cn.edu.nju.charlesfeng.model.Program;
 import cn.edu.nju.charlesfeng.model.Venue;
 import cn.edu.nju.charlesfeng.model.id.ParID;
 import cn.edu.nju.charlesfeng.model.id.ProgramID;
+import cn.edu.nju.charlesfeng.util.helper.TimeHelper;
+import io.swagger.models.auth.In;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -317,6 +319,53 @@ public class ParRepositoryTest {
 
     }
 
+    @Test
+    public void testAddPar() {
+        List<ProgramID> programIDS = readUnGetProgram();
+        for (ProgramID programID : programIDS) {
+            Program program = programRepository.findByProgramID(programID);
+            List<String> types = seatRepository.getType(programID.getVenueID());
+            List<Par> result = new ArrayList<>();
+            for (String type : types) {
+                ParID parID = new ParID();
+                parID.setProgramID(programID);
+                parID.setBasePrice(randomPrice());
+                parID.setComments("优惠多多");
+                Par par = new Par();
+                par.setParID(parID);
+                par.setDiscount(1);
+                par.setSeatType(type);
+                par.setProgram(program);
+                result.add(par);
+                System.out.println(par.getSeatType()+"-"+par.getParID().getProgramID().getVenueID()+"-"+par.getParID().getProgramID().getStartTime().toString()+"-"+par.getParID().getBasePrice());
+            }
+            parRepository.saveAll(result);
+        }
+    }
+
+    public List<ProgramID> readUnGetProgram() {
+        String path = "C:\\Users\\Byron Dong\\Desktop\\1.txt";
+        File file = new File(path);
+        List<ProgramID> programIDS = new ArrayList<>();
+        try {
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
+            String line = null;
+            while ((line = bufferedReader.readLine()) != null) {
+                String info[] = line.split(";");
+                ProgramID programID = new ProgramID();
+                programID.setVenueID(Integer.parseInt(info[0]));
+                programID.setStartTime(LocalDateTime.parse(info[1]));
+                programIDS.add(programID);
+            }
+            bufferedReader.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return programIDS;
+    }
+
     public Map<String, List<Map<String, String>>> readPar() {
         File file = new File("F:\\crawler\\detail.txt");
         Map<String, List<Map<String, String>>> result = new HashMap<>();
@@ -380,6 +429,6 @@ public class ParRepositoryTest {
     }
 
     private int randomPrice() {
-        return (int) (Math.random() * 100);
+        return ((int) (Math.random() * 900)) + 100;
     }
 }

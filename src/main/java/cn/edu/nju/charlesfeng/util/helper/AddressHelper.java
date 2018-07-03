@@ -20,7 +20,7 @@ public class AddressHelper {
     private List<String> distance_n;
 
     public AddressHelper() {
-        distance_s = Arrays.asList("上海", "苏州", "无锡", "昆山");
+        distance_s = Arrays.asList("上海", "苏州","无锡", "昆山","南京");
         distance_n = Arrays.asList("南京", "上海", "宜兴", "常熟");
     }
 

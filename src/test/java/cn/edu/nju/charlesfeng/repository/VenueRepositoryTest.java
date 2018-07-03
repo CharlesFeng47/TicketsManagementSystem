@@ -4,6 +4,7 @@ import cn.edu.nju.charlesfeng.model.Address;
 import cn.edu.nju.charlesfeng.model.Program;
 import cn.edu.nju.charlesfeng.model.Venue;
 import cn.edu.nju.charlesfeng.model.id.ProgramID;
+import cn.edu.nju.charlesfeng.util.enums.ProgramType;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -144,6 +145,39 @@ public class VenueRepositoryTest {
     public void testDelete() {
     }
 
+    @Test
+    public void testFindVenue() {
+        Map<String, ProgramType> map = new HashMap<>();
+        map.put("vocalconcert", ProgramType.VOCALCONCERT);
+        map.put("concert", ProgramType.CONCERT);
+        map.put("ballet", ProgramType.DANCE);
+        map.put("drama", ProgramType.DRAMA);
+        map.put("exhibition", ProgramType.EXHIBITION);
+        map.put("child", ProgramType.PARENTCHILD);
+        map.put("match", ProgramType.SPORT);
+        map.put("quyi", ProgramType.QUYITALK);
+        List<String> venues = new ArrayList<>();
+
+        for (String folder : map.keySet()) {
+            String path = "F:\\new_crawler\\" + folder + "\\";
+            File dir = new File(path);
+            File[] files = dir.listFiles();
+            assert files != null;
+            for (File file : files) {
+                String filePath = file.getPath();
+                if (filePath.endsWith(".txt")) {
+                    String programName = filePath.substring(filePath.lastIndexOf("\\") + 1).replace(".txt", "");
+                    String name = readName(filePath);
+                    Venue venue = venueRepository.findByVenueName(name);
+                    if (venue == null) {
+                        venues.add(programName + ";" + name);
+                        System.out.println(programName + ";" + name);
+                    }
+                }
+            }
+        }
+    }
+
     private Map<String, String> readAddress() {
         File file = new File("F:\\crawler\\address.txt");
         Map<String, String> result = new HashMap<>();
@@ -164,5 +198,61 @@ public class VenueRepositoryTest {
         }
 
         return result;
+    }
+
+    private String readName(String path) {
+        String name = null;
+        try {
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(path), "UTF-8"));
+            while ((name = bufferedReader.readLine()) != null) {
+                if (name.startsWith("address")) {
+                    break;
+                }
+            }
+            bufferedReader.close();
+            name = name.split(":")[1];
+//            if (!name.startsWith("上汽") && !name.startsWith("「上生·新所」")) {
+//                if (name.contains("-")) {
+//                    name = name.substring(0, name.indexOf("-"));
+//                }
+//
+//                if (name.contains("—")) {
+//                    name = name.substring(0, name.indexOf("—"));
+//                }
+//
+//                if (name.contains("——")) {
+//                    name = name.substring(0, name.indexOf("——"));
+//                }
+//
+//                if (name.contains("·")) {
+//                    name = name.substring(0, name.indexOf("·"));
+//                }
+//            }
+//
+//
+            if(name.startsWith("南京青奥体育公园")){
+                name = "南京青奥体育公园体育馆";
+            }
+
+            if (name.startsWith("江苏大剧院")) {
+                name = "江苏大剧院";
+            }
+
+            if (name.startsWith("无锡大剧院")) {
+                name = "无锡大剧院";
+            }
+
+            if (name.startsWith("南京保利大剧院")) {
+                name = "南京保利大剧院";
+            }
+            return name;
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return name;
     }
 }
