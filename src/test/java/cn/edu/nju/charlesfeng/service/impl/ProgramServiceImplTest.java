@@ -6,6 +6,7 @@ import cn.edu.nju.charlesfeng.model.Program;
 import cn.edu.nju.charlesfeng.model.id.ProgramID;
 import cn.edu.nju.charlesfeng.service.ProgramService;
 import cn.edu.nju.charlesfeng.service.TicketService;
+import cn.edu.nju.charlesfeng.util.enums.ProgramType;
 import cn.edu.nju.charlesfeng.util.enums.SaleType;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,46 +30,19 @@ public class ProgramServiceImplTest {
     @Test
     public void recommendPrograms() {
         long start = System.currentTimeMillis();
-        Map<String, List<Program>> map = programService.recommendPrograms(LocalDateTime.now(), "南京", 5);
-        Map<String, List<ProgramBriefDTO>> result = new HashMap<>();
-        for (String key : map.keySet()) {
-            List<Program> programs = map.get(key);
-            List<ProgramBriefDTO> programBriefDTOS = new ArrayList<>();
-            for (Program program : programs) {
-                programBriefDTOS.add(new ProgramBriefDTO(program));
-            }
-            result.put(key, programBriefDTOS);
-        }
+        Map<String, List<ProgramBriefDTO>> map = programService.recommendPrograms("南京", 5);
         System.out.println(System.currentTimeMillis() - start);
         System.out.println("--------------------------------");
         long start1 = System.currentTimeMillis();
-        Map<String, List<Program>> map1 = programService.recommendPrograms(LocalDateTime.now(), "上海", 5);
-        Map<String, List<ProgramBriefDTO>> result1 = new HashMap<>();
-        for (String key : map1.keySet()) {
-            List<Program> programs = map1.get(key);
-            List<ProgramBriefDTO> programBriefDTOS = new ArrayList<>();
-            for (Program program : programs) {
-                programBriefDTOS.add(new ProgramBriefDTO(program));
-            }
-            result1.put(key, programBriefDTOS);
-        }
+        Map<String, List<ProgramBriefDTO>> map1 = programService.recommendPrograms("上海", 5);
         System.out.println(System.currentTimeMillis() - start1);
+        System.out.println("------------------------------------");
     }
 
     @Test
     public void test() {
-        Map<String, List<Program>> map = programService.recommendPrograms(LocalDateTime.now(), "南京", 5);
-        Map<String, List<ProgramBriefDTO>> result = new HashMap<>();
-        for (String key : map.keySet()) {
-            List<Program> programs = map.get(key);
-            List<ProgramBriefDTO> programBriefDTOS = new ArrayList<>();
-            for (Program program : programs) {
-                programBriefDTOS.add(new ProgramBriefDTO(program));
-            }
-            result.put(key, programBriefDTOS);
-        }
+        Map<String, List<ProgramBriefDTO>> map = programService.recommendPrograms("南京", 5);
     }
-
 
 
     @Test
@@ -102,6 +76,8 @@ public class ProgramServiceImplTest {
 
     @Test
     public void getBriefPrograms() {
+        List<ProgramBriefDTO> result = programService.getBriefPrograms("南京", ProgramType.CONCERT);
+        System.out.println("------------------------");
     }
 
     @Test
@@ -110,14 +86,16 @@ public class ProgramServiceImplTest {
 
     @Test
     public void search() {
-        String conditions = "2";
-        Set<Program> programs = programService.search(conditions);
+        long start = System.currentTimeMillis();
+        String conditions = "上海";
+        List<ProgramBriefDTO> programs = programService.search(conditions);
+        System.out.println(System.currentTimeMillis() - start);
         System.out.println("-------------------------");
     }
 
     @Test
     public void previewSearch() {
-        List<PreviewSearchResultDTO> result = programService.previewSearch("上海 张韶涵", 10);
+        List<PreviewSearchResultDTO> result = programService.previewSearch("上海 2", 10);
         System.out.println("-------------------------");
     }
 

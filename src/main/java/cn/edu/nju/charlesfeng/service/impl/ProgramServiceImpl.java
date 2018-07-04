@@ -2,6 +2,7 @@ package cn.edu.nju.charlesfeng.service.impl;
 
 import cn.edu.nju.charlesfeng.dto.program.PreviewSearchResultDTO;
 import cn.edu.nju.charlesfeng.dto.program.ProgramBriefDTO;
+import cn.edu.nju.charlesfeng.dto.program.ProgramDetailDTO;
 import cn.edu.nju.charlesfeng.model.Program;
 import cn.edu.nju.charlesfeng.model.id.ProgramID;
 import cn.edu.nju.charlesfeng.repository.ProgramRepository;
@@ -11,13 +12,16 @@ import cn.edu.nju.charlesfeng.util.enums.ProgramType;
 import cn.edu.nju.charlesfeng.util.enums.SaleType;
 import cn.edu.nju.charlesfeng.util.exceptions.venue.ProgramNotSettlableException;
 import cn.edu.nju.charlesfeng.util.helper.AddressHelper;
+import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -30,10 +34,13 @@ public class ProgramServiceImpl implements ProgramService {
 
     private final TicketRepository ticketRepository;
 
+    private final TicketServiceImpl ticketService;
+
     @Autowired
-    public ProgramServiceImpl(ProgramRepository programRepository, TicketRepository ticketRepository) {
+    public ProgramServiceImpl(ProgramRepository programRepository, TicketRepository ticketRepository, TicketServiceImpl ticketService) {
         this.programRepository = programRepository;
         this.ticketRepository = ticketRepository;
+        this.ticketService = ticketService;
     }
 
     /**
@@ -42,34 +49,30 @@ public class ProgramServiceImpl implements ProgramService {
      * @return 推荐列表
      */
     @Override
-    public Map<String, List<Program>> recommendPrograms(LocalDateTime localDateTime, String city, int num) {
+    public Map<String, List<ProgramBriefDTO>> recommendPrograms(String city, int num) {
         long start = System.currentTimeMillis();
         ProgramType types[] = ProgramType.values();
-        Map<String, List<Program>> result = new TreeMap<>();
+        Map<String, List<ProgramBriefDTO>> result = new TreeMap<>();
         for (ProgramType programType : types) {
             if (programType.equals(ProgramType.ALL)) {
                 continue;
             }
-            Sort sort = new Sort(Sort.Direction.ASC, "programID.startTime");
-            Pageable pageable = new PageRequest(1, num, sort);
+
             long start1 = System.currentTimeMillis();
-            Page<Program> program_page = programRepository.getAvailablePrograms(localDateTime, programType, city, pageable);
-            System.out.println(programType+"第一次取"+(System.currentTimeMillis()-start1));
-            List<Program> programs = new ArrayList<>(program_page.getContent());
+            List<ProgramBriefDTO> programs = this.getAvailablePrograms(programType, city, num);
+            System.out.println(programType + "第一次取" + (System.currentTimeMillis() - start1));
             AddressHelper addressHelper = new AddressHelper();
             List<String> cities = addressHelper.getNearCity(city);
             if (programs.size() < num) {
                 long start2 = System.currentTimeMillis();
                 for (String near_city : cities) {
-                    Pageable pageable_need = new PageRequest(1, (num - programs.size()), sort);
-                    Page<Program> program_page_need = programRepository.getAvailablePrograms(localDateTime, programType, near_city, pageable_need);
-                    programs.addAll(program_page_need.getContent());
-
+                    List<ProgramBriefDTO> program_need = this.getAvailablePrograms(programType, near_city, num);
+                    programs.addAll(program_need);
                     if (programs.size() == num) {
                         break;
                     }
                 }
-                System.out.println(programType+"第二次取"+(System.currentTimeMillis()-start2));
+                System.out.println(programType + "第二次取" + (System.currentTimeMillis() - start2));
             }
 
             if (programs.size() == num) {
@@ -83,50 +86,28 @@ public class ProgramServiceImpl implements ProgramService {
     /**
      * 按类型获取节目
      *
-     * @param city          制定城市
-     * @param programType   节目类型
-     * @param localDateTime 指定时间
+     * @param city        制定城市
+     * @param programType 节目类型
      * @return 节目列表
      */
     @Override
-    public List<ProgramBriefDTO> getBriefPrograms(String city, ProgramType programType, LocalDateTime localDateTime) {
-        List<Program> programs = programRepository.getAvailablePrograms(localDateTime, programType, city);
+    public List<ProgramBriefDTO> getBriefPrograms(String city, ProgramType programType) {
+        List<Object[]> programs = programRepository.getAvailableProgramIds(ProgramType.getIndex(programType), city);
         List<ProgramBriefDTO> result = new ArrayList<>();
-        for (Program program : programs) {
-            int judge = ticketRepository.hasTickets(program.getProgramID(), false);
+        for (Object[] id : programs) {
+            ProgramID programID = new ProgramID();
+            programID.setVenueID((Integer) id[0]);
+            programID.setStartTime(((Timestamp) id[1]).toLocalDateTime());
+            int judge = ticketRepository.hasTickets(programID, false);
             SaleType type = SaleType.TICKETING;
             if (judge == 0) {
                 type = SaleType.REPLACEMENTTICKETING;
             }
+            Program program = programRepository.findByProgramID(programID);
             ProgramBriefDTO programBriefDTO = new ProgramBriefDTO(program, type);
             result.add(programBriefDTO);
         }
         return result;
-    }
-
-    /**
-     * @return 所有日程
-     */
-    @Override
-    public List<Program> getAllPrograms() {
-        return programRepository.findAll();
-    }
-
-    /**
-     * @return 用户可见的所有日程（即不含已过期的日程计划）
-     */
-    @Override
-    public List<Program> getAllAvailablePrograms() {
-        return null;
-    }
-
-    /**
-     * @param venueID 欲获取的相关场馆的场馆Id
-     * @return 相关场馆的所有日程
-     */
-    @Override
-    public List<Program> getProgramsOfOneVenue(int venueID) {
-        return programRepository.findByVenueID(venueID);
     }
 
     /**
@@ -136,6 +117,21 @@ public class ProgramServiceImpl implements ProgramService {
     @Override
     public Program getOneProgram(ProgramID programID) {
         return programRepository.findByProgramID(programID);
+    }
+
+    /**
+     * 获取轮播图的节目
+     *
+     * @param preProgramID 节目ID
+     * @return Program
+     */
+    @Override
+    public Program getSowingProgram(ProgramID preProgramID) {
+        Object[] id = programRepository.getSowingProgramID(preProgramID.getVenueID(), preProgramID.getStartTime());
+        ProgramID programID = new ProgramID();
+        programID.setVenueID((Integer) id[0]);
+        programID.setStartTime(((Timestamp) id[1]).toLocalDateTime());
+        return this.getOneProgram(programID);
     }
 
     /**
@@ -157,18 +153,35 @@ public class ProgramServiceImpl implements ProgramService {
      * @return 节目简介列表
      */
     @Override
-    public Set<Program> search(String condition) {
-        Set<Program> result = new TreeSet<>();
-        String conditions[] = condition.split("\\s");
-        LocalDateTime time = LocalDateTime.of(LocalDate.now(), LocalTime.of(0, 0, 0));
-        for (String info : conditions) {
-            if (result.isEmpty()) {
-                result.addAll(programRepository.searchProgram("%" + info + "%", time)); //结合初始为空时，取并集
-            } else {
-                result.retainAll(programRepository.searchProgram("%" + info + "%", time)); //取交集
-            }
-
+    public List<ProgramBriefDTO> search(String condition) {
+        List<ProgramBriefDTO> result = new ArrayList<>();
+        String conditions[] = null;
+        if (condition.contains(" ")) {
+            conditions = condition.split("\\s");
+        } else {
+            conditions = new String[]{condition};
         }
+
+        long start1 = System.currentTimeMillis();
+        for (String info : conditions) {
+            System.out.println("--------------------------------------------------");
+            List<Object[]> programIDS = programRepository.searchProgram("%" + info + "%");
+            long start3 = System.currentTimeMillis();
+            for (Object[] id : programIDS) {
+                ProgramID programID = new ProgramID();
+                programID.setVenueID((Integer) id[0]);
+                programID.setStartTime(((Timestamp) id[1]).toLocalDateTime());
+                Program program = programRepository.findByProgramID(programID);
+                SaleType saleType = ticketService.getProgramSaleType(program.getProgramID());
+                ProgramBriefDTO programBriefDTO = new ProgramBriefDTO(program, saleType);
+                if (!result.contains(programBriefDTO)) {
+                    result.add(programBriefDTO);
+                }
+            }
+            System.out.println(System.currentTimeMillis() - start3);
+            System.out.println("--------------------------------------------------");
+        }
+        System.out.println(System.currentTimeMillis() - start1);
         return result;
     }
 
@@ -188,9 +201,8 @@ public class ProgramServiceImpl implements ProgramService {
             conditions = new String[]{condition};
         }
 
-        LocalDateTime time = LocalDateTime.of(LocalDate.now(), LocalTime.of(0, 0, 0));
         for (String info : conditions) {
-            List<Object[]> search_result = programRepository.previewSearchProgram("%" + info + "%", time);
+            List<Object[]> search_result = programRepository.previewSearchProgram("%" + info + "%");
             if (result.isEmpty()) {
                 result.addAll(convert(search_result)); //结合初始为空时，取并集
             } else {
@@ -216,35 +228,6 @@ public class ProgramServiceImpl implements ProgramService {
     }
 
     /**
-     * @param program 欲发布的活动日程描述
-     * @return 是否成功发布，成功则为该实体对象
-     */
-    @Override
-    public Program publishProgram(Program program) {
-        //TODO  添加Program  并根据venue生成对应票（前置条件venue已添加至program中）
-        return null;
-    }
-
-    /**
-     * @param program 欲修改的活动日程描述
-     * @return 是否成功修改，成功则true
-     */
-    @Override
-    public boolean modifyProgram(Program program) {
-        programRepository.save(program);
-        return true;
-    }
-
-    /**
-     * @param programID 要结算的计划ID
-     * @return 结算结果，成功则true
-     */
-    @Override
-    public boolean settleOneProgram(ProgramID programID) throws ProgramNotSettlableException {
-        return false;
-    }
-
-    /**
      * 用于将查询出来Object转化包装类，主要用于比较
      *
      * @param list 查询的结果
@@ -257,4 +240,95 @@ public class ProgramServiceImpl implements ProgramService {
         }
         return result;
     }
+
+    /**
+     * 根据节目类型和城市获取节目
+     *
+     * @param programType 节目类型
+     * @param city 城市
+     * @return 节目概览
+     */
+    private List<ProgramBriefDTO> getAvailablePrograms(ProgramType programType, String city) {
+        List<Object[]> programIDS = programRepository.getAvailableProgramIds(ProgramType.getIndex(programType), city);
+        List<ProgramBriefDTO> result = new ArrayList<>();
+        for (Object[] id : programIDS) {
+            ProgramID programID = new ProgramID();
+            programID.setVenueID((Integer) id[0]);
+            programID.setStartTime(((Timestamp) id[1]).toLocalDateTime());
+            Program program = programRepository.findByProgramID(programID);
+            result.add(new ProgramBriefDTO(program));
+        }
+        return result;
+    }
+
+    /**
+     * 根据节目类型和城市获取指定数量节目（节目随机）
+     *
+     * @param programType 节目类型
+     * @param city 城市
+     * @return 节目概览
+     */
+    private List<ProgramBriefDTO> getAvailablePrograms(ProgramType programType, String city, int page) {
+        List<Object[]> programIDS = programRepository.getAvailableProgramIds(ProgramType.getIndex(programType), city);
+        List<ProgramBriefDTO> result = new ArrayList<>();
+        if (programIDS.size() <= page) {
+            for (Object[] id : programIDS) {
+                ProgramID programID = new ProgramID();
+                programID.setVenueID((Integer) id[0]);
+                programID.setStartTime(((Timestamp) id[1]).toLocalDateTime());
+                Program program = programRepository.findByProgramID(programID);
+                result.add(new ProgramBriefDTO(program));
+            }
+        } else {
+            List<Integer> indexs = randomIndex(programIDS.size(), page);
+            for (Integer index : indexs) {
+                Object[] id = programIDS.get(index);
+                ProgramID programID = new ProgramID();
+                programID.setVenueID((Integer) id[0]);
+                programID.setStartTime(((Timestamp) id[1]).toLocalDateTime());
+                Program program = programRepository.findByProgramID(programID);
+                result.add(new ProgramBriefDTO(program));
+            }
+        }
+        return result;
+    }
+
+    /**
+     * 根据size获取指定数量随机索引
+     *
+     * @param size 长度
+     * @param num 数量
+     * @return 指定数量的随机索引
+     */
+    private List<Integer> randomIndex(int size, int num) {
+        List<Integer> result = new ArrayList<>();
+        for (int i = 0; i < num; i++) {
+            int index = random(size);
+            while (result.contains(index)) {
+                index = random(size);
+            }
+            result.add(index);
+        }
+        return result;
+    }
+
+    /**
+     * 根据size获取随机索引
+     *
+     * @param size 长度
+     * @return 索引
+     */
+    private int random(int size) {
+        int result = (int) (Math.random() * size);
+        if (result < 0) {
+            result = 0;
+        }
+
+        if (result >= size) {
+            result = size - 1;
+        }
+        return result;
+    }
+
 }
+

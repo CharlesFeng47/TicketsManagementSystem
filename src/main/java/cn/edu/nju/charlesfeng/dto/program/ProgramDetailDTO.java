@@ -82,16 +82,11 @@ public class ProgramDetailDTO implements Serializable {
     private Integer remainTicketsNumber;
 
     /**
-     * 当前登陆用户对该节目是否喜爱
-     */
-    private Boolean isLike;
-
-    /**
      * 海报的图片url
      */
     private String imageUrl;
 
-    public ProgramDetailDTO(Program program, SaleType type, Set<LocalDateTime> fields, int remainNumber, boolean isLike) {
+    public ProgramDetailDTO(Program program, SaleType type, Set<LocalDateTime> fields, int remainNumber) {
         id = String.valueOf(program.getProgramID().getVenueID()) + "-" + String.valueOf(TimeHelper.getLong(program.getProgramID().getStartTime()));
         programName = program.getName();
         time = program.getProgramID().getStartTime();
@@ -108,7 +103,6 @@ public class ProgramDetailDTO implements Serializable {
         }
         programType = program.getProgramType();
         remainTicketsNumber = remainNumber;
-        this.isLike = isLike;
     }
 
     public String getId() {
@@ -157,10 +151,6 @@ public class ProgramDetailDTO implements Serializable {
 
     public Integer getRemainTicketsNumber() {
         return remainTicketsNumber;
-    }
-
-    public boolean isLike() {
-        return isLike;
     }
 
     public String getImageUrl() {

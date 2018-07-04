@@ -58,12 +58,13 @@ public class SeatRepositoryTest {
 
     @Test
     public void testAddAll() {
-        Venue venue1 = venueRepository.getOne(143);
-        Venue venue2 = venueRepository.getOne(144);
+//        Venue venue1 = venueRepository.getOne(143);
+//        Venue venue2 = venueRepository.getOne(144);
+        Venue venue3 = venueRepository.getOne(145);
 //        List<Venue> venues = venueRepository.findAll();
         List<Venue> venues = new ArrayList<>();
-        venues.add(venue1);
-        venues.add(venue2);
+        venues.add(venue3);
+
         for (Venue venue : venues) {
             Hibernate.initialize(venue);
             System.out.println(venue.getVenueName() + "----开始生成座位");

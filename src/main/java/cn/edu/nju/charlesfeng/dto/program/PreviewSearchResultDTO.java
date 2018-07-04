@@ -4,10 +4,12 @@ import cn.edu.nju.charlesfeng.model.id.ProgramID;
 import cn.edu.nju.charlesfeng.util.helper.TimeHelper;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.Objects;
 
 /**
  * 用于封装预搜索的结果
+ *
  * @author Dong
  */
 public class PreviewSearchResultDTO implements Serializable {
@@ -19,8 +21,11 @@ public class PreviewSearchResultDTO implements Serializable {
     private String programName;
 
     public PreviewSearchResultDTO(Object[] program) {
-        this.programID = (ProgramID) program[0];
-        this.programName = String.valueOf(program[1]);
+        ProgramID programID = new ProgramID();
+        programID.setVenueID((Integer) program[0]);
+        programID.setStartTime(((Timestamp) program[1]).toLocalDateTime());
+        this.programID = programID;
+        this.programName = String.valueOf(program[2]);
         id = String.valueOf(programID.getVenueID()) + "-" + String.valueOf(TimeHelper.getLong(programID.getStartTime()));
     }
 

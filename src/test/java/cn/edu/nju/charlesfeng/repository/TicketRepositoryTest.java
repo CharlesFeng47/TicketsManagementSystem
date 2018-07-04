@@ -166,7 +166,7 @@ public class TicketRepositoryTest {
     }
 
     public List<ProgramID> readUnGetProgram() {
-        String path = "C:\\Users\\Byron Dong\\Desktop\\1.txt";
+        String path = "C:\\Users\\Byron Dong\\Desktop\\2.txt";
         File file = new File(path);
         List<ProgramID> programIDS = new ArrayList<>();
         try {

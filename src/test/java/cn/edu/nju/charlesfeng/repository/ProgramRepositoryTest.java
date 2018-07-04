@@ -10,6 +10,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.junit4.SpringRunner;
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
@@ -170,6 +174,83 @@ public class ProgramRepositoryTest {
         }
         System.out.println(programsInfo.size());
         writerProgramInfo(programsInfo);
+    }
+
+    @Test
+    public void testAddPrograms() {
+        String root = "F:\\new_crawler\\images\\";
+        String filePath = "F:\\new_crawler\\SowingMap\\nanjing\\content\\【南京站】洪剑涛、包文婧主演谍战话剧《潜伏》.txt";
+        String programName = "【南京站】洪剑涛、包文婧主演谍战话剧《潜伏》";
+        ProgramType programType = ProgramType.DRAMA;
+        String name = readName2(filePath);
+        Venue venue = venueRepository.findByVenueName(name);
+        Map<String, String> content = readContent(filePath);
+        String time = content.get("time");
+        System.out.println(name);
+        if (time.contains("-")) { //存在多个场次
+            String times[] = time.split("-");
+            LocalDate start = LocalDate.parse(times[0].replace(".", "-"));
+            LocalDate end = LocalDate.parse(times[1].replace(".", "-"));
+
+            long distance = ChronoUnit.DAYS.between(start, end);
+            Stream.iterate(start, d -> d.plusDays(1)).limit(distance + 1).forEach(f -> {
+                if (!f.isBefore(LocalDate.of(2018, 7, 9))) {
+                    ProgramID programID = new ProgramID();
+                    programID.setVenueID(venue.getVenueID());
+                    programID.setStartTime(LocalDateTime.of(f, LocalTime.of(19, 30, 0))); //设置时间
+                    Program program = new Program();
+                    program.setProgramID(programID);
+                    program.setVenue(venue);
+                    program.setName(programName);
+                    program.setDescription(content.get("desc"));
+                    program.setProgramType(programType);
+                    program.setScanVolume(Integer.parseInt(content.get("scan").replace("人浏览", "")));
+                    program.setFavoriteVolume(Integer.parseInt(content.get("like").replace("人想看", "")));
+                    venue.getPrograms().add(program);
+                    Program testProgram = programRepository.findByProgramID(programID);
+                    if (testProgram != null) {
+                        System.out.println("重复：" + programID.getVenueID() + "--" + programID.getStartTime().toString());
+                    } else {
+                        System.out.println(programID.getVenueID() + ";" + programID.getStartTime().toString() + ";" + program.getName() + ";" + program.getProgramType().toString());
+                        String imagePath = filePath.replace(".txt", ".jpg");
+                        String realPath = root + program.getProgramType().name() + "\\" + String.valueOf(program.getProgramID().getVenueID()) + "-" + String.valueOf(TimeHelper.getLong(program.getProgramID().getStartTime())) + ".jpg";
+                        System.out.println(imagePath);
+                        copyFile(imagePath, realPath);
+                        programRepository.save(program);
+                    }
+                }
+            });
+        } else {
+            time = time.replace(".", "-");
+            time = time.replace(' ', 'T');
+            time = time + ":00";
+            LocalDateTime dateTime = LocalDateTime.parse(time);
+            if (!dateTime.isBefore(LocalDateTime.of(2018, 7, 9, 0, 0, 0))) {
+                ProgramID programID = new ProgramID();
+                programID.setVenueID(venue.getVenueID());
+                programID.setStartTime(dateTime); //设置时间
+                Program program = new Program();
+                program.setProgramID(programID);
+                program.setVenue(venue);
+                program.setName(programName);
+                program.setDescription(content.get("desc"));
+                program.setProgramType(programType);
+                program.setScanVolume(Integer.parseInt(content.get("scan").replace("人浏览", "")));
+                program.setFavoriteVolume(Integer.parseInt(content.get("like").replace("人想看", "")));
+                venue.getPrograms().add(program);
+                Program testProgram = programRepository.findByProgramID(programID);
+                if (testProgram != null) {
+                    System.out.println("重复：" + programID.getVenueID() + "--" + programID.getStartTime().toString());
+                } else {
+                    System.out.println(programID.getVenueID() + ";" + programID.getStartTime().toString() + ";" + program.getName() + ";" + program.getProgramType().toString());
+                    String imagePath = filePath.replace(".txt", ".jpg");
+                    String realPath = root + program.getProgramType().name() + "\\" + String.valueOf(program.getProgramID().getVenueID()) + "-" + String.valueOf(TimeHelper.getLong(program.getProgramID().getStartTime())) + ".jpg";
+                    System.out.println(imagePath);
+                    copyFile(imagePath, realPath);
+                    programRepository.save(program);
+                }
+            }
+        }
     }
 
     private Map<String, String> readContent(String path) {
@@ -367,15 +448,13 @@ public class ProgramRepositoryTest {
 
     @Test
     public void searchProgram() {
-        LocalDateTime time = LocalDateTime.of(LocalDate.now(), LocalTime.of(0, 0, 0));
-        List<Program> programs = programRepository.searchProgram("%上海%", time);
+        List<Object[]> programs = programRepository.searchProgram("%上海%");
         System.out.println("---------------------------");
     }
 
     @Test
     public void previewSearchProgram() {
-        LocalDateTime time = LocalDateTime.of(LocalDate.now(), LocalTime.of(0, 0, 0));
-        List<Object[]> programs = programRepository.previewSearchProgram("%张韶涵%", time);
+        List<Object[]> programs = programRepository.previewSearchProgram("%张韶涵%");
         System.out.println("---------------------------");
     }
 
@@ -387,5 +466,15 @@ public class ProgramRepositoryTest {
         programID.setVenueID(vid);
         programID.setStartTime(dateTime);
         programRepository.addOneScanVolume(vid, dateTime);
+    }
+
+    @Test
+    public void testNewGetPrograms() {
+        ProgramType programType = ProgramType.CONCERT;
+        List<Object[]> programIDS = programRepository.getAvailableProgramIds(ProgramType.getIndex(programType), "上海");
+
+
+        System.out.println(programIDS.size());
+        System.out.println("--------------------------------");
     }
 }

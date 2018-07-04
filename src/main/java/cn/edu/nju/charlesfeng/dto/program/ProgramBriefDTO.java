@@ -9,8 +9,10 @@ import cn.edu.nju.charlesfeng.util.helper.TimeHelper;
 import com.alibaba.fastjson.annotation.JSONField;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Iterator;
+import java.util.Objects;
 
 /**
  * 节目概览
@@ -82,7 +84,6 @@ public class ProgramBriefDTO implements Serializable {
     public ProgramBriefDTO(Program program, SaleType type) {
         init(program);
         saleType = type;
-
     }
 
     private void init(Program program) {
@@ -148,5 +149,29 @@ public class ProgramBriefDTO implements Serializable {
 
     public String getImageUrl() {
         return imageUrl;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ProgramBriefDTO that = (ProgramBriefDTO) o;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(time, that.time) &&
+                Objects.equals(programName, that.programName) &&
+                Objects.equals(description, that.description) &&
+                Objects.equals(lowPrice, that.lowPrice) &&
+                Objects.equals(city, that.city) &&
+                Objects.equals(venueName, that.venueName) &&
+                Objects.equals(scanVolume, that.scanVolume) &&
+                Objects.equals(favoriteVolume, that.favoriteVolume) &&
+                saleType == that.saleType &&
+                Objects.equals(imageUrl, that.imageUrl);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id, time, programName, description, lowPrice, city, venueName, scanVolume, favoriteVolume, saleType, imageUrl);
     }
 }

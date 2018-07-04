@@ -71,6 +71,21 @@ public enum ProgramType {
         return null;
     }
 
+    public static int getIndex(ProgramType programType) {
+        ProgramType[] programTypes = ProgramType.values();
+        for (int i = 0; i < programTypes.length; i++) {
+            if (programTypes[i].equals(programType)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public static ProgramType get(int index) {
+        ProgramType[] programTypes = ProgramType.values();
+        return programTypes[index];
+    }
+
     @Override
     public String toString() {
         return this.val;
