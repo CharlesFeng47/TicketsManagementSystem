@@ -48,7 +48,7 @@ public interface ProgramService {
      * @param preProgramID 节目ID
      * @return Program
      */
-    Program getSowingProgram(ProgramID preProgramID);
+    String getSowingProgram(ProgramID preProgramID);
 
     /**
      * 根据场馆ID，节目名获取所有场次

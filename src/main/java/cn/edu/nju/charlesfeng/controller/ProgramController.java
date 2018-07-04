@@ -11,6 +11,7 @@ import cn.edu.nju.charlesfeng.service.TicketService;
 import cn.edu.nju.charlesfeng.service.UserService;
 import cn.edu.nju.charlesfeng.util.enums.ProgramType;
 import cn.edu.nju.charlesfeng.util.enums.SaleType;
+import cn.edu.nju.charlesfeng.util.helper.SowingHelper;
 import cn.edu.nju.charlesfeng.util.helper.SystemHelper;
 import cn.edu.nju.charlesfeng.util.helper.TimeHelper;
 import org.apache.log4j.Logger;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -47,27 +49,30 @@ public class ProgramController {
     }
 
     /**
-     * @return 轮播图url获取
+     * @return 轮播图url获取(realId - > url)
      */
     @GetMapping("/getSowingMapUrl")
-    public List<String> getSowingMapUrl(@RequestParam("city") String city) {
+    public Map<String, String> getSowingMapUrl(@RequestParam("city") String city) {
         logger.debug("INTO /program/getSowingMapUrl?city=" + city);
-        List<String> urls = new ArrayList<>();
-        String domainName = SystemHelper.getDomainName();
-        if (city.equals("上海")) {
-            urls.add(domainName + "/SOWINGMAP/7-1530547200000.jpg");
-            urls.add(domainName + "/SOWINGMAP/8-1531308600000.jpg");
-            urls.add(domainName + "/SOWINGMAP/56-1532707200000.jpg");
-            urls.add(domainName + "/SOWINGMAP/72-1531567800000.jpg");
-            urls.add(domainName + "/SOWINGMAP/80-1538652600000.jpg");
-        } else {
-            urls.add(domainName + "/SOWINGMAP/21-1533382200000.jpg");
-            urls.add(domainName + "/SOWINGMAP/45-1533900600000.jpg");
-            urls.add(domainName + "/SOWINGMAP/45-1534176000000.jpg");
-            urls.add(domainName + "/SOWINGMAP/127-1531065600000.jpg");
-            urls.add(domainName + "/SOWINGMAP/145-1531481400000.jpg");
+
+        try {
+            Map<String, String> result = new TreeMap<>();
+            String domainName = SystemHelper.getDomainName();
+            List<String> ids = SowingHelper.readAreaSowingID(city);
+            for (String id : ids) {
+                String[] preIds = id.split("-");
+                ProgramID programID = new ProgramID();
+                programID.setVenueID(Integer.parseInt(preIds[0]));
+                programID.setStartTime(TimeHelper.getLocalDateTime(Long.parseLong(preIds[1])));
+                String realID = programService.getSowingProgram(programID);
+                String url = domainName + "/SOWINGMAP/" + id + ".jpg";
+                result.put(realID, url);
+            }
+            return result;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
         }
-        return urls;
     }
 
     /**
@@ -78,26 +83,6 @@ public class ProgramController {
         logger.debug("INTO /program/recommend?city=" + city);
         //今天之后包括今天
         return programService.recommendPrograms(city, 5);
-    }
-
-    /**
-     * @return 首页轮播图节目详情获取
-     */
-    @GetMapping("/recommendSowingMap")
-    public ProgramDetailDTO recommendSowingMap(@RequestParam("program_id") String programIDString) {
-        logger.debug("INTO /program/recommendSowingMap?program_id=" + programIDString);
-        String[] ids = programIDString.split("-");
-        ProgramID programID = new ProgramID();
-        programID.setVenueID(Integer.parseInt(ids[0]));
-        programID.setStartTime(TimeHelper.getLocalDateTime(Long.parseLong(ids[1])));
-        Program program = programService.getSowingProgram(programID);
-
-        SaleType saleType = ticketService.getProgramSaleType(programID);
-        Set<LocalDateTime> fields = programService.getAllProgramField(programID.getVenueID(), program.getName());
-        int number = ticketService.getProgramRemainTicketNumber(programID);
-        //浏览量加1
-        programService.addScanVolume(program.getProgramID());
-        return new ProgramDetailDTO(program, saleType, fields, number);
     }
 
     /**

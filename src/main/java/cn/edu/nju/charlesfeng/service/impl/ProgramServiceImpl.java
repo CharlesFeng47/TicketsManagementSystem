@@ -12,6 +12,7 @@ import cn.edu.nju.charlesfeng.util.enums.ProgramType;
 import cn.edu.nju.charlesfeng.util.enums.SaleType;
 import cn.edu.nju.charlesfeng.util.exceptions.venue.ProgramNotSettlableException;
 import cn.edu.nju.charlesfeng.util.helper.AddressHelper;
+import cn.edu.nju.charlesfeng.util.helper.TimeHelper;
 import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -120,18 +121,15 @@ public class ProgramServiceImpl implements ProgramService {
     }
 
     /**
-     * 获取轮播图的节目
+     * 获取轮播图的节目真正的节目ID
      *
      * @param preProgramID 节目ID
-     * @return Program
+     * @return 节目ID
      */
     @Override
-    public Program getSowingProgram(ProgramID preProgramID) {
+    public String getSowingProgram(ProgramID preProgramID) {
         Object[] id = programRepository.getSowingProgramID(preProgramID.getVenueID(), preProgramID.getStartTime());
-        ProgramID programID = new ProgramID();
-        programID.setVenueID((Integer) id[0]);
-        programID.setStartTime(((Timestamp) id[1]).toLocalDateTime());
-        return this.getOneProgram(programID);
+        return String.valueOf(id[0]) + "-" + String.valueOf(TimeHelper.getLong(((Timestamp) id[1]).toLocalDateTime()));
     }
 
     /**
@@ -245,7 +243,7 @@ public class ProgramServiceImpl implements ProgramService {
      * 根据节目类型和城市获取节目
      *
      * @param programType 节目类型
-     * @param city 城市
+     * @param city        城市
      * @return 节目概览
      */
     private List<ProgramBriefDTO> getAvailablePrograms(ProgramType programType, String city) {
@@ -265,7 +263,7 @@ public class ProgramServiceImpl implements ProgramService {
      * 根据节目类型和城市获取指定数量节目（节目随机）
      *
      * @param programType 节目类型
-     * @param city 城市
+     * @param city        城市
      * @return 节目概览
      */
     private List<ProgramBriefDTO> getAvailablePrograms(ProgramType programType, String city, int page) {
@@ -297,7 +295,7 @@ public class ProgramServiceImpl implements ProgramService {
      * 根据size获取指定数量随机索引
      *
      * @param size 长度
-     * @param num 数量
+     * @param num  数量
      * @return 指定数量的随机索引
      */
     private List<Integer> randomIndex(int size, int num) {
