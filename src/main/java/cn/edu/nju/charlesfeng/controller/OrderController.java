@@ -120,7 +120,7 @@ public class OrderController {
         String ids[] = programIDString.split("-");
         ProgramID programID = new ProgramID();
         programID.setVenueID(Integer.parseInt(ids[0]));
-        programID.setStartTime(TimeHelper.getLocalDateTime(Long.parseLong(ids[1])));
+        programID.setStartTime(LocalDateTime.parse(programTime.replace(" ", "T")));
         List<Ticket> tickets = ticketService.lock(programID, num, seatType); //进行锁票,后面加锁
         OrderID orderID = new OrderID();
         orderID.setTime(TimeHelper.standardTime(LocalDateTime.now()));

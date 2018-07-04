@@ -29,7 +29,7 @@ public interface ProgramRepository extends JpaRepository<Program, ProgramID> {
      * @return 节目ID
      */
     @Query(value = "select p.vid, p.start_time from (select p1.vid,p1.name from program as p1 where p1.vid=:venueID and p1.start_time=:startTime) as t join program as p on t.vid=p.vid and t.name=p.name WHERE p.start_time>=NOW() order by p.start_time LIMIT 1 ", nativeQuery = true)
-    Object[] getSowingProgramID(@Param("venueID") int venueID, @Param("startTime") LocalDateTime startTime);
+    Object[][] getSowingProgramID(@Param("venueID") int venueID, @Param("startTime") LocalDateTime startTime);
 
     List<Program> findByName(String name);
 
