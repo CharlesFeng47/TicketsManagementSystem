@@ -1,6 +1,5 @@
 package cn.edu.nju.charlesfeng.config;
 
-import cn.edu.nju.charlesfeng.interceptor.CorsInterceptor;
 import cn.edu.nju.charlesfeng.interceptor.ProgramIDInterceptor;
 import cn.edu.nju.charlesfeng.interceptor.UserInterceptor;
 import com.alibaba.fastjson.serializer.SerializerFeature;
@@ -40,7 +39,7 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
     @Override
     protected void addInterceptors(InterceptorRegistry registry) {
         //Cors
-        registry.addInterceptor(new CorsInterceptor()).addPathPatterns("/**");
+//        registry.addInterceptor(new CorsInterceptor()).addPathPatterns("/**");
         //UserInterceptor
         registry.addInterceptor(new UserInterceptor())
                 //member
