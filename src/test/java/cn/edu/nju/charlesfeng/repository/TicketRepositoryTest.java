@@ -127,7 +127,7 @@ public class TicketRepositoryTest {
                 System.out.println(venue.getVenueID() + "--" + venue.getVenueName());
                 System.out.println("该节目为空");
             }
-            System.out.println(program.getProgramID().getVenueID()+"-"+program.getProgramID().getStartTime().toString());
+            System.out.println(program.getProgramID().getVenueID() + "-" + program.getProgramID().getStartTime().toString());
             Iterable<Ticket> tickets = new HashSet<>();
             for (Seat seat : seats) {
                 Ticket ticket = new Ticket();
@@ -139,8 +139,8 @@ public class TicketRepositoryTest {
                 ticket.setTicketID(ticketID);
                 ticket.setProgram(program);
                 Double price = parRepository.findPrice(program.getProgramID(), seat.getType());
-                if(price == null){
-                    System.out.println("not find:"+program.getProgramID().getVenueID()+"-"+program.getProgramID().getStartTime().toString()+seat.getType());
+                if (price == null) {
+                    System.out.println("not find:" + program.getProgramID().getVenueID() + "-" + program.getProgramID().getStartTime().toString() + seat.getType());
                 }
                 ticket.setPrice(price);
                 ticket.setSeatType(seat.getType());

@@ -5,8 +5,6 @@ import cn.edu.nju.charlesfeng.model.Program;
 import cn.edu.nju.charlesfeng.model.Venue;
 import cn.edu.nju.charlesfeng.model.id.ParID;
 import cn.edu.nju.charlesfeng.model.id.ProgramID;
-import cn.edu.nju.charlesfeng.util.helper.TimeHelper;
-import io.swagger.models.auth.In;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -337,7 +335,7 @@ public class ParRepositoryTest {
                 par.setSeatType(type);
                 par.setProgram(program);
                 result.add(par);
-                System.out.println(par.getSeatType()+"-"+par.getParID().getProgramID().getVenueID()+"-"+par.getParID().getProgramID().getStartTime().toString()+"-"+par.getParID().getBasePrice());
+                System.out.println(par.getSeatType() + "-" + par.getParID().getProgramID().getVenueID() + "-" + par.getParID().getProgramID().getStartTime().toString() + "-" + par.getParID().getBasePrice());
             }
             parRepository.saveAll(result);
         }

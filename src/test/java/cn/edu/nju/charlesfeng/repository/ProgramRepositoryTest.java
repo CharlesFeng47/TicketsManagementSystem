@@ -62,11 +62,11 @@ public class ProgramRepositoryTest {
     public void testGet() {
         ProgramID programID = new ProgramID();
         programID.setVenueID(1);
-        programID.setStartTime(LocalDateTime.of(2018, 7, 12, 18, 0, 0));
+        programID.setStartTime(LocalDateTime.of(2018, 6, 2, 20, 30, 0));
         Program program = programRepository.getOne(programID);
         System.out.println(program.getVenue().getVenueName());
         System.out.println(program.getPars().size());
-
+        System.out.println("----------------------------");
     }
 
     @Test

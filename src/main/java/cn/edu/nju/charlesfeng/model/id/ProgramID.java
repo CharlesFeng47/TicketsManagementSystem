@@ -12,7 +12,7 @@ import java.util.Objects;
  * @author Dong
  */
 @Embeddable
-public class ProgramID implements Serializable {
+public class ProgramID implements Serializable, Comparable<ProgramID> {
 
     /**
      * 场馆ID
@@ -63,5 +63,25 @@ public class ProgramID implements Serializable {
     public int hashCode() {
 
         return Objects.hash(venueID, startTime);
+    }
+
+    @Override
+    public int compareTo(ProgramID o) {
+        //两个ID相同，则返回节目相同
+        if (venueID == o.getVenueID() && startTime.isEqual(o.getStartTime())) {
+            return 0;
+        }
+
+        // 我的场馆ID小于指定场馆ID，则返回我的大
+        if (venueID < o.getVenueID()) {
+            return 1;
+        }
+
+        //场馆ID相同，节目开始时间先于指定节目开始时间，返回大
+        if (venueID == o.getVenueID() && startTime.isBefore(o.getStartTime())) {
+            return 1;
+        }
+
+        return -1;
     }
 }
