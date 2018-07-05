@@ -7,6 +7,7 @@ import cn.edu.nju.charlesfeng.util.enums.OrderState;
 import cn.edu.nju.charlesfeng.util.helper.TimeHelper;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -30,7 +31,7 @@ public class ScheduleTask {
     /**
      * 每分钟检查一次，未支付订单到达15分钟取消订单
      */
-    //@Scheduled(fixedRate = 60000)
+    @Scheduled(fixedRate = 60000)
     public void ScheduleAutoComplete() {
         logger.info("ScheduleAutoComplete Task 开始工作");
         List<Order> orders = orderService.getOrderByState(OrderState.UNPAID);
