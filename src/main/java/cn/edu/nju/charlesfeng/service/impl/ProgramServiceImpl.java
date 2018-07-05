@@ -141,7 +141,7 @@ public class ProgramServiceImpl implements ProgramService {
      */
     @Override
     public Set<LocalDateTime> getAllProgramField(int venueID, String name) {
-        return new TreeSet<>(programRepository.findField(venueID, name));
+        return new TreeSet<>(programRepository.findField(venueID, name, LocalDateTime.now()));
     }
 
     /**

@@ -36,8 +36,8 @@ public interface ProgramRepository extends JpaRepository<Program, ProgramID> {
     @Query(value = "SELECT p1.vid, min(p1.start_time) as start_time from program as p1 join venue as v on p1.vid=v.vid WHERE p1.start_time>=NOW() and p1.type=:programType and v.city=:city GROUP BY p1.vid, p1.`name` order by start_time", nativeQuery = true)
     List<Object[]> getAvailableProgramIds(@Param("programType") int programType, @Param("city") String city);
 
-    @Query(value = "select p.programID.startTime from Program p where p.programID.venueID=:venueID and p.name=:programName")
-    List<LocalDateTime> findField(@Param("venueID") int venueID, @Param("programName") String name);
+    @Query(value = "select p.programID.startTime from Program p where p.programID.venueID=:venueID and p.name=:programName and p.programID.startTime>=:startTime")
+    List<LocalDateTime> findField(@Param("venueID") int venueID, @Param("programName") String name, @Param("startTime")LocalDateTime startTime);
 
     @Query(value = "select p from Program p where p.programID.venueID=:venueID")
     List<Program> findByVenueID(@Param("venueID") int venueID);
