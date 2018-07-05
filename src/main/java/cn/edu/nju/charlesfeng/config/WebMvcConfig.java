@@ -65,7 +65,6 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
         registry.addInterceptor(new ProgramIDInterceptor())
                 .addPathPatterns("/program/getProgramDetail")
                 .addPathPatterns("/program/getProgramDetailByToken")
-                .addPathPatterns("/program/getSowingMapUrl")
                 .addPathPatterns("/member/star")
                 .addPathPatterns("/member/cancelStar")
                 .addPathPatterns("/order/generateOrder");
