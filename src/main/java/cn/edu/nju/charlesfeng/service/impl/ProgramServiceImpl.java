@@ -129,7 +129,7 @@ public class ProgramServiceImpl implements ProgramService {
     @Override
     public String getSowingProgram(ProgramID preProgramID) {
         Object[][] id = programRepository.getSowingProgramID(preProgramID.getVenueID(), preProgramID.getStartTime());
-        if (id == null) {
+        if (id.length == 0) {
             return null;
         }
         return String.valueOf(id[0][0]) + "-" + String.valueOf(TimeHelper.getLong(((Timestamp) id[0][1]).toLocalDateTime()));
