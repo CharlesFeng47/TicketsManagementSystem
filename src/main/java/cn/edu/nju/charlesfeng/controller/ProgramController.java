@@ -65,6 +65,9 @@ public class ProgramController {
                 programID.setVenueID(Integer.parseInt(preIds[0]));
                 programID.setStartTime(TimeHelper.getLocalDateTime(Long.parseLong(preIds[1])));
                 String realID = programService.getSowingProgram(programID);
+                if (realID == null) {
+                    continue;
+                }
                 String url = domainName + "/SOWINGMAP/" + id + ".jpg";
                 result.put(realID, url);
             }
