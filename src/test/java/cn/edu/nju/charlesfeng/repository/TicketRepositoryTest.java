@@ -119,13 +119,21 @@ public class TicketRepositoryTest {
 //        List<ProgramID> programIDS = readUnGetProgram();
         List<ProgramID> programIDS = new ArrayList<>();
         ProgramID programID2 = new ProgramID();
-        programID2.setVenueID(80);
-        programID2.setStartTime(LocalDateTime.of(2018, 10, 11, 19, 30 ,0));
+        programID2.setVenueID(8);
+        programID2.setStartTime(LocalDateTime.of(2018, 9 ,18, 20, 0 ,0));
         ProgramID programID1 = new ProgramID();
-        programID1.setVenueID(88);
-        programID1.setStartTime(LocalDateTime.of(2018, 7, 28, 19, 30 ,0));
+        programID1.setVenueID(2);
+        programID1.setStartTime(LocalDateTime.of(2018, 7, 21, 18, 30 ,0));
+        ProgramID programID3 = new ProgramID();
+        programID3.setVenueID(39);
+        programID3.setStartTime(LocalDateTime.of(2018, 7, 20, 18, 30 ,0));
+        ProgramID programID4 = new ProgramID();
+        programID4.setVenueID(10);
+        programID4.setStartTime(LocalDateTime.of(2018, 8, 5, 19, 0 ,0));
         programIDS.add(programID2);
         programIDS.add(programID1);
+        programIDS.add(programID3);
+        programIDS.add(programID4);
         for (ProgramID programID : programIDS) {
             Program program = programRepository.findByProgramID(programID);
             System.out.println("----------------------------------------");

@@ -68,4 +68,8 @@ public class TimeHelper {
         }
         return result;
     }
+
+//    public static void main(String[] args) {
+//        System.out.println(TimeHelper.getLong(LocalDateTime.of(2018,8,5, 19,0,0)));
+//    }
 }
